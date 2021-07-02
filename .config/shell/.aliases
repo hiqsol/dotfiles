@@ -79,12 +79,12 @@ alias cdi='cd ~/prj/instockcom'
 alias cdq='cd ~/prj/hiqsol/quotes/src'
 alias cdr='cd ~/prj/hiqsol/regit'
 alias -- -='cd -'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
-alias ......='cd ../../../../..'
-alias .......='cd ../../../../../..'
+alias ,='cd ..'
+alias ,,='cd ../..'
+alias ,,,='cd ../../..'
+alias ,,,,='cd ../../../..'
+alias ,,,,,='cd ../../../../..'
+alias ,,,,,,='cd ../../../../../..'
 
 [[ -f /usr/bin/grc || -f /usr/local/bin/grc ]] && {
     alias cvs="grc --colour=auto cvs"
