@@ -1,0 +1,7 @@
+snippet vp "Python var_dump"
+print('{}:{} {}'.format(__file__, sys._getframe().f_lineno, ${1:''}));
+endsnippet
+
+snippet vd "Python var_dump & die"
+print('{}:{} {}'.format(__file__, sys._getframe().f_lineno, ${1:''}));sys.exit();
+endsnippet
