@@ -133,3 +133,7 @@ get_php_version() {
     echo ${ver:4:3}
 }
 
+install_node12() {
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+    sudo apt -y install nodejs
+}
