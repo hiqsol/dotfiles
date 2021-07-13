@@ -89,10 +89,10 @@ nnoremap    gD          :Git diff<CR>
 nnoremap    gd          :Gdiffsplit<CR>
 nnoremap    gs          :Git status<CR>
 nnoremap    gc          :Git commit --verbose<CR>
-nnoremap    go          :Git browse<CR>
-nnoremap    gO          :Git browse!<CR>
-vnoremap    go          :Git browse<CR>
-vnoremap    gO          :Git browse!<CR>
+nnoremap    go          :GBrowse<CR>
+nnoremap    gO          :GBrowse!<CR>
+vnoremap    go          :GBrowse<CR>
+vnoremap    gO          :GBrowse!<CR>
 nnoremap    gw          :Gwrite<CR>
 nnoremap    gub         :Git pull --rebase<CR>
 nnoremap    guh         :Git push<CR>
