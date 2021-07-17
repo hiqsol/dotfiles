@@ -77,3 +77,7 @@ install_zoom() {
 	sudo dpkg -i ~/tmp/zoom.deb
 }
 
+install_viber() {
+    wget -c -O ~/tmp/viber.deb https://download.cdn.viber.com/cdn/desktop/Linux/viber.deb
+    sudo dpkg -i ~/tmp/viber.deb
+}
