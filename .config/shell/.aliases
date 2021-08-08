@@ -41,6 +41,7 @@ alias grn='rg --no-line-number --no-filename'
 alias girp='grep -IR --include=\*.php --exclude-dir=vendor'
 alias grep='grep --color=auto'
 alias vpn="ovpn default"
+alias diff="diff --color"
 alias gogh='wget -O gogh https://git.io/vQgMr && chmod +x gogh && ./gogh && rm gogh'
 alias x509="openssl x509 -text -noout -in"
 alias ymp3="ydl --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
@@ -89,7 +90,6 @@ alias ,,,,,,='cd ../../../../../..'
 [[ -f /usr/bin/grc || -f /usr/local/bin/grc ]] && {
     alias cvs="grc --colour=auto cvs"
     alias make="grc --colour=auto make"
-    alias diff="grc --colour=auto diff"
     alias ping="grc --colour=auto ping"
     alias tail="grc --colour=auto tail"
     alias netstat="grc --colour=auto netstat"
