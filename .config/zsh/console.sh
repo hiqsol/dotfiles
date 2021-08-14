@@ -57,6 +57,17 @@ ydl() {
     $file --add-metadata $@
 }
 
+nvm() {
+    file="$HOME/.config/nvm/nvm-exec"
+
+    if [ ! -x $file ]; then
+        curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+        source $file
+    fi
+
+    nvm $@
+}
+
 nvim() {
     file="$HOME/sbin/nvim"
 
