@@ -48,6 +48,7 @@ alias ymp3="ydl --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
 alias ypl3="ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
 alias clone='g clone'
 alias miniv='nvim -u ~/.vim/mini.vim'
+alias nodejs='node'
 alias vconfig='v ~/.vimrc'
 alias vimdiff='v -d'
 alias zconfig='v ~/.config/zsh/.zshrc'

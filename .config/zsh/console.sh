@@ -58,7 +58,7 @@ ydl() {
 }
 
 nvm() {
-    file="$HOME/.config/nvm/nvm-exec"
+    file="$HOME/.config/nvm/nvm.sh"
 
     if [ ! -x $file ]; then
         curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
