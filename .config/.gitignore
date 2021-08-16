@@ -18,7 +18,7 @@
 # vim
 !/vim/
 !/vim/*
-/vim/viminfo
+/vim/viminfo*
 !/vim/php/*
 !/vim/UltiSnips/*
 
