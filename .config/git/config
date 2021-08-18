@@ -3,7 +3,7 @@
     status      = auto
     branch      = auto
     interactive = auto
-    ui          = true
+    ui          = always
 [user]
     name        = Andrii Vasyliev
     email       = sol@hiqdev.com
