@@ -4,7 +4,7 @@
 umask 002
 
 ### PATH
-export PATH=./vendor/bin:./node_modules/.bin:~/sbin:~/bin:~/.config/composer/vendor/bin:~/.local/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=./vendor/bin:./node_modules/.bin:~/sbin:~/bin:~/.config/composer/vendor/bin:~/.local/bin:~/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 ### Show disk information in K-Blocks
 export BLOCKSIZE=K
