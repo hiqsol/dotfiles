@@ -106,6 +106,18 @@ hub() {
     $file $@
 }
 
+kubectl() {
+    file="$HOME/sbin/kubectl"
+
+    if [ ! -x $file ]; then
+        url=https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+        curl -L $url -o $file
+        chmod a+x $file
+    fi
+
+    $file $@
+}
+
 install_php_modules() { apt_php_modules install $@ }
 remove_php_modules()  { apt_php_modules remove $@ }
 
