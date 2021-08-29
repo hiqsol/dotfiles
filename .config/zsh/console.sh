@@ -118,6 +118,20 @@ kubectl() {
     $file $@
 }
 
+helm() {
+    file="$HOME/sbin/helm"
+
+    if [ ! -x $file ]; then
+        url=https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
+        curl -L $url -o ~/tmp/helm.tgz
+        tar xf ~/tmp/helm.tgz -C ~/tmp
+        mv ~/tmp/linux-amd64/helm $file
+        chmod a+x $file
+    fi
+
+    $file $@
+}
+
 install_php_modules() { apt_php_modules install $@ }
 remove_php_modules()  { apt_php_modules remove $@ }
 
