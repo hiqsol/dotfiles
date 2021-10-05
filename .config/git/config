@@ -47,6 +47,7 @@
     test        = "!f() { sh -c 'ls -la '$1; }; f"
 
     cfg         = "!$EDITOR ~/prj/hiqsol/dotfiles/.config/git/config"
+    ups         = "!git push -u origin HEAD"
 [diff]
     tool        = vimdiff
     algorithm   = histogram
