@@ -19,6 +19,7 @@
 !/vim/
 !/vim/*
 /vim/viminfo*
+/vim/.netrwhist
 !/vim/php/*
 !/vim/UltiSnips/*
 

@@ -3,3 +3,7 @@
 
 # IDE & OS files
 .*.swp
+
+# composer
+/composer.lock
+/vendor
