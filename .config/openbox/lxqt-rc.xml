@@ -733,17 +733,17 @@
       </action>
     </keybind>
     <!-- Keybinding for Volume management -->
-    <keybind key="KP_Begin">
+    <keybind key="C-W-k KP_Begin">
       <action name="Execute">
         <command>rhythmbox-client --play-pause</command>
       </action>
     </keybind>
-    <keybind key="KP_Left">
+    <keybind key="C-W-j KP_Left">
       <action name="Execute">
         <command>rhythmbox-client --previous</command>
       </action>
     </keybind>
-    <keybind key="KP_Right">
+    <keybind key="C-W-l KP_Right">
       <action name="Execute">
         <command>rhythmbox-client --next</command>
       </action>
