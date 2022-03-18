@@ -83,15 +83,15 @@ docker_psql_default() {
 }
 
 drun() {
-    docker run -it --rm --name run -v "$HOME":"$HOME" -w "$PWD" $@
+    docker run -it --rm -v "$HOME":"$HOME" -w "$PWD" $@
 }
 
 dphp54() {
     drun php:5.4-cli php $@
 }
 
-dphp71() {
-    drun php:7.1-cli php $@
+dphp81() {
+    drun php:8.1-cli php $@
 }
 
 dphp() {
