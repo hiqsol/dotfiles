@@ -20,6 +20,8 @@
 !/vim/*
 /vim/viminfo*
 /vim/.netrwhist
+/vim/local.vim
+/vim/dbext_sql_history.txt
 !/vim/php/*
 !/vim/UltiSnips/*
 
