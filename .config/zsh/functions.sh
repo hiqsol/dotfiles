@@ -82,6 +82,10 @@ docker_psql_default() {
     psql -h $host -U postgres $name "$@"
 }
 
+dcc() {
+    dc run -v "$HOME":"$HOME" -w "$PWD" --entrypoint composer php-fpm $@
+}
+
 drun() {
     docker run -it --rm -v "$HOME":"$HOME" -w "$PWD" $@
 }
