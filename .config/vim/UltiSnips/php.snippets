@@ -64,6 +64,10 @@ snippet vd "PHP var_dump & die"
 var_dump(__FILE__ . ':' . __LINE__ . ' ' . __METHOD__, $${1:res});die;
 endsnippet
 
+snippet xd "XDebug var_dump & die"
+xdebug_var_dump(__FILE__ . ':' . __LINE__ . ' ' . __METHOD__, $${1:res});die;
+endsnippet
+
 snippet pvd "PHP PRE + var_dump & die"
 echo '<pre>';var_dump(__FILE__ . ':' . __LINE__ . ' ' . __METHOD__, $${1:res});die;
 endsnippet
