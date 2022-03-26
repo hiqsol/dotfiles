@@ -25,3 +25,10 @@
 !/vim/php/*
 !/vim/UltiSnips/*
 
+# lxqt
+!/lxqt
+!/lxqt/*
+/lxqt/debug.log
+# openbox
+!/openbox
+!/openbox/*
