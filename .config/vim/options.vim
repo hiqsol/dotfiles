@@ -1,6 +1,7 @@
 " Configuration
 set exrc                        " per-project configuration file
 set secure                      " disable unsafe commands
+set maxmempattern=1500          " prevent E363: pattern uses more memory than 'maxmempattern'
 
 " Indending
 set autoindent
