@@ -156,12 +156,16 @@ apt_php_modules() {
     else
         dom="php$ver-dom"
     fi
+    if [[ $ver = "8.1" ]]; then
+        json=""
+    else
+        json="php$ver-json"
+    fi
     sudo apt $cmd -y "php$ver-cli" "php$ver-common" \
         "php$ver-bcmath" "php$ver-gmp" \
-        $dom $opcache \
-        "php$ver-imap" "php$ver-mailparse" \
+        $json $dom $opcache \
+        "php$ver-imap" "php$ver-mailparse" "php$ver-mbstring" \
         "php$ver-curl" "php$ver-imap" "php$ver-intl" \
-        "php$ver-json" "php$ver-mbstring" \
         "php$ver-readline" "php$ver-soap" "php$ver-xml" "php$ver-zip"
 }
 
