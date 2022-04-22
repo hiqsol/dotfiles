@@ -8,7 +8,6 @@ alias -g G='| rg'
 alias -g H='| head'
 alias -g L='| less'
 alias -g R='| less -R'
-alias -g S="| sort"
 alias -g W='| wc'
 
 alias c='c2'
