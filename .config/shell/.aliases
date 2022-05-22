@@ -65,8 +65,9 @@ alias nwget='wget --no-check-certificate'
 alias rmsshkey='ssh-keygen -f "/home/sol/.ssh/known_hosts" -R '
 alias inithome='wget https://raw.githubusercontent.com/hiqdev/rehome/master/rehome ; python rehome init https://github.com/hiqsol/dotfiles ; rm rehome'
 alias ls-tmux="tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}	#{pane_tty}	#{pane_pid}	#{pane_current_command}'"
-alias set-rate='xset r rate 200 40'
-alias set-xkbmap='setxkbmap -model pc105 -layout us,ru,ua -option grp:shift_caps_switch,grp:lalt_lshift_toggle'
+alias set-kbrate='xset r rate 200 40'
+alias set-xkbmap='setxkbmap -model pc105 -layout us,ru,ua -option grp:shift_caps_switch -option grp:lalt_lshift_toggle'
+alias skb='set-kbrate;set-xkbmap'
 alias CapsLock='xdotool key Caps_Lock'
 
 alias regit=~/prj/hiqsol/regit/regit
