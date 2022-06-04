@@ -1,13 +1,14 @@
 #!/bin/sh
 
+# terminal settings
 #stty -istrip crt erase 
 stty -ixon
 
+# allow messages to be displayed on screen
 mesg y
 
-echo
-quotes
-echo
+# my motd
+echo; quotes; echo
 
 # Enable ssh-agent
 if [ -z $SSH_AUTH_SOCK ]; then
