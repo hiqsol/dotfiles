@@ -28,6 +28,11 @@ add_screenlayout() {
     # TO /usr/share/sddm/scripts/Xsetup
 }
 
+set_mime() {
+    xdg-mime default google-chrome.desktop 'x-scheme-handler/http'
+    xdg-mime default google-chrome.desktop 'x-scheme-handler/https'
+}
+
 install_skype() {
     tmp="$HOME/Downloads/skypeforlinux-64.deb"
     if ! [ -x $tmp ]; then
