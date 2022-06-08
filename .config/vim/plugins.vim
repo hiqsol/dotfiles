@@ -72,6 +72,7 @@ Plug 'noahfrederick/vim-composer',              {'for': 'php'}
 " Syntax highlighting plugins
 Plug 'lifepillar/pgsql.vim',                    {'for': 'pgsql'}
 Plug 'aklt/plantuml-syntax',                    {'for': 'plantuml'}
+Plug 'solarnz/thrift.vim',                      {'for': 'thrift'}
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 "Plug 'sheerun/vim-polyglot'
