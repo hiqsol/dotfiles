@@ -71,3 +71,7 @@
 	defaultBranch = master
 [url "git@github.com:instockcom"]
 	insteadOf = https://github.com/instockcom
+[safe]
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/hiqdev/hiapi-legacy
+	directory = /home/sol/prj/advancedhosting/beta-hiapi.advancedhosting.com
+	directory = /home/sol/prj/blazingcdn/hiapi.blazingcdn.com/vendor/hiqdev/billing-mrdp
