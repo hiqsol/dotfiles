@@ -73,6 +73,7 @@ Plug 'noahfrederick/vim-composer',              {'for': 'php'}
 Plug 'lifepillar/pgsql.vim',                    {'for': 'pgsql'}
 Plug 'aklt/plantuml-syntax',                    {'for': 'plantuml'}
 Plug 'solarnz/thrift.vim',                      {'for': 'thrift'}
+Plug 'google/vim-jsonnet',                      {'for': 'jsonnet'}
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 "Plug 'sheerun/vim-polyglot'
@@ -174,3 +175,6 @@ let g:translator_target_lang = 'ru'
 
 " Auto-pairs
 let g:AutoPairsShortcutToggle = ''
+
+" JSONnet
+let g:jsonnet_fmt_on_save = ''
