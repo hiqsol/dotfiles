@@ -39,6 +39,7 @@
     ls          = "!git ls-tree -r --name-only $(git branch-name)"
     ll          = !ls -lAFd --color=auto `git ls`
     li          = ls-files . --ignored --exclude-standard --others
+    lu          = ls-files --others --exclude-standard # list untracked files
     ls-all      = "!git log --pretty=format: --name-status | cut -f2- | sort -u"
     publish     = "!git push -u origin $(git branch-name)"
     filter-out  = "!f() { git filter-branch --force --index-filter \
