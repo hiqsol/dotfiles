@@ -1,34 +1,8 @@
-# ignore everything by default
-*
+/coc/
+/fzf/
+/htop/
+/configstore/
+/nvm/
 
-# git
-!/.gitignore
-!/git/
-!/git/*
-!/regit/
-!/regit/*
-
-# shell
-!/zsh/
-!/zsh/*
-/zsh/.zcalc_history
-!/shell/
-!/shell/*
-
-# vim
-!/vim/
-!/vim/*
-/vim/viminfo*
-/vim/.netrwhist
-/vim/local.vim
-/vim/dbext_sql_history.txt
-!/vim/php/*
-!/vim/UltiSnips/*
-
-# lxqt
-!/lxqt
-!/lxqt/*
-/lxqt/debug.log
-# openbox
-!/openbox
-!/openbox/*
+/git/.gitconfig
+/nvim/.netrwhist

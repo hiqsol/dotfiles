@@ -1,0 +1,6 @@
+/.htaccess
+/auth.json
+/composer.lock
+/keys.*.pub
+/update-channel
+/vendor/
