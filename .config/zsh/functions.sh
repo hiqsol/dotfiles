@@ -119,6 +119,11 @@ dcpsql() {
     docker-compose exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $@";
 }
 
+kh() {
+    pod=`kubectl get pods -n $1 | grep "^$2" | cut -f 1 -d ' '`
+    kubectl exec -i -t -n $1 $pod -c $2 "--" sh -c "bash || ash || sh"
+}
+
 # returns absolute path to file by given relative path
 # also consider `realpath`
 path() {
