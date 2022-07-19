@@ -124,6 +124,21 @@ kh() {
     kubectl exec -i -t -n $1 $pod -c $2 "--" sh -c "bash || ash || sh"
 }
 
+kp() {
+    ns=$1
+    name=${2:-mrdp}
+    dbname=${3:-rcp}
+    port=${4:-55432}
+    pod=`kubectl get pods -n $ns | grep "^$name" | cut -f 1 -d ' '`
+    echo "ns:$ns name:$name pod:$pod dbname:$dbname port:$port"
+    cmd="kubectl --namespace $ns port-forward $pod $port:5432"
+    echo $cmd
+    eval "$cmd &"
+    sleep 1
+    psql --host=localhost --port=$port $dbname
+    kill `ps | grep kubectl | head -n 1 | cut -f 1 -d 'p'`
+}
+
 # returns absolute path to file by given relative path
 # also consider `realpath`
 path() {
