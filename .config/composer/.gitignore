@@ -1,6 +1,9 @@
-/.htaccess
 /auth.json
+/cache/
 /composer.lock
+/.hidev/
+/.htaccess
 /keys.*.pub
+/*-old.phar
 /update-channel
 /vendor/
