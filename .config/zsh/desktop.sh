@@ -86,3 +86,9 @@ install_viber() {
     wget -c -O ~/tmp/viber.deb https://download.cdn.viber.com/cdn/desktop/Linux/viber.deb
     sudo dpkg -i ~/tmp/viber.deb
 }
+
+install_google_drive_ocamlfuse() {
+    sudo add-apt-repository ppa:alessandro-strada/ppa
+    sudo apt update
+    sudo apt install google-drive-ocamlfuse
+}
