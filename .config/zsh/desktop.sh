@@ -11,7 +11,7 @@ install_desktop() {
 
     install_chrome
     install_zoom
-    install_skype
+    #install_skype
     install_slack
     install_telegram
 }
