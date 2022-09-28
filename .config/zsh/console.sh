@@ -1,8 +1,9 @@
 install_console() {
     sudo apt install \
         curl ripgrep \
-        zsh tmux \
+        zsh tmux fuse \
         npm python3-pip
+    pip3 install neovim
 }
 
 composerX() {
