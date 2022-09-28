@@ -2,6 +2,7 @@ install_console() {
     sudo apt install \
         curl ripgrep \
         zsh tmux fuse \
+        ansible \
         npm python3-pip
     pip3 install neovim
 }
