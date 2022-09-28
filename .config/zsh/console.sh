@@ -73,7 +73,8 @@ nvim() {
     file="$HOME/sbin/nvim"
 
     if [ ! -x $file ]; then
-        curl -L https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -o $file
+        #curl -L https://github.com/neovim/neovim/releases/download/stable/nvim.appimage -o $file
+        curl -L https://github.com/neovim/neovim/releases/download/latest/nvim.appimage -o $file
         chmod a+x $file
     fi
 
