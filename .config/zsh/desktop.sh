@@ -92,3 +92,8 @@ install_google_drive_ocamlfuse() {
     sudo apt update
     sudo apt install google-drive-ocamlfuse
 }
+
+persist_screenlayout() {
+    # /usr/share/sddm/scripts/Xsetup
+    # add ~/.screenlayout/wanted.sh
+}
