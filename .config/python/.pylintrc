@@ -1,0 +1,11 @@
+[MAIN]
+
+limit-inference-results=100
+
+[MESSAGES CONTROL]
+
+disable=
+    invalid-name,
+    missing-docstring,
+    consider-using-f-string
+
