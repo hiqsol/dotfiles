@@ -60,6 +60,7 @@ Plug 'majutsushi/tagbar',                       {'on': 'TagbarToggle'}
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'scrooloose/nerdcommenter'
 Plug 'w0rp/ale'
+Plug 'github/copilot.vim'
 
 " PHP plugins
 Plug 'alvan/vim-php-manual',                    {'for': 'php'}
@@ -129,6 +130,8 @@ let g:lt_quickfix_list_toggle_map = '\q'
 let g:SuperTabDefaultCompletionType = '<C-N>'
 let g:SuperTabNoCompleteAfter = ['^', '\s', '"', "'", ',', '.', ':']
 let g:ale_sign_warning = '⇒ '
+let g:ale_c_parse_makefile = 1
+let g:ale_cpp_cc_options = '-I/usr/include/opencv4 -i/usr/include/libcamera'
 let g:airline#extensions#ale#enabled = 1
 let g:php_cs_fixer_rules = "@PSR2"
 let g:php_cs_fixer_config_file = '/home/sol/.vim/php/php_cs.php'

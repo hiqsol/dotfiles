@@ -5,6 +5,7 @@
 /configstore/
 /nvm/
 /git/.gitconfig
+/github-copilot/
 /nvim/.netrwhist
 
 # desktop
