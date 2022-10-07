@@ -4,7 +4,12 @@ install_console() {
         zsh tmux fuse \
         ansible \
         npm python3-pip
-    pip3 install neovim
+    pip3 install neovim jedi pylint
+}
+
+install_devtools() {
+    sudo apt install \
+        build-essential cmake pkg-config
 }
 
 composerX() {
