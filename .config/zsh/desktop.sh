@@ -2,7 +2,7 @@
 install_desktop() {
     install_console
     sudo apt install konsole openvpn openssh-server \
-        keepassxc feh\
+        keepassxc feh ffmpeg \
         arandr rhythmbox qt5-style-kvantum \
         fonts-terminus gnome-font-viewer fbreader
 
@@ -58,6 +58,9 @@ Telegram() {
 }
 
 install_telegram() {
+    if [ -x $HOME/sbin/Telegram/Telegram ]; then
+        return
+    fi
     cd ~/sbin
     wget -c https://telegram.org/dl/desktop/linux
     tar xf tsetup.*.tar.xz
@@ -65,6 +68,9 @@ install_telegram() {
 }
 
 install_chrome() {
+    if [ -x /usr/bin/google-chrome ]; then
+        return
+    fi
     wget -c -O ~/tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     sudo dpkg -i ~/tmp/chrome.deb
 }
@@ -77,6 +83,9 @@ install_dropbox() {
 }
 
 install_zoom() {
+    if [ -x /usr/bin/zoom ]; then
+        return
+    fi
 	sudo apt install -y libegl1-mesa libgl1-mesa-glx libxcb-xtest0
     wget -c -O ~/tmp/zoom.deb https://zoom.us/client/latest/zoom_amd64.deb
 	sudo dpkg -i ~/tmp/zoom.deb
