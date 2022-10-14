@@ -120,6 +120,7 @@ call plug#end()
 let g:vimpager_passthrough = 1
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeIgnore = ['\~$', '\.pyc$', '\.swp$']
+let g:NERDTreeQuitOnOpen = 1
 let g:markdown_fenced_languages = ['php', 'python', 'sh', 'css', 'javascript', 'js=javascript', 'json=javascript', 'yaml', 'yml=yaml', 'xml']
 let g:LanguageClient_autoStart = 0
 
