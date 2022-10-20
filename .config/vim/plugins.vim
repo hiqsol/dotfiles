@@ -17,7 +17,7 @@ Plug 'junegunn/vim-easy-align'
 
 " HUD plugins
 Plug 'bling/vim-airline'
-Plug 'ervandew/supertab'
+"Plug 'ervandew/supertab'
 Plug 'junegunn/vim-peekaboo'
 Plug 'junegunn/fzf',                            {'dir': '~/.config/fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
