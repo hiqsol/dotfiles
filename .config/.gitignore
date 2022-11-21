@@ -48,8 +48,10 @@
 /lximage-qt/
 /lxqt/debug.log
 /mc/
+/memos.json
 /menus/
 /mimeapps.list
+/ngrok/ngrok.yml
 /obs-studio/
 /parleyrc
 /pavucontrol-qt/
@@ -68,4 +70,5 @@
 /vim/viminfo.tmp.a
 /vlc/
 /xdg-desktop-portal-kderc
+/zoom.conf
 /zoomus.conf
