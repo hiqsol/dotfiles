@@ -523,6 +523,11 @@
     <keybind key="C-F12">
       <action name="Close"/>
     </keybind>
+    <keybind key="W-F8">
+      <action name="execute">
+          <command>/home/sol/.config/screenlayout/current.sh</command>
+      </action>
+    </keybind>
     <keybind key="W-F9">
       <action name="execute">
         <!-- command>/bin/sh -c '/usr/bin/xsel | /usr/bin/xvkbd -xsendevent -file - 2>/dev/null'</command -->
