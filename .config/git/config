@@ -14,7 +14,7 @@
     ci          = commit -v
     cu          = commit -am 'update deps'
     cf          = commit -am csfix
-    cm          = commit -am minor
+    cm          = commit -m
     co          = checkout
     s           = status
     st          = stash
