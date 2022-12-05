@@ -109,6 +109,8 @@ nnoremap    <F5>        :VdebugRun<CR>
 inoremap <expr> <C-]>   CompletePhpClass()
 nnoremap <silent> <C-]> :call CocActionAsync('jumpDefinition')<CR>
 nnoremap <silent> <C-\> :call CocActionAsync('jumpReferences')<CR>
+nnoremap    \am          :AsyncRun make<Space>
+nnoremap    \al          :AsyncRun <Up><CR>
 
 " DB keys
 nnoremap    \sx         :DBExecSQLUnderCursor<CR>

@@ -27,6 +27,7 @@ Plug 'scrooloose/nerdtree',                     {'on': ['NERDTreeToggle', 'NERDT
 Plug 'romainl/vim-qf'
 Plug 'valloric/listtoggle'
 Plug 'blueyed/vim-diminactive'
+Plug 'skywind3000/asyncrun.vim'
 
 " Grep
 Plug 'dkprice/vim-easygrep'
@@ -169,6 +170,8 @@ let g:qf_resize_max_height = 40
 let g:qf_resize_max_ratio  = 0.5
 let g:EasyGrepCommand = 1
 let g:EasyGrepRoot = 'search:\.'
+
+let g:asyncrun_open = 5
 
 " VimWiki
 let g:vimwiki_list = [{'path': '~/src/memo/', 'syntax': 'markdown', 'ext': '.md'}]
