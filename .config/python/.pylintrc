@@ -7,6 +7,7 @@ limit-inference-results=100
 disable=
     invalid-name,
     line-too-long,
+    no-else-return,
     missing-docstring,
     consider-using-f-string
 
