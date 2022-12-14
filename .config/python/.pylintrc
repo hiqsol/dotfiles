@@ -9,5 +9,6 @@ disable=
     line-too-long,
     no-else-return,
     missing-docstring,
+    multiple-statements,
     consider-using-f-string
 
