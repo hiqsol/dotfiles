@@ -12,9 +12,9 @@
     a           = add
     ca          = commit -v --amend
     ci          = commit -v
-    cu          = commit -am 'update deps'
     cf          = commit -am csfix
     cm          = commit -m
+    mi          = commit -am minor
     co          = checkout
     s           = status
     st          = stash
