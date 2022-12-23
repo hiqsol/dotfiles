@@ -40,7 +40,6 @@ alias gir='grep -IR'
 alias grn='rg --no-line-number --no-filename'
 alias girp='grep -IR --include=\*.php --exclude-dir=vendor'
 alias grep='grep --color=auto'
-alias vpn="ovpn default"
 alias vim='nvim'
 alias ovim='/usr/bin/vim'
 alias diff="diff --color"
