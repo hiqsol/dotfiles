@@ -489,12 +489,12 @@
     </keybind>
     <keybind key="C-F10">
       <action name="Execute">
-        <command>xbacklight -dec 10</command>
+        <command>sudo /home/sol/bin/backlight -10</command>
       </action>
     </keybind>
     <keybind key="C-F11">
       <action name="Execute">
-        <command>xbacklight -inc 10</command>
+        <command>sudo /home/sol/bin/backlight +10</command>
       </action>
     </keybind>
     <!-- Take a screenshot of the current window with scrot when Alt+Print are pressed -->
