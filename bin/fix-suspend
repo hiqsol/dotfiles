@@ -1,0 +1,5 @@
+#!/bin/sh
+# fix suspend for Acer Swift 3 SF114-34
+
+echo RP05 > /proc/acpi/wakeup
+echo XHCI > /proc/acpi/wakeup
