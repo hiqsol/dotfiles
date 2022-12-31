@@ -8,6 +8,11 @@ md() {
     mkdir -p "$@" && cd "$@"
 }
 
+fs() {
+    ssh-keygen -f "/home/sol/.ssh/known_hosts" -R "$1"
+    s $@
+}
+
 cdls() {
     'cd' $1
     if [ $PWD != $HOME ]; then
