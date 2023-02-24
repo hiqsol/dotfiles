@@ -32,6 +32,7 @@ Plug 'skywind3000/asyncrun.vim'
 " Grep
 Plug 'dkprice/vim-easygrep'
 Plug 'mileszs/ack.vim'
+"Plug 'jremmen/vim-ripgrep'
 Plug 'blueyed/vim-qf_resize'
 
 " Shell helpers
