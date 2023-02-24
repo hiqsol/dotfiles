@@ -37,6 +37,7 @@ nnoremap    <M-/>       /\c
 nnoremap    \<Space>    /\t\+ \+\\| \+\t\+\\|\s\+$/<CR>
 nnoremap    \/          /\<\><Left><Left>
 nnoremap <silent>   \\  :nohlsearch<CR>
+nnoremap    gh          :Rg<Space>
 nnoremap    gr          :Ack!<Space>
 nnoremap    gp          :Ack!<Space>--type php<Space>
 nnoremap    g8          :Ack!<Space><C-R><C-W><CR>
