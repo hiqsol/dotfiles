@@ -71,6 +71,10 @@ install_chrome() {
     if [ -x /usr/bin/google-chrome ]; then
         return
     fi
+    force_install_chrome
+}
+
+force_install_chrome() {
     wget -O ~/tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     sudo dpkg -i ~/tmp/chrome.deb
 }
