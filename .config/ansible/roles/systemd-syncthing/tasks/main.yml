@@ -1,0 +1,14 @@
+---
+- name: Create syncthing systemd service file
+  template:
+    src: syncthing.service.j2
+    dest: /etc/systemd/system/syncthing.service
+    mode: '0644'
+
+- name: Enable and start syncthing service
+  systemd:
+    name: syncthing
+    state: restarted
+    daemon_reload: true
+    enabled: true
+    masked: false

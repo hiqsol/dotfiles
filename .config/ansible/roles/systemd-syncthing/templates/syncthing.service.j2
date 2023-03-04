@@ -1,0 +1,14 @@
+[Unit]
+Description=Syncthing for sol
+Documentation=man:syncthing(1)
+After=network.target
+
+[Service]
+User=sol
+ExecStart=/usr/bin/syncthing -no-browser -gui-address="127.0.0.1:8384" -no-restart -logflags=0
+Restart=on-failure
+SuccessExitStatus=3 4
+RestartForceExitStatus=3 4
+
+[Install]
+WantedBy=multi-user.target
