@@ -21,6 +21,7 @@ alias s='chmod -R og-rwx ~/.ssh;ssh'
 alias v='nvim'
 alias Z='zcalc'
 
+alias al='~/.config/ansible/bin/a local localhost'
 alias c1='composerX 1'
 alias c2='composerX 2'
 alias d1='du -hd1'
