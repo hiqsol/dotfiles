@@ -6,6 +6,9 @@
   gather_facts: false
 
   roles:
+    - role: roles/install-syncthing
+      become: true
+      tags: syncthing, install-syncthing
     - role: roles/systemd-syncthing
       become: true
       tags: syncthing
