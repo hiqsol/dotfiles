@@ -24,7 +24,7 @@ export TERM=screen-256color
 if [ `uname` = "Linux" ]; then
     export LANG=en_US.utf8
     export LC_ALL=en_US.utf8
-    ls_options='--color=auto'
+    ls_options='--color'
 fi
 
 ### Set default PAGER && EDITOR && VISUAL

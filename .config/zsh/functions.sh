@@ -16,7 +16,7 @@ fs() {
 cdls() {
     'cd' $1
     if [ $PWD != $HOME ]; then
-        'ls' -F ${ls_options}
+        '/bin/ls' -F ${ls_options}
     fi
 }
 

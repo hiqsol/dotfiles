@@ -93,11 +93,5 @@ alias ,,,,='cd ../../../..'
 alias ,,,,,='cd ../../../../..'
 alias ,,,,,,='cd ../../../../../..'
 
-[[ -f /usr/bin/grc || -f /usr/local/bin/grc ]] && {
-    alias cvs="grc --colour=auto cvs"
-    alias make="grc --colour=auto make"
-    alias ping="grc --colour=auto ping"
-    alias tail="grc --colour=auto tail"
-    alias netstat="grc --colour=auto netstat"
-    alias traceroute="grc --colour=auto traceroute"
-}
+GRC_ALIASES=true
+[[ -s "/etc/profile.d/grc.sh" ]] && source /etc/grc.zsh
