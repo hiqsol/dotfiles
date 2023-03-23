@@ -63,5 +63,5 @@ colours=bold white
 count=once
 ======
 regexp=\bDEBUG\b
-colours=bold black
+colours=white
 count=once
