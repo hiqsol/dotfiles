@@ -7,6 +7,7 @@
 /git/.gitconfig
 /github-copilot/
 /nvim/.netrwhist
+/hub
 
 # desktop
 /Exodus/
