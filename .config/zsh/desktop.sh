@@ -2,7 +2,7 @@
 install_desktop() {
     install_console
     sudo apt install konsole openvpn openssh-server \
-        keepassxc feh ffmpeg \
+        keepassxc feh ffmpeg flameshot \
         arandr rhythmbox qt5-style-kvantum \
         fonts-terminus gnome-font-viewer fbreader
 
