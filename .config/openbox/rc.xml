@@ -500,12 +500,12 @@
     <!-- Take a screenshot of the current window with scrot when Alt+Print are pressed -->
     <keybind key="Print">
       <action name="Execute">
-        <command>screengrab</command>
+        <command>flameshot gui</command>
       </action>
     </keybind>
     <keybind key="A-Print">
       <action name="Execute">
-        <command>screengrab --region</command>
+        <command>flameshot gui</command>
       </action>
     </keybind>
     <!-- Launch logout when push on the shutdown button -->
