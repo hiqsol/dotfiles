@@ -525,7 +525,7 @@
     </keybind>
     <keybind key="W-F8">
       <action name="execute">
-          <command>/home/sol/.config/screenlayout/current.sh</command>
+        <command>/home/sol/.config/screenlayout/current.sh</command>
       </action>
     </keybind>
     <keybind key="W-F9">
@@ -1150,8 +1150,8 @@
   </menu>
   <applications>
     <application name="vlc">
-        <position force="no"></position>
-        <layer>above</layer>
+      <position force="no"/>
+      <layer>above</layer>
     </application>
     <!--
   # this is an example with comments through out. use these to make your
