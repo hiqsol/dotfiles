@@ -4,6 +4,7 @@ import "os"
 import "fmt"
 import "strings"
 import "strconv"
+import "unicode"
 
 func usage() {
     fmt.Println("Usage: backlight [+|-]<percents>")
@@ -28,12 +29,13 @@ func main() {
         usage()
     }
     cmd := os.Args[1]
-    sign := 1.0
+    char := rune(cmd[0])
+    sign := 0.0
     if cmd[0] == '+' {
         sign = 1.0
     } else if cmd[0] == '-' {
         sign = -1.0
-    } else {
+    } else if !unicode.IsDigit(char) {
         usage()
     }
 
@@ -44,14 +46,14 @@ func main() {
     }
 
     input := cmd[1:]
+    if sign == 0.0 {
+        input = cmd
+    }
     value, err := strconv.ParseFloat(input, 64)
     if err != nil {
         fmt.Printf("Error parsing value '%s': %s\n", input, err)
         os.Exit(1)
     }
-
-    koef := 1.0 + sign * (value / 100)
-    //fmt.Println(cmd, sign, value, koef)
 
     curr, err := ReadInt(CUR_BRIGHTNESS_PATH)
     if err != nil {
@@ -59,7 +61,13 @@ func main() {
         os.Exit(1)
     }
 
-    next := int(float64(curr) * koef)
+    next := curr
+    if sign == 0.0 {
+        next = int(float64(max_value) * value / 100)
+    } else {
+        next = int(float64(curr) * (100 + sign * value) / 100)
+    }
+
     if next < 1 {
         next = 1
     } else if next > max_value {
