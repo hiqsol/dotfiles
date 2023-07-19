@@ -62,10 +62,12 @@ func main() {
     }
 
     next := curr
+    perc := int(value)
     if sign == 0.0 {
         next = int(float64(max_value) * value / 100)
     } else {
         next = int(float64(curr) * (100 + sign * value) / 100)
+        perc = int(float64(next) / float64(max_value) * 100)
     }
 
     if next < 1 {
@@ -81,6 +83,6 @@ func main() {
     if err != nil {
         fmt.Printf("Error writing brightness(%d): %s\n", next, err)
     } else {
-        fmt.Printf("Brightness set to %d of %d, was %d\n", next, max_value, curr)
+        fmt.Printf("Brightness set to %d%% (%d of %d), was %d\n", perc, next, max_value, curr)
     }
 }
