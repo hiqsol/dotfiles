@@ -487,14 +487,14 @@
         <command>xset dpms force off</command>
       </action>
     </keybind>
-    <keybind key="C-F10">
+    <keybind key="XF86MonBrightnessDown">
       <action name="Execute">
-        <command>sudo /home/sol/bin/backlight -10</command>
+        <command>/home/sol/bin/backlight -10</command>
       </action>
     </keybind>
-    <keybind key="C-F11">
+    <keybind key="XF86MonBrightnessUp">
       <action name="Execute">
-        <command>sudo /home/sol/bin/backlight +10</command>
+        <command>/home/sol/bin/backlight +10</command>
       </action>
     </keybind>
     <!-- Take a screenshot of the current window with scrot when Alt+Print are pressed -->
