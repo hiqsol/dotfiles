@@ -18,6 +18,7 @@
     co          = checkout
     s           = status
     st          = stash
+    stl         = stash list
     sp          = stash pop
     sh          = show -U0
     pb          = pull --rebase
