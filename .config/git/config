@@ -16,6 +16,7 @@
     cm          = commit -m
     mi          = commit -am minor
     co          = checkout
+    chp         = cherry-pick
     s           = status
     st          = stash
     stl         = stash list
