@@ -57,7 +57,7 @@ ydl() {
     file="$HOME/sbin/youtube-dl"
 
     if [ ! -e "$file" ]; then
-        wget https://yt-dl.org/downloads/latest/youtube-dl -O $file
+        wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O $file
         chmod a+rx $file
     fi
 
