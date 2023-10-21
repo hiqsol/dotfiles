@@ -47,6 +47,7 @@ set wildmode=longest:full,full
 set ignorecase
 set smartcase
 set hlsearch                    " highlight search
+set mouse=                      " disable mouse
 
 if has('gui_running')
     source gui.vim
