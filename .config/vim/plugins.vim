@@ -11,6 +11,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'foosoft/vim-argwrap'
 Plug 'vim-scripts/auto-pairs-gentle'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'junegunn/vim-easy-align'
