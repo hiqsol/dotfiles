@@ -24,6 +24,7 @@
     sh          = show -U0
     pb          = pull --rebase
     ph          = push
+    pt		= "!git push && git push --tags"
     pbh         = "!git pb && git push"
     d           = diff -U0 --
     dc          = diff --cached
