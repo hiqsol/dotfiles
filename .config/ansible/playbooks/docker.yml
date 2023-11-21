@@ -1,0 +1,9 @@
+#!/usr/bin/ansible-playbook -ihosts.ini
+---
+- name: "Local"
+  hosts: local
+  become: true
+
+  roles:
+    - role: geerlingguy.docker
+

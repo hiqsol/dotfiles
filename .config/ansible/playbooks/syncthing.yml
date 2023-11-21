@@ -1,4 +1,4 @@
-#!/usr/bin/ansible-playbook -i hosts.ini
+#!/usr/bin/ansible-playbook -ihosts.ini
 ---
 - name: "Local"
   hosts: local
