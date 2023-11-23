@@ -28,6 +28,18 @@ composerX() {
     $file $@
 }
 
+docker-compose() {
+    echo "\033[0;31mDEPRECATED use docker compose instead"
+    file="$HOME/sbin/docker-compose"
+
+    if [ ! -x $file ]; then
+        curl -L https://github.com/docker/compose/releases/download/v2.23.1/docker-compose-linux-x86_64 -o $file
+        chmod a+x $file
+    fi
+
+    $file $@
+}
+
 nginx-proxy-common() {
     # cd ~/prj/vendor
     # nginx-proxy-common start 1.2.3.4
