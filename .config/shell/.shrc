@@ -34,6 +34,7 @@ export VISUAL=nvim
 export BROWSER="x-www-browser:local-open"
 
 export RIPGREP_CONFIG_PATH=~/.config/ripgrep/.ripgreprc
+export FZF_DEFAULT_COMMAND='fdfind --type f --strip-cwd-prefix -H -E .git'
 
 ### less config
 export LESS='-i -x4 -M -R -F -X'

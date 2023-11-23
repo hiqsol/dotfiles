@@ -1,6 +1,6 @@
 install_console() {
     sudo apt install \
-        curl ripgrep grc \
+        curl ripgrep grc fd-find bat\
         zsh tmux fuse \
         ansible \
         npm python3-pip
