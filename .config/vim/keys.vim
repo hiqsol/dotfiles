@@ -72,7 +72,7 @@ nnoremap    <C-S>       :wa<CR>
 nnoremap    <C-X>       :close<CR>
 nnoremap    <C-J>       :BLines<CR>
 nnoremap    <C-K>       :FZFMru<CR>
-nnoremap    <C-P>       :FZF<CR>
+nnoremap    <C-P>       :Files<CR>
 nnoremap    z8          :FZF -q <C-R><C-W><CR>
 nnoremap    <C-L>       :GitGutterAll<CR><C-L>
 nnoremap    <C-G>       :echo expand('%:p')<CR>
