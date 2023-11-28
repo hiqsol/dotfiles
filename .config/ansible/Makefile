@@ -6,3 +6,5 @@ requirements:
 install-docker:
 	ansible-playbook -i hosts.ini playbooks/docker.yml
 
+install-virtualbox:
+	ansible-playbook -i hosts.ini playbooks/virtualbox.yml

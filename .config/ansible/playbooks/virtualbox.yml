@@ -1,0 +1,12 @@
+#!/usr/bin/ansible-playbook -ihosts.ini
+---
+- name: "Local"
+  hosts: local
+  strategy: free
+  serial:
+    - "100%"
+  become: true
+
+  roles:
+    - role: don_rumata.ansible_role_install_virtualbox
+
