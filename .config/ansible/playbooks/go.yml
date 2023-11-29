@@ -5,7 +5,5 @@
   become: true
 
   roles:
-    - role: fubarhouse.golang
-  vars:
-    - go_version: "1.21.4"
+    - role: gantsign.golang
 
