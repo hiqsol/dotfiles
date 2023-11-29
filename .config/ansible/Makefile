@@ -1,13 +1,16 @@
 install: requirements
 
 requirements:
-	sudo ansible-galaxy install -r requirements.yml
+	ansible-galaxy install -r requirements.yml
 
-install-docker:
+docker:
 	ansible-playbook -i hosts.ini playbooks/docker.yml
 
-install-virtualbox:
+virtualbox:
 	ansible-playbook -i hosts.ini playbooks/virtualbox.yml
 
-install-go:
+go:
 	ansible-playbook -i hosts.ini playbooks/go.yml
+
+vagrant:
+	ansible-playbook -i hosts.ini playbooks/vagrant.yml

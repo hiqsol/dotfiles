@@ -1,0 +1,4 @@
+---
+vagrant_apt_key_url: "https://apt.releases.hashicorp.com/gpg"
+vagrant_apt_key_path: "/usr/share/keyrings/vagrant-archive-keyring.gpg"
+vagrant_apt_repository: "deb [signed-by={{vagrant_apt_key_path}}] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"

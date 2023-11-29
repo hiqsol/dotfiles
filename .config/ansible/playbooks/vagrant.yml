@@ -1,0 +1,10 @@
+#!/usr/bin/ansible-playbook -ihosts.ini
+---
+- name: "Local"
+  hosts: local
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: roles/install-vagrant
+      become: true

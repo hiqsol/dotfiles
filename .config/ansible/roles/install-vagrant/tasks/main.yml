@@ -1,0 +1,13 @@
+---
+- name: Add vagrant repository key
+  apt_key:
+    url: "{{ vagrant_apt_key_url }}"
+    keyring: "{{ vagrant_apt_key_path }}"
+
+- name: Add vagrant apt repository
+  apt_repository:
+    repo: "{{ vagrant_apt_repository }}"
+
+- name: Apt install vagrant
+  apt:
+    name: vagrant
