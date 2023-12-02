@@ -117,11 +117,11 @@ dpsql() {
 }
 
 dcbash() {
-    docker-compose exec $1 bash -c "stty cols $COLUMNS rows $LINES && bash";
+    dc exec $1 bash -c "stty cols $COLUMNS rows $LINES && bash";
 }
 
 dcpsql() {
-    docker-compose exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $@";
+    dc exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $@";
 }
 
 kh() {
