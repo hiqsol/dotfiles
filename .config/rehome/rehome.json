@@ -1,23 +1,10 @@
 {
     "shell": "zsh",
-    "terminal": "konsole",
     "repos": {
-        "prj/hiqsol/dotfiles": "hiqsol/dotfiles",
         "prj/hiqsol/dotfiles": "hiqsol/dotfiles",
         "prj/hiqdev/rehome": "hiqdev/rehome"
     },
     "installs": {
-        "curl":         "system",
-        "jq":           "system",
-        "zsh":          "system",
-        "tmux":         "system",
-        "vim":          "system",
-        "php":          "system",
-        "nodejs":       "system",
-        "keepassxc":    "system",
-            "ripgrep":          "todo",
-            "pip":              "todo",
-            "python neovim":    "todo",
-        "composer":     "composer global install"
+        "zsh":          "system"
     }
 }
