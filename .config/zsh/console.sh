@@ -1,7 +1,7 @@
 install_console() {
     sudo apt install \
-        curl ripgrep grc fd-find bat\
-        zsh tmux fuse \
+        curl ripgrep grc fd-find bat \
+        zsh tmux fuse git-lfs \
         ansible \
         npm python3-pip
     pip3 install neovim jedi pylint
