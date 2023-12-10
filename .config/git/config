@@ -30,7 +30,7 @@
     dc          = diff --cached
     df          = diff
     ds          = diff --stat
-    dt          = describe --tags
+    dt          = describe --tags --long
     gr          = grep
     vimdiff     = difftool
     b           = for-each-ref --format='  %(color:yellow)%(objectname:short)%(color:reset) %(color:bold green)%(committerdate:iso)%(color:reset) %(color:bold white)%(HEAD)%(color:reset) %(color:bold red)%(refname:strip=1)%(color:reset)  %(contents:subject) %(color:bold cyan)%(authorname)%(color:reset) '
