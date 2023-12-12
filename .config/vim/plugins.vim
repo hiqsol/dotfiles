@@ -9,7 +9,6 @@ call plug#begin('~/.vim/plugged')
 
 " Editing plugins
 Plug 'foosoft/vim-argwrap'
-Plug 'vim-scripts/auto-pairs-gentle'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
@@ -93,12 +92,7 @@ Plug 'honza/vim-snippets'                       " snippets library
 " ZSH plugins
 Plug 'zsh-users/zsh-autosuggestions'
 
-" Other
-Plug 'vimwiki/vimwiki'
-Plug 'voldikss/vim-translator'
-
 " Rejected plugins
-"Plug 'jiangmiao/auto-pairs'
 "Plug 'vim-scripts/LargeFile'                   " better large files support, didn't help
 "Plug 'mkitt/tabline.vim'                       " shows tab number, filename and [+], substituted with vim-airline
 "Plug 'joonty/vim-phpqa'                        " show code coverage
@@ -106,8 +100,7 @@ Plug 'voldikss/vim-translator'
 "Plug 'jistr/vim-nerdtree-tabs',                " no need with FZF
 "Plug 'scrooloose/syntastic'                    " substituted with ALE
 
-" Language server
-"Plug 'autozimu/LanguageClient-neovim',         {'branch': 'next', 'do': 'bash install.sh'}
+" Language server Plug 'autozimu/LanguageClient-neovim',         {'branch': 'next', 'do': 'bash install.sh'}
 "Plug 'roxma/LanguageServer-php-neovim',        {'do': 'composer install && composer run-script parse-stubs'}
 
 " NCM Completion
@@ -175,15 +168,18 @@ let g:EasyGrepRoot = 'search:\.'
 
 let g:asyncrun_open = 5
 
-" VimWiki
-let g:vimwiki_list = [{'path': '~/src/memo/', 'syntax': 'markdown', 'ext': '.md'}]
-let g:vimwiki_table_mappings=0
+" Plug 'vimwiki/vimwiki' -  not used
+" let g:vimwiki_list = [{'path': '~/src/memo/', 'syntax': 'markdown', 'ext': '.md'}]
+" let g:vimwiki_table_mappings=0
 
+" Plug 'voldikss/vim-translator' - not used
 " Translator
-let g:translator_target_lang = 'ru'
+" let g:translator_target_lang = 'ru'
 
-" Auto-pairs
-let g:AutoPairsShortcutToggle = ''
+" Plug 'jiangmiao/auto-pairs' - not really helping
+" Plug 'vim-scripts/auto-pairs-gentle'
+" let g:AutoPairsShortcutToggle = ''
+" let g:AutoPairsFlyMode = 0
 
 " JSONnet
 let g:jsonnet_fmt_on_save = ''
