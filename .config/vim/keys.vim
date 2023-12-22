@@ -109,9 +109,9 @@ nnoremap    \w          :ArgWrap<CR>
 nnoremap    <F5>        :VdebugRun<CR>
 "nnoremap    co          :Composer<Space>
 inoremap <expr> <C-]>   CompletePhpClass()
-nnoremap <silent> <C-]> :call CocActionAsync('jumpDefinition')<CR>
-nnoremap <silent> <C-\> :call CocActionAsync('jumpReferences')<CR>
-nnoremap <silent> <C-_> :call CocActionAsync('jumpImplementation')<CR>
+nnoremap <silent> <C-]> <Plug>(coc-definition)
+nnoremap <silent> <C-\> <Plug>(coc-references)
+nnoremap <silent> <C-_> <Plug>(coc-implementation)
 nnoremap    \am          :AsyncRun make<Space>
 nnoremap    \al          :AsyncRun <Up><CR>
 
