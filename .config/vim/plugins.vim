@@ -133,6 +133,8 @@ let g:airline#extensions#ale#enabled = 1
 let g:php_cs_fixer_rules = "@PSR2"
 let g:php_cs_fixer_config_file = '/home/sol/.vim/php/php_cs.php'
 
+" CoC extension: coc-json, coc-go, coc-python, coc-clangd
+
 " Vdebug
 let g:vdebug_options = {
 \   'timeout': 60,
