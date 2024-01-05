@@ -112,6 +112,7 @@ inoremap <expr> <C-]>   CompletePhpClass()
 nnoremap <silent> <C-]> <Plug>(coc-definition)
 nnoremap <silent> <C-\> <Plug>(coc-references)
 nnoremap <silent> <C-_> <Plug>(coc-implementation)
+nnoremap <silent> \f    <Plug>(coc-format)
 nnoremap    \am          :AsyncRun make<Space>
 nnoremap    \al          :AsyncRun <Up><CR>
 
