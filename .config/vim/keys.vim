@@ -83,6 +83,9 @@ nnoremap    \m          :Maps<CR>
 nnoremap                'm      :messages<CR>
 nmap        <silent>    'q      <Plug>(qf_qf_toggle)
 nmap        <silent>    'l      <Plug>(qf_loc_toggle)
+nnoremap    ]d          :CocNext<CR>
+nnoremap    [d          :CocPrev<CR>
+nnoremap    \d          :CocList location<CR>
 
 " Git keys
 nnoremap    gl          :0Gclog<CR>
