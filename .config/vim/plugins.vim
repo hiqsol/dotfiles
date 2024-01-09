@@ -134,6 +134,7 @@ let g:php_cs_fixer_rules = "@PSR2"
 let g:php_cs_fixer_config_file = '/home/sol/.vim/php/php_cs.php'
 
 " CoC extension: coc-json, coc-go, coc-pyright, coc-clangd, coc-phpls
+let g:coc_enable_locationlist = 1
 
 " Vdebug
 let g:vdebug_options = {
