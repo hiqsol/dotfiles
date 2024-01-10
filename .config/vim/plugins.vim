@@ -99,6 +99,8 @@ Plug 'zsh-users/zsh-autosuggestions'
 "Plug 'roxma/python-support.nvim'               " doesn't help, seems to make worse
 "Plug 'jistr/vim-nerdtree-tabs',                " no need with FZF
 "Plug 'scrooloose/syntastic'                    " substituted with ALE
+"Plug 'vimwiki/vimwiki'
+"Plug 'voldikss/vim-translator'
 
 " Language server Plug 'autozimu/LanguageClient-neovim',         {'branch': 'next', 'do': 'bash install.sh'}
 "Plug 'roxma/LanguageServer-php-neovim',        {'do': 'composer install && composer run-script parse-stubs'}
@@ -129,6 +131,7 @@ let g:SuperTabNoCompleteAfter = ['^', '\s', '"', "'", ',', '.', ':']
 let g:ale_sign_warning = '⇒ '
 let g:ale_c_parse_makefile = 1
 let g:ale_cpp_cc_options = '-I/usr/include/opencv4 -i/usr/include/libcamera'
+let g:ale_linters = {'php': ['php-cs-fixer']}
 let g:airline#extensions#ale#enabled = 1
 let g:php_cs_fixer_rules = "@PSR2"
 let g:php_cs_fixer_config_file = '/home/sol/.vim/php/php_cs.php'
@@ -152,7 +155,7 @@ let g:UltiSnipsSnippetDirectories = ['UltiSnips']
 let g:fugitive_gitlab_domains = ['https://git.hiqdev.com']
 
 " DBext
-let g:dbext_default_prompt_for_parameters = 0
+let g:dbext_default_prompt_for_parameters = 1
 let g:dbext_default_history_file = '~/.vim/dbext_sql_history.txt'
 
 " Grep

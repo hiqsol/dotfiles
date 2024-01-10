@@ -1,5 +1,6 @@
 {
     "require": {
-        "phploc/phploc": "*"
+        "phploc/phploc": "*",
+        "friendsofphp/php-cs-fixer": "*"
     }
 }
