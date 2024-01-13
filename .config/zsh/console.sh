@@ -1,3 +1,10 @@
+GRC_ALIASES=true
+[[ -s "/etc/profile.d/grc.sh" ]] && source /etc/grc.zsh
+mtr() {
+    echo mtr
+}
+unset -f mtr
+
 install_console() {
     sudo apt install \
         curl ripgrep grc fd-find bat \

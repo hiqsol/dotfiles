@@ -94,7 +94,3 @@ alias ,,,='cd ../../..'
 alias ,,,,='cd ../../../..'
 alias ,,,,,='cd ../../../../..'
 alias ,,,,,,='cd ../../../../../..'
-
-GRC_ALIASES=true
-[[ -s "/etc/profile.d/grc.sh" ]] && source /etc/grc.zsh
-unset -f mtr
