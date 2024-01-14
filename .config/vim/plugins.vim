@@ -85,6 +85,9 @@ Plug 'peitalin/vim-jsx-typescript'
 "Plug 'hiqsol/vim-markdown',                     {'for': 'markdown'}
 "Plug 'lumiliet/vim-twig',                       {'for': 'html.twig'}
 
+" Wiki
+Plug 'lervag/wiki.vim'
+
 " Snippets
 Plug 'SirVer/ultisnips'                         " snippet runner
 Plug 'honza/vim-snippets'                       " snippets library
