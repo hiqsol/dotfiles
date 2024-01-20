@@ -139,7 +139,10 @@ let g:airline#extensions#ale#enabled = 1
 let g:php_cs_fixer_rules = "@PSR2"
 let g:php_cs_fixer_config_file = '/home/sol/.vim/php/php_cs.php'
 
-" CoC extension: coc-json, coc-go, coc-pyright, coc-clangd, coc-phpls
+" CoC extensions:
+" formats: coc-json, coc-yaml
+" web: coc-tsserver, coc-vetur, coc-html, coc-css
+" langs: coc-go, coc-pyright, coc-clangd, coc-phpls
 let g:coc_enable_locationlist = 1
 
 " Vdebug
