@@ -183,6 +183,7 @@ let g:asyncrun_open = 5
 " Plug 'vimwiki/vimwiki' -  not used
 " let g:vimwiki_list = [{'path': '~/src/memo/', 'syntax': 'markdown', 'ext': '.md'}]
 " let g:vimwiki_table_mappings=0
+source ~/.vim/wiki.vim
 
 " Plug 'voldikss/vim-translator' - not used
 " Translator
