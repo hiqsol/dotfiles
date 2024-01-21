@@ -73,13 +73,13 @@ Plug 'stephpy/vim-php-cs-fixer',                {'for': 'php'}
 Plug 'noahfrederick/vim-composer',              {'for': 'php'}
 
 " Syntax highlighting plugins
-Plug 'lifepillar/pgsql.vim',                    {'for': 'pgsql'}
-Plug 'aklt/plantuml-syntax',                    {'for': 'plantuml'}
-Plug 'solarnz/thrift.vim',                      {'for': 'thrift'}
-Plug 'google/vim-jsonnet',                      {'for': 'jsonnet'}
-Plug 'leafgarland/typescript-vim'
-Plug 'peitalin/vim-jsx-typescript'
-Plug 'nvim-treesitter/nvim-treesitter',         {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter',         {'tag': 'v0.9.2', 'do': ':TSUpdate'}
+"Plug 'lifepillar/pgsql.vim',                    {'for': 'pgsql'}
+"Plug 'aklt/plantuml-syntax',                    {'for': 'plantuml'}
+"Plug 'solarnz/thrift.vim',                      {'for': 'thrift'}
+"Plug 'google/vim-jsonnet',                      {'for': 'jsonnet'}
+"Plug 'leafgarland/typescript-vim'
+"Plug 'peitalin/vim-jsx-typescript'
 "Plug 'sheerun/vim-polyglot'
 "Plug 'elzr/vim-json',                           {'for': 'json'}
 "Plug 'hiqsol/pgsql.vim',                        {'for': 'pgsql'}
