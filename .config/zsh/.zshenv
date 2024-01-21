@@ -7,3 +7,6 @@ if ! xset q > /dev/null 2> /dev/null; then
     [ -z "$DISPLAY" ] && DISPLAY=":0"
     export DISPLAY
 fi
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
