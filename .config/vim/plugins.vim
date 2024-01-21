@@ -79,6 +79,7 @@ Plug 'solarnz/thrift.vim',                      {'for': 'thrift'}
 Plug 'google/vim-jsonnet',                      {'for': 'jsonnet'}
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
+Plug 'nvim-treesitter/nvim-treesitter',         {'do': ':TSUpdate'}
 "Plug 'sheerun/vim-polyglot'
 "Plug 'elzr/vim-json',                           {'for': 'json'}
 "Plug 'hiqsol/pgsql.vim',                        {'for': 'pgsql'}
