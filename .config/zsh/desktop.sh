@@ -110,3 +110,14 @@ persist_screenlayout() {
     # /usr/share/sddm/scripts/Xsetup
     # add ~/.screenlayout/wanted.sh
 }
+
+obsidian() {
+    file="$HOME/sbin/obsidian"
+
+    if [ ! -x $file ]; then
+        curl -L https://github.com/obsidianmd/obsidian-releases/releases/download/v1.5.3/Obsidian-1.5.3.AppImage -o $file
+        chmod a+x $file
+    fi
+
+    $file $@
+}
