@@ -67,6 +67,25 @@ install_telegram() {
     cd -
 }
 
+discord() {
+    $file = /usr/bin/discord
+    if ! [ -x $file ]; then
+        install_discord
+    fi
+
+    $file $@
+}
+
+install_discord() {
+    if [ -x /usr/bin/discord ]; then
+        return
+    fi
+    cd ~/sbin
+    wget -c "https://discord.com/api/download?platform=linux"
+    sudo dpkg -i discord*.deb
+    cd -
+}
+
 install_chrome() {
     if [ -x /usr/bin/google-chrome ]; then
         return
