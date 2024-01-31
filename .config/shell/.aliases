@@ -82,7 +82,7 @@ alias rehome=~/prj/hiqdev/rehome/rehome
 
 qterminalini="~/.config/qterminal.org/qterminal.ini"
 alias cd='cdls'
-alias cdd="sed -i '/^state=@ByteArray/d' $qterminalini ; cd ~/prj/hiqsol/dotfiles"
+alias cdd="sed -i '/^state=@ByteArray/d' $qterminalini ; cd ~/prj/hiqsol/dotfiles/.config"
 alias cdh='cd ~/prj/hiqdev'
 alias cdi='cd ~/prj/instockcom'
 alias cdq='cd ~/prj/hiqsol/quotes/src'

@@ -41,6 +41,7 @@ cdls() {
 }
 
 rehash() {
+    source $HOME/.config/zsh/.zshenv
     source $HOME/.config/zsh/.zshrc
     builtin rehash
 }
