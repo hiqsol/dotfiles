@@ -8,7 +8,8 @@
     mi          = commit -am minor
     co          = checkout
     chp         = cherry-pick
-    s           = "!git status && echo && git submodule status"
+    s           = status
+    ss          = "!git status && echo && git submodule status"
     st          = stash
     stl         = stash list
     sp          = stash pop
