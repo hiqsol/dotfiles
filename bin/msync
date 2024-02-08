@@ -11,7 +11,7 @@ src = args.pop(0)
 
 cmds = []
 for dst in args:
-    line = 'rsync --exclude=.ccls-cache --exclude=.cache --exclude=.git {} {} {}'.format(ops, src, dst)
+    line = 'rsync --exclude=.ccls-cache --exclude=.cache --exclude=.git --exclude=ferroagent {} {} {}'.format(ops, src, dst)
     cmds.append(line)
 
 line = ' & '.join(cmds)
