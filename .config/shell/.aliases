@@ -34,6 +34,7 @@ alias gp='rg --type php'
 alias lo='local-open'
 alias sl='ssh-add -l'
 alias vd='v -d'
+alias ws="ssh -o 'ConnectionAttempts 300'"
 
 alias apg='apg -M SNCL -m 12'
 alias bat='batcat'
