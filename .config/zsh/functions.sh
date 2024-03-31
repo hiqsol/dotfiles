@@ -14,8 +14,7 @@ fs() {
 }
 
 restart_ssh_agent() {
-    killall ssh-agent
-    eval `ssh-agent -s`
+    ssh-agent -s
     reset_ssh_agent
 }
 
@@ -23,13 +22,15 @@ reset_ssh_agent() {
     ### Predictable SSH authentication socket location
     ### XXX NOT $HOME because of `sudo -s`
     SOCK="/home/$USER/.ssh/ssh-agent.sock"
-    if ssh-add -l && [ $SSH_AUTH_SOCK != $SOCK ]; then
-        echo "Agent link changed to $SSH_AUTH_SOCK"
-        rm -f $SOCK
-        ln -sf $SSH_AUTH_SOCK $SOCK
-    fi
-    export SSH_AUTH_SOCK=$SOCK
-    echo "Agent sock $SSH_AUTH_SOCK"
+    for sock in `find /tmp -name "agent.*" -user sol 2>/dev/null`; do
+        export SSH_AUTH_SOCK=$sock
+        if ssh-add -l; then
+            echo "Agent link changed to $SSH_AUTH_SOCK"
+            rm -f $SOCK
+            ln -sf $SSH_AUTH_SOCK $SOCK
+            return 0
+        fi
+    done
 }
 
 cdls() {
