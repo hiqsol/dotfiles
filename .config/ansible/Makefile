@@ -6,6 +6,9 @@ requirements:
 docker:
 	ansible-playbook -i hosts.ini playbooks/docker.yml
 
+syncthing:
+	ansible-playbook -i hosts.ini playbooks/syncthing.yml
+
 virtualbox:
 	ansible-playbook -i hosts.ini playbooks/virtualbox.yml
 
