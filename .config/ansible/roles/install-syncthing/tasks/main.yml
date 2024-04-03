@@ -1,12 +1,13 @@
 ---
 - name: Add syncthing repository key
-  apt_key:
-    id: "{{ syncthing_apt_key_id }}"
+  ansible.builtin.get_url:
     url: "{{ syncthing_apt_key_url }}"
+    dest: "{{ syncthing_apt_key_dest }}"
 
 - name: Add syncthing apt repository
   apt_repository:
     repo: "{{ syncthing_apt_repository }}"
+
 
 - name: Apt install syncthing
   apt:
