@@ -7,7 +7,8 @@ unset -f mtr
 
 install_console() {
     sudo apt install \
-        curl ripgrep grc fd-find bat \
+        net-tools curl \
+        ripgrep grc fd-find bat \
         zsh tmux fuse git-lfs \
         ansible \
         npm python3-pip
