@@ -89,3 +89,7 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[safe]
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/rcp-sql
+	directory = /home/sol/prj/advancedhosting/beta-hiapi.advancedhosting.com/vendor/hiqdev/hiapi-legacy
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/hiqdev/mrdp-sql
