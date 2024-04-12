@@ -383,6 +383,16 @@
         <height>33%</height>
       </action>
     </keybind>
+    <!-- # Two Thirds Lower Screen -->
+    <keybind key="W-S-L">
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <x>0</x>
+        <y>-0</y>
+        <width>100%</width>
+        <height>67%</height>
+      </action>
+    </keybind>
     <!-- Keybindings for running file manager on Win + F -->
     <keybind key="W-f">
       <action name="Execute">
