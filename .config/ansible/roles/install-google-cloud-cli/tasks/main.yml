@@ -1,13 +1,18 @@
 ---
-- name: Add google-cloud-cli repository key
+- name: Download google-cloud-cli repository key
   ansible.builtin.get_url:
-    url: "{{ googlecloudcli_apt_key_url }}"
-    dest: "{{ googlecloudcli_apt_key_dest }}"
+    url: "{{ googlecloudsdk_apt_key_url }}"
+    dest: /tmp/googlecloudsdk_apt_key_dest
+
+- name: Dearmor and install google-cloud-cli repository key
+  ansible.builtin.shell:
+    cmd: cat /tmp/googlecloudsdk_apt_key_dest | gpg --yes --dearmor -o {{ googlecloudsdk_apt_key_dest }}
 
 - name: Add google-cloud-cli apt repository
-  apt_repository:
-    repo: "{{ googlecloudcli_apt_repository }}"
+  ansible.builtin.apt_repository:
+    repo: "{{ googlecloudsdk_apt_repository }}"
+    filename: google-cloud-sdk
 
 - name: Apt install google-cloud-cli
-  apt:
+  ansible.builtin.apt:
     name: google-cloud-cli
