@@ -7,7 +7,8 @@ unset -f mtr
 
 install_console() {
     sudo apt install \
-        net-tools curl \
+        net-tools curl apt-transport-https \
+        ca-certificates gnupg \
         ripgrep grc fd-find bat \
         zsh tmux fuse git-lfs \
         ansible \
