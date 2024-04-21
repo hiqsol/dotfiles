@@ -17,3 +17,6 @@ go:
 
 vagrant:
 	ansible-playbook -i hosts.ini playbooks/vagrant.yml
+
+google-cloud-cli:
+	ansible-playbook -i hosts.ini playbooks/google-cloud-cli.yml

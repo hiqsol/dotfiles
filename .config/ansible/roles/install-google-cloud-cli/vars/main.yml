@@ -1,0 +1,4 @@
+---
+googlecloudcli_apt_key_url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+googlecloudcli_apt_key_dest: "/usr/share/keyrings/cloud.google.gpg"
+googlecloudcli_apt_repository: "deb [signed-by={{googlecloudcli_apt_key_dest}}] https://packages.cloud.google.com/apt cloud-sdk main"

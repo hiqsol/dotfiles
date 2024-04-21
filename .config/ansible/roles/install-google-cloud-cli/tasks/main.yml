@@ -1,0 +1,13 @@
+---
+- name: Add google-cloud-cli repository key
+  ansible.builtin.get_url:
+    url: "{{ googlecloudcli_apt_key_url }}"
+    dest: "{{ googlecloudcli_apt_key_dest }}"
+
+- name: Add google-cloud-cli apt repository
+  apt_repository:
+    repo: "{{ googlecloudcli_apt_repository }}"
+
+- name: Apt install google-cloud-cli
+  apt:
+    name: google-cloud-cli

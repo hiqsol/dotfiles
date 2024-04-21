@@ -1,0 +1,11 @@
+#!/usr/bin/ansible-playbook -ihosts.ini
+---
+- name: "Local"
+  hosts: local
+  become: true
+  gather_facts: false
+
+  roles:
+    - role: roles/install-google-cloud-cli
+      become: true
+      tags: google-cloud-cli, install-google-cloud-cli
