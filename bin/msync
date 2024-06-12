@@ -7,12 +7,13 @@ import sys
 args = sys.argv
 cmd = args.pop(0)
 ops = args.pop(0)
-src = args.pop(0)
+srcs = args.pop(0)
 
 cmds = []
-for dst in args:
-    line = 'rsync --exclude=.ccls-cache --exclude=.cache --exclude=.git --exclude=build --exclude=ferroagent --exclude=libcbdetect.a {} {} {}'.format(ops, src, dst)
-    cmds.append(line)
+for src in srcs.split(','):
+    for dst in args:
+        line = 'rsync --exclude=.ccls-cache --exclude=.cache --exclude=.git --exclude=build --exclude=ferroagent --exclude=libcbdetect.a {} {} {}'.format(ops, src, dst)
+        cmds.append(line)
 
 line = ' & '.join(cmds)
 print(line)
