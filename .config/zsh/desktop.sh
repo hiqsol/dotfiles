@@ -78,6 +78,7 @@ discord() {
 
 install_discord() {
     cd ~/sbin
+    rm -f discord*.deb
     wget -c "https://discord.com/api/download?platform=linux"
     sudo dpkg -i discord*.deb
     cd -
