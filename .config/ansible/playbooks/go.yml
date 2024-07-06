@@ -6,6 +6,5 @@
 
   roles:
     - role: gantsign.golang
-      golang_version: 1.21.10
-      golang_redis_sha256sum: e330e5d977bf4f3bdc157bc46cf41afa5b13d66c914e12fd6b694ccda65fcf92
+      golang_version: 1.22.5
 
