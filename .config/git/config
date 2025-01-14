@@ -51,6 +51,7 @@
 
     cfg         = "!$EDITOR ~/prj/hiqsol/dotfiles/.config/git/config"
     ups         = "!git push -u origin HEAD"
+    safe        = "!git config --global --add safe.directory $(pwd)"
 [user]
     name        = Andrii Vasyliev
     email       = sol@hiqdev.com
@@ -94,3 +95,28 @@
 	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/rcp-sql
 	directory = /home/sol/prj/advancedhosting/beta-hiapi.advancedhosting.com/vendor/hiqdev/hiapi-legacy
 	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/hiqdev/mrdp-sql
+	directory = /home/sol/prj/advancedhosting/beta-hiapi.advancedhosting.com/vendor/hiqdev/mrdp-sql
+	directory = /home/sol/prj/advancedhosting/drahma-beta-hiapi.ahback.com/vendor/hiqdev/hiapi-legacy
+	directory = /home/sol/prj/advancedhosting/tofid-beta-hiapi.ahback.com/vendor/hiqdev/hiapi-legacy
+	directory = /home/sol/prj/advancedhosting/tofid-beta-hiapi.ahback.com
+	directory = /home/sol/prj/advancedhosting/tofid-beta-hiapi.ahback.com/vendor/hiqdev/mrdp-sql
+	directory = /home/sol/prj/advancedhosting/beta-hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-costprice
+	directory = /home/sol/prj/advancedhosting/beta-hiapi.advancedhosting.com/vendor/advancedhosters/billing-hiapi
+	directory = /home/sol/prj/advancedhosting/tofid-beta-hiapi.ahback.com/vendor/advancedhosters/billing-hiapi
+	directory = /home/sol/prj/advancedhosting/tofid-beta-hiapi.ahback.com/vendor/advancedhosters/hiapi-client-debt
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-pnl
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/billing-hiapi
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-client-debt
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-costprice
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-domain
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-esputnik
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-metering-collector
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-module-hosting
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-rcp
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-rcp-traf
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/hiapi-vcdn
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/yii-asset-advancedhosting
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/yii-theme-advancedhosting
+	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/rcp-sql
+	directory = /home/sol/prj/advancedhosting/merchant.advancedhosting.com
