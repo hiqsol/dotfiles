@@ -28,6 +28,7 @@ reset_ssh_agent() {
             echo "Agent link changed to $SSH_AUTH_SOCK"
             rm -f $SOCK
             ln -sf $SSH_AUTH_SOCK $SOCK
+            export SSH_AUTH_SOCK=$SOCK
             return 0
         fi
     done
