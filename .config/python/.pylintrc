@@ -5,6 +5,7 @@ limit-inference-results=100
 [MESSAGES CONTROL]
 
 disable=
+    global-variable-not-assigned,
     invalid-name,
     line-too-long,
     no-else-return,
@@ -12,3 +13,4 @@ disable=
     multiple-statements,
     consider-using-f-string
 
+allowed-redefined-builtins=id,time
