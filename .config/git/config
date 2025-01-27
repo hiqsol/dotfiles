@@ -120,3 +120,7 @@
 	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/yii-theme-advancedhosting
 	directory = /home/sol/prj/advancedhosting/hiapi.advancedhosting.com/vendor/advancedhosters/rcp-sql
 	directory = /home/sol/prj/advancedhosting/merchant.advancedhosting.com
+	directory = /home/merovingian/prj/future-hiapi.ahback.com/vendor/hiqdev/mrdp-sql
+	directory = /home/merovingian/prj/future-hiapi.ahback.com/vendor/hiqdev/hiapi-legacy
+	directory = /home/merovingian/prj/future-hipanel.ahback.com/vendor/advancedhosters/hipanel-module-pnl
+	directory = /home/merovingian/prj/future-hiapi.ahback.com/vendor/advancedhosters/rcp-sql
