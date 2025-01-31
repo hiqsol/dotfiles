@@ -8,6 +8,7 @@ au! BufNewFile,BufRead *.md                     set filetype=markdown
 au! BufNewFile,BufRead composer.lock            set filetype=json
 au! BufNewFile,BufRead docker-compose.yml.*     set filetype=yaml
 au! BufNewFile,BufRead .env.*                   set filetype=sh
+au! BufNewFile,BufRead .flake8                  set filetype=ini
 
 au FileType php let b:syntastic_php_phpmd_args =
     \ @% . ' text /home/sol/.vim/php/phpmd.xml'

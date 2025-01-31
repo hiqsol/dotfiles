@@ -1,2 +1,5 @@
 [flake8]
-ignore = E226,E241,E302,E305,E41,E501
+ignore = E226,E241,E302,E305,E41,E501,E702,E704
+
+# E702 - multiple statements on one line (semicolon)
+# E704 - multiple statements on one line (def)
