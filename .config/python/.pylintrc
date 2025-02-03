@@ -5,6 +5,8 @@ limit-inference-results=100
 [MESSAGES CONTROL]
 
 disable=
+    redefined-builtin,
+    too-few-public-methods,
     global-variable-not-assigned,
     invalid-name,
     line-too-long,
