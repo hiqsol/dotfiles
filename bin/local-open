@@ -5,7 +5,7 @@ if [ -f ~/.config/.localopenrc ]; then
     . ~/.config/.localopenrc
 fi
 
-url=$1
+path=$1
 user=${LOCAL_OPEN_USER-$USER}
 alt_localhost=${ALT_LOCALHOST-`hostname`}
 tmp_dir=${TMP_DIR-"tmp"}
@@ -19,18 +19,18 @@ if [ -z "$SSH_CLIENT" ] && [ -z "$SSH_CLIENT" ]; then
     else
         open_cmd=`which open`
     fi
-    $open_cmd $url
+    $open_cmd $path
 else
-    if [ -f "$url" ]; then
-        dst="$tmp_dir/"$(basename "$url")
-        scp -P $port "$url" "$user@$host:$dst"
-        url=$dst
+    if [ -f "$path" ]; then
+        dst="$tmp_dir/"$(basename "$path")
+        scp -P $port "$path" "$user@$host:$dst"
+        path=$dst
     else
-        case "$url" in
-            *localhost*) url=`echo $url | sed -e "s/localhost/$alt_localhost/"`;;
-            *"127.0.0.1"*) url=`echo $url | sed -e "s/127\.0\.0\.1/$alt_localhost/"`;;
+        case "$path" in
+            *localhost*) path=`echo $path | sed -e "s/localhost/$alt_localhost/"`;;
+            *"127.0.0.1"*) path=`echo $path | sed -e "s/127\.0\.0\.1/$alt_localhost/"`;;
         esac
     fi
 
-    ssh -l $user -p $port $host "$open_cmd $url"
+    ssh -l $user -p $port $host "$open_cmd $path"
 fi
