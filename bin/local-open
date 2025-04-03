@@ -19,7 +19,7 @@ if [ -z "$SSH_CLIENT" ] && [ -z "$SSH_CLIENT" ]; then
     else
         open_cmd=`which open`
     fi
-    $open_cmd $path
+    $open_cmd "$path"
 else
     if [ -f "$path" ]; then
         dst="$tmp_dir/"$(basename "$path")
