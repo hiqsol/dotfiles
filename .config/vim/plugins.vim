@@ -28,6 +28,7 @@ Plug 'romainl/vim-qf'
 Plug 'valloric/listtoggle'
 Plug 'blueyed/vim-diminactive'
 Plug 'skywind3000/asyncrun.vim'
+Plug 'vim-scripts/MultipleSearch'               " highlight several words in different colors
 
 " Grep
 Plug 'dkprice/vim-easygrep'
