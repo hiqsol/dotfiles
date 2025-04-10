@@ -1,4 +1,6 @@
 {
   "clangd.path": "~/prj/hiqsol/dotfiles/.config/coc/extensions/coc-clangd-data/install/17.0.3/clangd_17.0.3/bin/clangd"
-  "pyright.inlayHints.enable": false,
+  "pyright.inlayHints.functionReturnTypes": false,
+  "pyright.inlayHints.variableTypes": false,
+  "pyright.inlayHints.parameterTypes": false,
 }
