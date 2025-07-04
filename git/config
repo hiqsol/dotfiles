@@ -1,0 +1,15 @@
+[alias]
+  a = add
+  s = status
+  co = checkout
+  br = branch
+  ci = commit
+  l = log --oneline --graph --decorate --all
+  ph = push
+  ups = "!git push -u origin HEAD"
+
+[user]
+	email = sol@solex.me
+	name = Andrii
+[init]
+  defaultBranch = master
