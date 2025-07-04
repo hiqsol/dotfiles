@@ -1,3 +1,5 @@
 alias g='git'
 alias v='~/sbin/nvim'
+alias gr='rg'
+alias cat='batcat'
 alias upgrade='sudo apt update && sudo apt upgrade'
