@@ -1,3 +1,6 @@
 if status is-interactive
-    # Commands to run in interactive sessions can go here
+    # Example: hook direnv only for interactive use
+    direnv hook fish | source
+
+    # Other interactive-only configs go here
 end
