@@ -1,4 +1,5 @@
 alias g='git'
+alias l='la'
 alias s='ssh'
 alias v='~/sbin/nvim'
 alias gr='rg'
