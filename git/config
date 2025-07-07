@@ -14,3 +14,5 @@
 	name = Andrii
 [init]
   defaultBranch = master
+[pull]
+  ff = only
