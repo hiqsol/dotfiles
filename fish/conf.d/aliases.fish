@@ -1,6 +1,8 @@
 alias g='git'
+alias s='ssh'
 alias v='~/sbin/nvim'
 alias gr='rg'
 alias fd='fdfind'
+alias sl='ssh-add -l'
 alias cat='batcat'
 alias upgrade='sudo apt update && sudo apt upgrade'
