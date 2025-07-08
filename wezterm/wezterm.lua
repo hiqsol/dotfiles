@@ -6,7 +6,7 @@ return {
 	use_fancy_tab_bar = true,
 	font_size = 10.0,
 	window_frame = {
-		font_size = 8.0,
+		font_size = 10.0,
 	},
 
 	window_decorations = "NONE",
