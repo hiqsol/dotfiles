@@ -2,6 +2,13 @@ local wezterm = require("wezterm")
 
 return {
   -- Appearance
+  tab_bar_at_bottom = true,
+  use_fancy_tab_bar = true,
+  font_size = 10.0,
+  window_frame = {
+    font_size = 8.0,
+  },
+
   window_decorations = "NONE",
   color_scheme = "Adventure", -- pick any you like
   font = wezterm.font_with_fallback({
@@ -9,7 +16,6 @@ return {
     "Fira Code",
     "monospace",
   }),
-  font_size = 11.0,
 
   -- Clipboard sync (works with OSC 52)
   enable_wayland = false, -- or true if you're on Wayland and it works
@@ -22,12 +28,12 @@ return {
     {
       key = "Enter",
       mods = "ALT",
-      action = wezterm.action.SplitHorizontal { domain = "CurrentPaneDomain" },
+      action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
     },
     {
       key = "Enter",
       mods = "CTRL",
-      action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
+      action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
     },
     {
       key = "h",
@@ -85,4 +91,3 @@ return {
   },
   adjust_window_size_when_changing_font_size = false,
 }
-
