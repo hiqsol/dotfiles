@@ -1,1 +1,13 @@
+# ❌ Ігнорувати історію та змінні
+fish_history
 fish_variables
+# ❌ Ігнорувати автозгенеровані completion'и
+completions/
+
+# ❌ Ігнорувати всі функції
+functions/*
+# ✅ Але зберігати свої функції (з каталогу personal/)
+!functions/personal/
+
+conf.d/*
+!conf.d/personal/
