@@ -1,10 +1,10 @@
 return {
   "zbirenbaum/copilot.lua",
   cmd = "Copilot",
-  event = "InsertEnter",
+  build = ":Copilot auth",
   config = function()
     require("copilot").setup({
-      suggestion = { enabled = true },
+      suggestion = { enabled = false }, -- ❗ вимикаємо ghost text
       panel = { enabled = false },
     })
   end,
