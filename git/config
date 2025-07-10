@@ -1,14 +1,19 @@
 [alias]
-  a = add
-  s = status
-  d = diff
-  co = checkout
-  br = branch
-  ci = commit
-  l = log --oneline --graph --decorate --all
-  pb = pull --rebase
-  ph = push
-  ups = "!git push -u origin HEAD"
+  a     = add
+  s     = status
+  d     = diff
+  l     = log --oneline --graph --decorate --all
+  co    = checkout
+  br    = branch
+  ci    = commit
+  df    = diff
+  dc    = diff --cached
+  ds    = diff --stat
+  dt    = describe --tags --long
+  dtv   = describe --tags --long --match 'v*'
+  pb    = pull --rebase
+  ph    = push
+  ups   = "!git push -u origin HEAD"
 
 [user]
 	email = sol@solex.me
