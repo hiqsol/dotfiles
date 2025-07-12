@@ -10,10 +10,13 @@
   dc    = diff --cached
   ds    = diff --stat
   dt    = describe --tags --long
+  sh    = show
   dtv   = describe --tags --long --match 'v*'
   pb    = pull --rebase
   ph    = push
   ups   = "!git push -u origin HEAD"
+  st    = stash
+  sp    = stash pop
 
 [user]
 	email = sol@solex.me
