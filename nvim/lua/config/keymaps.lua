@@ -4,3 +4,4 @@
 
 vim.keymap.set("n", "<C-S>", ":wall<CR>", { desc = "Save all files" })
 vim.keymap.set("i", "<C-S>", "<Esc>:wall<CR>", { desc = "Save all files" })
+vim.keymap.set("n", "<C-X>", "ZZ", { desc = "Save and close" })
