@@ -5,7 +5,8 @@
   l     = log --oneline --graph --decorate --all
   co    = checkout
   br    = branch
-  ci    = commit
+  ca    = commit -v --amend
+  ci    = commit -v
   df    = diff
   dc    = diff --cached
   ds    = diff --stat
