@@ -1,8 +1,11 @@
 [alias]
   a     = add
+  b     = for-each-ref --format='  %(color:yellow)%(objectname:short)%(color:reset) %(color:bold green)%(committerdate:iso)%(color:reset) %(color:bold white)%(HEAD)%(color:reset) %(color:bold red)%(refname:strip=1)%(color:reset)  %(contents:subject) %(color:bold cyan)%(authorname)%(color:reset) '
   s     = status
   d     = diff
-  l     = log --oneline --graph --decorate --all
+  la    = log --graph --decorate --oneline --all
+  lf    = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s' --date=format:'%Y-%m-%d %H:%M'
+  l     = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s' --date=format:'%Y-%m-%d %H:%M' -n 30
   co    = checkout
   br    = branch
   ca    = commit -v --amend
@@ -26,3 +29,5 @@
   defaultBranch = master
 [pull]
   ff = only
+[pager]
+  for-each-ref = less -R
