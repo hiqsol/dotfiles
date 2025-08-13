@@ -20,8 +20,8 @@
   sp    = stash pop
 
 [user]
-	email = sol@solex.me
-	name = Andrii
+	email = sol@hiqdev.com
+	name = Andrii Vasyliev
 [init]
   defaultBranch = master
 [pull]
