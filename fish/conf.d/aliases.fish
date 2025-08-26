@@ -1,3 +1,4 @@
+alias f='~/prj/instockcom/ferroctl/ferroctl'
 alias g='git'
 alias l='la'
 alias L='less -R'
