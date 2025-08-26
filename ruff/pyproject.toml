@@ -1,3 +1,6 @@
 [tool.ruff]
 line-length=200
 indent-width=4
+
+[tool.ruff.format]
+exclude=["*.py"]
