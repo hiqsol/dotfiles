@@ -5,6 +5,9 @@
 vim.keymap.set("n", "<C-S>", ":wall<CR>", { desc = "Save all files" })
 vim.keymap.set("i", "<C-S>", "<Esc>:wall<CR>", { desc = "Save all files" })
 vim.keymap.set("n", "<C-X>", "ZZ", { desc = "Save and close" })
+vim.keymap.set("n", "<leader>ip", function()
+  vim.api.nvim_put({ vim.fn.expand("%:p") }, "l", true, true)
+end, { desc = "Insert full path below" })
 
 vim.keymap.set({ "n", "i" }, "<C-g><C-r>", "<cmd>GpRewrite<cr>", { desc = "Inline Rewrite" })
 vim.keymap.set({ "n", "i" }, "<C-g><C-g>", "<cmd>GpAppend<cr>", { desc = "Append (after)" })

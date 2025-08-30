@@ -4,8 +4,9 @@
   s     = status
   d     = diff
   la    = log --graph --decorate --oneline --all
-  lf    = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s' --date=format:'%Y-%m-%d %H:%M'
-  l     = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s' --date=format:'%Y-%m-%d %H:%M' -n 30
+  lf    = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s %Cred%d%Creset' --date=format:'%Y-%m-%d %H:%M'
+  l     = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s %Cred%d%Creset' --date=format:'%Y-%m-%d %H:%M' -n 30
+  lc    = rev-list --all --count
   co    = checkout
   br    = branch
   ca    = commit -v --amend
