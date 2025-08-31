@@ -9,6 +9,7 @@ alias fd='fdfind'
 alias sl='ssh-add -l'
 alias vd='v -d'
 alias cat='batcat'
+alias cdd='cd ~/.config'
 alias upgrade='sudo apt update && sudo apt upgrade'
 
 alias ,='cd ..'
