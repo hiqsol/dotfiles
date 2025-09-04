@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+
+# pop the first argument, which is the script name
+args = sys.argv
+cmd = args.pop(0)
+ops = args.pop(0)
+srcs = args.pop(0)
+
+excludes = "--exclude=.ccls-cache --exclude=.cache --exclude=.git --exclude=build --exclude=libcbdetect.a --exclude=ferro_navigation3/ferro_navigation3"
+
+cmds = []
+for src in srcs.split(','):
+    for dst in args:
+        line = 'rsync --filter=":- .gitignore" {} {} {} {}'.format(excludes, ops, src, dst)
+        cmds.append(line)
+
+line = ' & '.join(cmds)
+print(line)
+os.system(line)
