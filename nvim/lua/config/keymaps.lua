@@ -7,10 +7,12 @@ vim.keymap.set("n", "<leader>gB", "<cmd>Gitsigns blame<CR>", { desc = "Git Blame
 vim.keymap.set("n", "<leader>gD", function()
   Snacks.picker.git_diff()
 end, { desc = "Git Diff (hunks)" })
-
 vim.keymap.set({ "n", "x" }, "<leader>go", function()
   Snacks.gitbrowse()
 end, { desc = "Git Browse (open)" })
+
+vim.keymap.set("n", "<C-C>", "gcc", { desc = "Comment line", remap = true })
+vim.keymap.set("x", "<C-C>", "gc", { desc = "Comment selection", remap = true })
 
 vim.keymap.set("n", "<C-S>", ":wall<CR>", { desc = "Save all files" })
 vim.keymap.set("i", "<C-S>", "<Esc>:wall<CR>", { desc = "Save all files" })
