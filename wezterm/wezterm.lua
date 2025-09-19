@@ -17,6 +17,14 @@ return {
 		"monospace",
 	}),
 
+	inactive_pane_hsb = {
+		saturation = 0.7,
+		brightness = 0.5,
+	},
+	colors = {
+		split = "#DD4814",
+	},
+
 	-- Clipboard sync (works with OSC 52)
 	enable_wayland = false, -- or true if you're on Wayland and it works
 	set_environment_variables = {
