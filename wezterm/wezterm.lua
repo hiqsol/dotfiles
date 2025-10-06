@@ -68,7 +68,7 @@ return {
 	},
 
 	-- Scrollback buffer
-	scrollback_lines = 10000,
+	scrollback_lines = 100000,
 
 	-- Optional launch menu for quickly opening shell or ssh
 	launch_menu = {
