@@ -10,9 +10,12 @@ return {
 	},
 
 	window_decorations = "NONE",
-	color_scheme = "Adventure", -- pick any you like
+	color_scheme = "Adventure",
 	font = wezterm.font_with_fallback({
 		"JetBrains Mono Nerd Font",
+		"Apple Color Emoji",
+		"Noto Color Emoji",
+		"Symbols Nerd Font Mono",
 		"Fira Code",
 		"monospace",
 	}),
