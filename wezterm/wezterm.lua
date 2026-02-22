@@ -13,11 +13,8 @@ return {
 	color_scheme = "Adventure",
 	font = wezterm.font_with_fallback({
 		"JetBrains Mono Nerd Font",
-		"Apple Color Emoji",
 		"Noto Color Emoji",
 		"Symbols Nerd Font Mono",
-		"Fira Code",
-		"monospace",
 	}),
 
 	inactive_pane_hsb = {
