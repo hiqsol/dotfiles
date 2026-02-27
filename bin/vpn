@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+
+# A script to start and stop OpenVPN connections
+
+import os
+import sys
+import subprocess
+import time
+
+# --- Configuration ---
+# The directory where your .ovpn configuration files are stored.
+CONFIG_DIR = os.path.expanduser("~/Sync/vpn")
+
+def run_as_root(command):
+    """
+    Executes a command with sudo if the script is not run as root.
+    """
+    if os.geteuid() != 0:
+        return subprocess.run(["sudo"] + command, capture_output=True, text=True)
+    else:
+        return subprocess.run(command, capture_output=True, text=True)
+
+def find_vpn_pid():
+    """
+    Finds the PID of the openvpn process.
+    Returns the PID as a string, or None if not found.
+    """
+    result = subprocess.run(["pgrep", "-x", "openvpn"], capture_output=True, text=True)
+    if result.stdout.strip():
+        return result.stdout.strip()
+    return None
+
+def stop_vpn():
+    """
+    Stops the running OpenVPN process.
+    """
+    print("Attempting to stop OpenVPN...")
+    pid = find_vpn_pid()
+
+    if not pid:
+        print("No OpenVPN process found running.")
+        return
+
+    print(f"Found OpenVPN process with PID: {pid}")
+    
+    # The command expects a list of strings
+    result = run_as_root(["kill", pid])
+
+    if result.returncode != 0:
+        print(f"Error trying to kill process {pid}: {result.stderr}")
+    
+    time.sleep(1)
+
+    if not find_vpn_pid():
+        print("OpenVPN stopped successfully.")
+    else:
+        print("Failed to stop OpenVPN. Please check manually.")
+        sys.exit(1)
+
+def start_vpn(config_name):
+    """
+    Starts an OpenVPN connection with the given configuration name.
+    """
+    config_file = os.path.join(CONFIG_DIR, f"{config_name}.ovpn")
+
+    if not os.path.isfile(config_file):
+        print(f"Error: Configuration file not found at '{config_file}'")
+        sys.exit(1)
+
+    if find_vpn_pid():
+        script_name = os.path.basename(__file__)
+        print(f"An OpenVPN process is already running. Please stop it first with '{script_name} stop'.")
+        sys.exit(1)
+
+    print(f"Starting OpenVPN with config: {config_name}")
+    
+    command = ["openvpn", "--config", config_file, "--daemon"]
+    result = run_as_root(command)
+
+    if result.returncode != 0:
+        print(f"Error starting OpenVPN: {result.stderr}")
+        # The original script exits here, but it might be better to check pgrep
+        # in case the daemon started despite a non-zero exit code on some messages.
+
+    print("Waiting 3 seconds for startup...")
+    time.sleep(3)
+
+    if find_vpn_pid():
+        print("OpenVPN started successfully.")
+    else:
+        print("Failed to start OpenVPN. Check logs for details.")
+        sys.exit(1)
+
+def main():
+    """
+    Main function to parse arguments and call the appropriate function.
+    """
+    if len(sys.argv) != 2:
+        script_name = os.path.basename(__file__)
+        print(f"Usage: {script_name} <config_name>|stop")
+        sys.exit(1)
+
+    command = sys.argv[1]
+
+    if command == "stop":
+        stop_vpn()
+    else:
+        start_vpn(command)
+
+if __name__ == "__main__":
+    main()
