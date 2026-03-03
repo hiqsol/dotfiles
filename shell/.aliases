@@ -1,0 +1,90 @@
+#!/bin/sh
+
+alias la="ls -laFh ${ls_options}"
+alias lh="ls -lFh  ${ls_options}"
+alias ll="ls -lAFh ${ls_options}"
+
+alias -g G='| rg'
+alias -g H='| head'
+alias -g L='| less'
+alias -g R='| less -R'
+alias -g W='| wc'
+
+alias c='c2'
+alias d='docker'
+alias g='regit'
+alias h='hidev'
+alias k='kubectl'
+alias l='ll'
+alias p='psql_default'
+alias s='chmod -R og-rwx ~/.ssh;ssh'
+alias v='nvim'
+alias Z='zcalc'
+
+alias al='~/.config/ansible/bin/a local localhost'
+alias c1='composerX 1'
+alias c2='composerX 2'
+alias d1='du -hd1'
+alias dc='docker compose'
+alias dp='docker_psql_default'
+alias fd='fdfind'
+alias gg='git grep'
+alias gr='rg'
+alias gp='rg --type php'
+alias lo='local-open'
+alias sl='ssh-add -l'
+alias vd='v -d'
+
+alias apg='apg -M SNCL -m 12'
+alias bat='batcat'
+alias cat='batcat -p'
+alias gir='grep -IR'
+alias grn='rg --no-line-number --no-filename'
+alias girp='grep -IR --include=\*.php --exclude-dir=vendor'
+alias grep='grep --color=auto'
+alias vim='nvim'
+alias vpn='ovpn'
+alias ovim='/usr/bin/vim'
+alias diff="diff --color"
+alias x509="openssl x509 -text -noout -in"
+alias ymp3="ydl --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
+alias ypl3="ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
+alias clone='g clone'
+alias lclone='g lclone'
+alias miniv='nvim -u ~/.vim/mini.vim'
+alias nodejs='node'
+alias vconfig='v ~/.vimrc'
+alias vimdiff='v -d'
+alias zconfig='v ~/.config/zsh/.zshrc'
+
+# no spelling correction on mv
+alias mv='nocorrect mv'
+alias cp='nocorrect cp'
+alias git='nocorrect git'
+alias mkdir='nocorrect mkdir -p'
+
+alias vcat=~/.vim/plugged/vimpager/vimcat
+alias vless=~/.vim/plugged/vimpager/vimpager
+alias nwget='wget --no-check-certificate'
+alias rmsshkey='ssh-keygen -f "/home/sol/.ssh/known_hosts" -R '
+alias inithome='wget https://raw.githubusercontent.com/hiqdev/rehome/master/rehome ; python rehome init https://github.com/hiqsol/dotfiles ; rm rehome'
+alias ls-tmux="tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}	#{pane_tty}	#{pane_pid}	#{pane_current_command}'"
+alias set-kbrate='xset r rate 200 40'
+alias set-xkbmap='setxkbmap -model pc105 -layout us,ua,ru -option grp:shift_caps_switch -option grp:lalt_lshift_toggle -option compose:ralt'
+alias skb='set-kbrate;set-xkbmap'
+alias CapsLock='xdotool key Caps_Lock'
+alias catkin_make='catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
+
+alias cd='cdls'
+alias cdd="sed -i '/^state=@ByteArray/d' ~/.config/qterminal.org/qterminal.ini; cd ~/prj/hiqsol/dotfiles/.config"
+alias cdh='cd ~/prj/hiqdev'
+alias cdi='cd ~/prj/instockcom'
+alias cdq='cd ~/prj/hiqsol/quotes/src'
+alias cdr='cd ~/prj/hiqsol/regit'
+alias -- -='cd -'
+alias ,='cd ..'
+alias ,,='cd ../..'
+alias ,,,='cd ../../..'
+alias ,,,,='cd ../../../..'
+alias ,,,,,='cd ../../../../..'
+alias ,,,,,,='cd ../../../../../..'
