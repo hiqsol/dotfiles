@@ -1,37 +1,91 @@
 [alias]
-  a     = add
-  b     = for-each-ref --format='  %(color:yellow)%(objectname:short)%(color:reset) %(color:bold green)%(committerdate:iso)%(color:reset) %(color:bold white)%(HEAD)%(color:reset) %(color:bold red)%(refname:strip=1)%(color:reset)  %(contents:subject) %(color:bold cyan)%(authorname)%(color:reset) '
-  s     = status
-  d     = diff
-  la    = log --graph --decorate --oneline --all
-  lf    = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s %Cred%d%Creset' --date=format:'%Y-%m-%d %H:%M'
-  l     = log --graph --decorate --pretty=format:'%C(auto)%h %Cgreen%ad %C(blue)%an %Creset%s %Cred%d%Creset' --date=format:'%Y-%m-%d %H:%M' -n 30
-  lc    = rev-list --all --count
-  co    = checkout
-  br    = branch
-  ca    = commit -v --amend
-  ci    = commit -v
-  df    = diff
-  dc    = diff --cached
-  ds    = diff --stat
-  dt    = describe --tags --long
-  sh    = show
-  dtv   = describe --tags --long --match 'v*'
-  pb    = pull --rebase
-  ph    = push
-  ups   = "!git push -u origin HEAD"
-  st    = stash
-  sp    = stash pop
+    branch-name = "!git rev-parse --abbrev-ref HEAD"
+    a           = add
+    ca          = commit -v --amend
+    ci          = commit -v
+    cf          = commit -am csfix
+    cm          = commit -m
+    mi          = commit -am minor
+    co          = checkout
+    chp         = cherry-pick
+    s           = status
+    ss          = "!git status && echo && git submodule status"
+    st          = stash
+    stl         = stash list
+    sp          = stash pop
+    sh          = show -U0
+    pb          = pull --rebase
+    ph          = push
+    pt		= "!git push && git push --tags"
+    pbh         = "!git pb && git push"
+    d           = diff -U0 --
+    dc          = diff --cached
+    df          = diff
+    ds          = diff --stat
+    dt          = describe --tags --long
+    dtv         = describe --tags --long --match 'v*'
+    gr          = grep
+    vimdiff     = difftool
+    b           = for-each-ref --format='  %(color:yellow)%(objectname:short)%(color:reset) %(color:bold green)%(committerdate:iso)%(color:reset) %(color:bold white)%(HEAD)%(color:reset) %(color:bold red)%(refname:strip=1)%(color:reset)  %(contents:subject) %(color:bold cyan)%(authorname)%(color:reset) '
+    br          = branch
+    ib          = init --bare --shared=group
+    lc          = rev-list --all --count
+    lf          = log --graph --format=format:'%C(red)%h%C(reset) %C(green)%ai%C(reset) %C(blue)%aN%C(reset) %s %C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
+    l           = "!git lf -n 30"
+    lp          = "!git lf --patch"
+    ls          = "!git ls-tree -r --name-only $(git branch-name)"
+    ll          = !ls -lAFd --color=auto `git ls`
+    li          = ls-files . --ignored --exclude-standard --others
+    lu          = ls-files --others --exclude-standard # list untracked files
+    ls-all      = "!git log --pretty=format: --name-status | cut -f2- | sort -u"
+    m           = submodule
+    ma		= submodule add
+    ms		= submodule status
+    publish     = "!git push -u origin $(git branch-name)"
+    filter-out  = "!f() { git filter-branch --force --index-filter \
+                    'git rm -r --cached --ignore-unmatch '$1 \
+                    --prune-empty --tag-name-filter cat -- --all; }; f"
+    t           = tag --sort=-creatordate --format='%(creatordate:short)  %(refname:strip=2)'
+    test        = "!f() { sh -c 'ls -la '$1; }; f"
+    tl          = log --no-walk --tags --format=format:'%C(red)%h%C(reset) %C(green)%ai%C(reset) %C(blue)%aN%C(reset) %s %C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
 
+    cfg         = "!$EDITOR ~/prj/hiqsol/dotfiles/.config/git/config"
+    ups         = "!git push -u origin HEAD"
+    safe        = "!git config --global --add safe.directory $(pwd)"
 [user]
-	email = sol@hiqdev.com
-	name = Andrii Vasyliev
-[init]
-  defaultBranch = master
+    name        = Andrii Vasyliev
+    email       = sol@hiqdev.com
+[color]
+    diff        = auto
+    status      = auto
+    branch      = auto
+    interactive = auto
+    ui          = always
+[diff]
+    tool        = vimdiff
+    algorithm   = histogram
+    colormoved  = default
+    colormovedws= allow-indentation-change
+[merge]
+    tool        = vimdiff2
+[difftool]
+    prompt      = false
 [pull]
-  ff = only
-[pager]
-  for-each-ref = less -R
+    rebase      = false
+[push]
+    default     = simple
+[core]
+    autocrlf    = false
+[web]
+    browser     = local-open
+[browser "local-open"]
+    cmd         = local-open
+[init]
+	defaultBranch = master
+[url "git@github.com:instockcom"]
+	insteadOf = https://github.com/instockcom
+[include]
+    path = .gitconfig
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
