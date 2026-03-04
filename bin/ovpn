@@ -1,0 +1,67 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+  name='default'
+else
+  name=$1
+fi
+
+case "$1" in
+stop)
+  name=""
+  ;;
+default)
+  name=ams_sol_udp
+  ;;
+ah)
+  name=ams_sol_udp
+  ;;
+breeze)
+  name=breeze_sol
+  ;;
+mobile)
+  name=ams_sol_mobile
+  ;;
+usa)
+  name=usa_sol_tcp
+  ;;
+*)
+  name=$1
+  ;;
+esac
+
+dir="$HOME/Sync/vpn"
+src="$dir/$name.ovpn"
+cfg="$HOME/tmp/.ovpn"
+
+if [ "$2" == "show" ] || [ "$1" == "show" ]; then
+  head -n 30 $cfg
+  exit 1
+fi
+
+if [ "$2" == "list" ] || [ "$1" == "list" ]; then
+  ls -l $dir/*.ovpn
+  exit 1
+fi
+
+echo "Stopping OpenVPN instances ... "
+sudo ps aux | grep openvpn | grep -F "$cfg" | awk '{print $2}' | xargs -r sudo kill -15
+echo "done"
+
+if [ "$2" == "stop" ] || [ "$1" == "stop" ]; then
+  exit 1
+fi
+
+# Extracting gateway IP. wlan, eth or enx (iPhone GW)
+gw=$(ip route show | awk '$1 == "default" && $5 ~ /((wlp|wlan|wlx|eth|eno|bnep)[0-9])|(enx)/ {print $3}' | head -1)
+
+if [ -n "$gw" ]; then
+  echo "Default gateway IP: $gw"
+else
+  echo "Unable to find default gateway IP. Exiting"
+  exit 1
+fi
+
+cat $src | sed "s/^\#\(.\+\)__GW_IP__/\1$gw/g" >$cfg
+echo "Starting OpenVPN instance config: $cfg from: $src"
+sudo openvpn --daemon --config $cfg

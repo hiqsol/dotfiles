@@ -1,0 +1,3 @@
+#!/bin/sh
+
+xrandr --output eDP --rotate normal
