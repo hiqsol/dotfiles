@@ -2,6 +2,7 @@
 /autostart/
 /balena-etcher/
 /catkin/
+/ccstatusline/
 /cef_user_data/
 /coc/
 /composer
@@ -26,6 +27,7 @@
 /gita/
 /git/.gitconfig
 /github-copilot/
+/gnome-control-center/
 /gnome-initial-setup-done
 /gnuplot/
 /go/
@@ -79,6 +81,7 @@
 /Slack/
 /syncthing/
 /systemd
+/TabNine/
 /totem
 /transmission/
 /unity3d/
