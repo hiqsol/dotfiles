@@ -34,6 +34,7 @@ alias gp='rg --type php'
 alias lo='local-open'
 alias sl='ssh-add -l'
 alias vd='v -d'
+alias ws="ssh -o 'ConnectionAttempts 300'"
 
 alias apg='apg -M SNCL -m 12'
 alias bat='batcat'
@@ -46,6 +47,7 @@ alias vim='nvim'
 alias vpn='ovpn'
 alias ovim='/usr/bin/vim'
 alias diff="diff --color"
+alias gogh='wget -O gogh https://git.io/vQgMr && chmod +x gogh && ./gogh && rm gogh'
 alias x509="openssl x509 -text -noout -in"
 alias ymp3="ydl --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
 alias ypl3="ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
@@ -75,8 +77,13 @@ alias skb='set-kbrate;set-xkbmap'
 alias CapsLock='xdotool key Caps_Lock'
 alias catkin_make='catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 
+alias regit=~/prj/hiqsol/regit/regit
+alias quotes=~/prj/hiqsol/quotes/bin/quotes
+alias rehome=~/prj/hiqdev/rehome/rehome
+
+qterminalini="~/.config/qterminal.org/qterminal.ini"
 alias cd='cdls'
-alias cdd="sed -i '/^state=@ByteArray/d' ~/.config/qterminal.org/qterminal.ini; cd ~/prj/hiqsol/dotfiles/.config"
+alias cdd="sed -i '/^state=@ByteArray/d' $qterminalini ; cd ~/prj/hiqsol/dotfiles/.config"
 alias cdh='cd ~/prj/hiqdev'
 alias cdi='cd ~/prj/instockcom'
 alias cdq='cd ~/prj/hiqsol/quotes/src'
