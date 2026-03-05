@@ -1,0 +1,32 @@
+\set QUIET 1
+\set audit_user `whoami`
+\set audit_trace_id `cat /proc/sys/kernel/random/uuid || uuidgen`
+\set audit_request_run_id `echo "$(hostname)---$(date '+%Y-%m-%d_%H:%M:%S.%3N')"`
+
+SET audit.app_client_id = 0;
+SET audit.app_client_login = :audit_user;
+SET audit.app_name = 'psql';
+SET audit.app_request_run_id = :'audit_request_run_id';
+SET audit.trace_id = :'audit_trace_id';
+\set QUIET 0
+
+\timing on
+\pset null ∘
+\x off
+
+-- PROMPT
+\set PROMPT1 ' %[%033[0;32m%]%n@%/%R %[%033[0m%]%# '
+\set PROMPT2 ' %[%033[0;32m%]%n@%/%R %[%033[0m%]%# '
+
+-- Autocomplete keywords in uppercase
+\set COMP_KEYWORD_CASE upper
+
+-- Verbose error reports.
+-- \set VERBOSITY verbose
+
+-- Use a separate history file per-database.
+\set HISTFILE ~/.config/pgsql/.psql_history- :DBNAME
+
+-- Store commands once in history
+\set HISTCONTROL ignoredups
+
