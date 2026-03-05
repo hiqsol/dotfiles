@@ -1,0 +1,21 @@
+[MAIN]
+
+limit-inference-results=100
+
+[MESSAGES CONTROL]
+
+disable=
+    redefined-builtin,
+    too-few-public-methods,
+    global-variable-not-assigned,
+    invalid-name,
+    line-too-long,
+    no-else-return,
+    missing-docstring,
+    multiple-statements,
+    f-string-without-interpolation,
+    trailing-newlines,
+    consider-using-enumerate,
+    consider-using-f-string
+
+allowed-redefined-builtins=id,time

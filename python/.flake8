@@ -1,0 +1,14 @@
+[flake8]
+ignore = E202,E211,E221,E226,E241,E251,E272,E301,E302,E305,E41,E501,F541,E701,E702,E704,W391
+
+# E202: whitespace before ')'
+# E211: whitespace before '('
+# E221: multiple spaces before operator
+# E251: unexpected spaces around keyword / parameter equals
+# E272: multiple spaces before keyword
+# E301: expected 1 blank line, found 0
+# F541: f-string is missing placeholders
+# E701: multiple statements on one line (colon)
+# E702: multiple statements on one line (semicolon)
+# E704: multiple statements on one line (def)
+# W391: blank line at end of file
