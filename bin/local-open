@@ -1,0 +1,36 @@
+#!/bin/sh
+# based on https://github.com/suan/local-open
+
+if [ -f ~/.config/.localopenrc ]; then
+    . ~/.config/.localopenrc
+fi
+
+path=$1
+user=${LOCAL_OPEN_USER-$USER}
+alt_localhost=${ALT_LOCALHOST-`hostname`}
+tmp_dir=${TMP_DIR-"tmp"}
+open_cmd=${LOCAL_OPEN_CMD-"open"}
+host=${LOCAL_OPEN_HOST-"localhost"}
+port=${LOCAL_OPEN_PORT-22}
+
+if [ -z "$SSH_CLIENT" ] && [ -z "$SSH_CLIENT" ]; then
+    if hash xdg-open 2>/dev/null; then
+        open_cmd=`which xdg-open`
+    else
+        open_cmd=`which open`
+    fi
+    $open_cmd "$path"
+else
+    if [ -f "$path" ]; then
+        dst="$tmp_dir/"$(basename "$path")
+        scp -P $port "$path" "$user@$host:$dst"
+        path=$dst
+    else
+        case "$path" in
+            *localhost*) path=`echo $path | sed -e "s/localhost/$alt_localhost/"`;;
+            *"127.0.0.1"*) path=`echo $path | sed -e "s/127\.0\.0\.1/$alt_localhost/"`;;
+        esac
+    fi
+
+    ssh -l $user -p $port $host "$open_cmd $path"
+fi
