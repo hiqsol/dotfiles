@@ -21,6 +21,13 @@ alias lgrab='g lgrab'
 alias rehash='source ~/.config/fish/conf.d/aliases.fish'
 alias upgrade='sudo apt update && sudo apt upgrade'
 
+# cd to /home/user/prj/organization/PROJECT
+function cdp; cd (string split / -- $PWD | head -6 | string join /); end
+# cd to /home/user/prj/ORGANIZATION
+function cdo; cd (string split / -- $PWD | head -5 | string join /); end
+# cd to /home/user/prj/organization/PROJECT/core
+function cdc; cd (string split / -- $PWD | head -6 | string join /)/core; end
+
 alias ,='cd ..'
 alias ,,='cd ../..'
 alias ,,,='cd ../../..'
