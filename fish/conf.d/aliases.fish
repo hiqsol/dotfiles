@@ -17,6 +17,7 @@ alias cat='batcat'
 alias cdd='cd ~/.config'
 alias cdq='cd ~/prj/hiqsol/quotes'
 alias grab='g grab'
+alias lgrab='g lgrab'
 alias rehash='source ~/.config/fish/conf.d/aliases.fish'
 alias upgrade='sudo apt update && sudo apt upgrade'
 
