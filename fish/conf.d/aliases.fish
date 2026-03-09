@@ -1,4 +1,4 @@
-alias c='claude'
+alias c='boxer claude'
 alias d='docker'
 alias f='~/prj/instockcom/ferroctl/ferroctl'
 alias g='git'

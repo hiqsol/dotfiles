@@ -10,7 +10,7 @@ alias -g L='| less'
 alias -g R='| less -R'
 alias -g W='| wc'
 
-alias c='c2'
+alias c='boxer claude'
 alias d='docker'
 alias g='regit'
 alias h='hidev'
