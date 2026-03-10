@@ -14,13 +14,3 @@ Personal dotfiles installed as `~/.config`. Symlinked from `~/prj/hiqsol/dotfile
 - Do not create files in directories managed by other applications.
 - No build/test/lint commands at project level.
 
-## Structure
-
-- `shell/` — shared shell config (bash/zsh)
-- `fish/` — fish shell config
-- `zsh/` — zsh-specific config
-- `nvim/` — neovim (LazyVim)
-- `tmux/` — tmux
-- `git/` — git config and ignore
-- `bin/` — custom scripts
-- `python/`, `pgsql/`, `ruff/`, `grc/`, `litecli/`, `regit/`, `wezterm/` — tool configs
