@@ -155,6 +155,10 @@ dcpsql() {
     dc exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $@";
 }
 
+dcomposer() {
+    docker compose run --rm -v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent php-fpm sh -c "git config --global --add safe.directory /app && composer $*"
+}
+
 kh() {
     pod=`kubectl get pods -n $1 | grep "^$2" | cut -f 1 -d ' '`
     kubectl exec -i -t -n $1 $pod -c $2 "--" sh -c "bash || ash || sh"
