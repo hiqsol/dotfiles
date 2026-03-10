@@ -19,6 +19,7 @@ alias cdq='cd ~/prj/hiqsol/quotes'
 alias grab='g grab'
 alias lgrab='g lgrab'
 alias rehash='source ~/.config/fish/conf.d/aliases.fish'
+alias phm='phpuvm'
 alias upgrade='sudo apt update && sudo apt upgrade'
 
 # cd to /home/user/prj/organization/PROJECT

@@ -130,6 +130,10 @@ dphp81() {
     drun php:8.1-cli php $@
 }
 
+dphp84() {
+    drun hiqdev/php:8.4-cli-alpine php $@
+}
+
 dphp() {
     ver=$1;shift
     drun "php:$ver-cli" php $@

@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CORE_EXTENSIONS=(
+    cli common
+    bcmath curl gd gmp
+    imap intl mailparse mbstring
+    opcache readline
+    soap sockets xml zip
+    mysql pgsql sqlite3
+)
+
+OPTIONAL_EXTENSIONS=(
+    pcntl
+    redis imagick xdebug
+    mongodb rdkafka memcached
+    ssh2
+)
+
+ALTERNATIVES=(php phpize php-config phar)
+
+validate_version() {
+    [[ "$1" =~ ^[0-9]+\.[0-9]+$ ]] || {
+        echo "Error: invalid version '$1' (expected format: X.Y, e.g. 8.4)"
+        exit 1
+    }
+}
+
+usage() {
+    cat <<'EOF'
+Usage: phpuvm <command> [args]
+
+Commands:
+    install [VERSION...]   Install PHP version(s) with extensions
+    use VERSION            Switch active PHP to VERSION
+    list                   List installed versions, mark active
+    status                 Show current version info
+EOF
+    exit 1
+}
+
+cmd_install() {
+    local versions=("$@")
+    [[ ${#versions[@]} -eq 0 ]] && {
+        echo "Usage: phpuvm install VERSION [VERSION...]"
+        exit 1
+    }
+
+    for v in "${versions[@]}"; do
+        validate_version "$v"
+    done
+
+    # Ensure ondrej/php PPA, only apt update when PPA was just added
+    if ! grep -qr 'ondrej/php' /etc/apt/sources.list.d/ 2>/dev/null; then
+        echo "Adding ondrej/php PPA..."
+        sudo add-apt-repository -y ppa:ondrej/php
+        sudo apt update
+    fi
+
+    for v in "${versions[@]}"; do
+        echo "=== Installing PHP $v ==="
+
+        # Core packages
+        local pkgs=()
+        for ext in "${CORE_EXTENSIONS[@]}"; do
+            pkgs+=("php${v}-${ext}")
+        done
+
+        # Optional packages — include only if available
+        for ext in "${OPTIONAL_EXTENSIONS[@]}"; do
+            if apt-cache show "php${v}-${ext}" &>/dev/null; then
+                pkgs+=("php${v}-${ext}")
+            else
+                echo "  Skipped php${v}-${ext} (not available)"
+            fi
+        done
+
+        sudo apt install -y "${pkgs[@]}"
+
+        # Register alternatives
+        local priority=${v//./} # 8.3 -> 83
+        for cmd in "${ALTERNATIVES[@]}"; do
+            local bin="/usr/bin/${cmd}${v}"
+            if [[ -x "$bin" ]]; then
+                sudo update-alternatives --install "/usr/bin/${cmd}" "${cmd}" "$bin" "$priority"
+            fi
+        done
+
+        echo "=== PHP $v installed ==="
+    done
+}
+
+cmd_use() {
+    local v="${1:-}"
+    [[ -z "$v" ]] && {
+        echo "Usage: phpuvm use VERSION"
+        exit 1
+    }
+    validate_version "$v"
+
+    if [[ ! -x "/usr/bin/php${v}" ]]; then
+        echo "Error: PHP $v is not installed (/usr/bin/php${v} not found)"
+        exit 1
+    fi
+
+    for cmd in "${ALTERNATIVES[@]}"; do
+        local bin="/usr/bin/${cmd}${v}"
+        if [[ -x "$bin" ]]; then
+            sudo update-alternatives --set "${cmd}" "$bin"
+        fi
+    done
+
+    echo "Switched to:"
+    php -v
+}
+
+cmd_list() {
+    local active
+    active=$(readlink -f /etc/alternatives/php 2>/dev/null || true)
+
+    shopt -s nullglob
+    local bins=(/usr/bin/php[0-9].*)
+    shopt -u nullglob
+
+    if [[ ${#bins[@]} -eq 0 ]]; then
+        echo "No PHP versions installed"
+        return
+    fi
+
+    for bin in "${bins[@]}"; do
+        local real
+        real=$(readlink -f "$bin")
+        if [[ "$real" == "$active" ]]; then
+            echo "* $(basename "$bin") (active)"
+        else
+            echo "  $(basename "$bin")"
+        fi
+    done
+}
+
+cmd_status() {
+    php -v
+}
+
+[[ $# -eq 0 ]] && usage
+
+case "$1" in
+install)
+    shift
+    cmd_install "$@"
+    ;;
+use)
+    shift
+    cmd_use "$@"
+    ;;
+list) cmd_list ;;
+status) cmd_status ;;
+*) usage ;;
+esac
