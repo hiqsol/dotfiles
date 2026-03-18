@@ -1,3 +1,4 @@
+set -x PATH /home/sol/.local/bin $PATH
 set -x PATH /home/sol/bin $PATH
 set -x EDITOR nvim
 set -x VISUAL nvim

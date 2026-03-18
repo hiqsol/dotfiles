@@ -97,7 +97,7 @@ nvm() {
 }
 
 nvim() {
-    file="$HOME/sbin/nvim"
+    file="$HOME/.local/bin/nvim"
 
     if [ ! -x $file ]; then
         curl -L https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-x86_64.appimage -o $file
