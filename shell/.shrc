@@ -33,6 +33,16 @@ export EDITOR=nvim
 export VISUAL=nvim
 export BROWSER="x-www-browser:local-open"
 
+### SSH agent: stable symlink for tmux reattach
+SOCK="/home/$USER/.ssh/ssh-agent.sock"
+if [ -n "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+    ln -sf "$SSH_AUTH_SOCK" "$SOCK"
+fi
+export SSH_AUTH_SOCK="$SOCK"
+if [ ! -S "$SSH_AUTH_SOCK" ]; then
+    reset_ssh_agent
+fi
+
 export RIPGREP_CONFIG_PATH=~/.config/ripgrep/.ripgreprc
 export FZF_DEFAULT_COMMAND='fdfind --type f --strip-cwd-prefix -H -L -E .git'
 

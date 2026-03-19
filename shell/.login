@@ -10,7 +10,4 @@ mesg y
 # my motd
 echo; quotes; echo
 
-# Enable ssh-agent
-if [ -z $SSH_AUTH_SOCK ]; then
-    reset_ssh_agent
-fi
+# ssh-agent is now handled in .shrc
