@@ -96,6 +96,16 @@ nvm() {
     nvm $@
 }
 
+mise() {
+    file="$HOME/.local/bin/mise"
+
+    if [ ! -x $file ]; then
+        "$HOME/.config/bin/install-mise"
+    fi
+
+    $file $@
+}
+
 nvim() {
     file="$HOME/.local/bin/nvim"
 
