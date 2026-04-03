@@ -1,3 +1,4 @@
+alias a='abstract'
 alias c='boxer claude'
 alias d='docker'
 alias f='~/prj/instockcom/ferroctl/ferroctl'
