@@ -7,4 +7,7 @@ if status is-interactive
     direnv hook fish | source
     nvm use lts >/dev/null
 end
+if test -f ~/.local/.shenv.fish
+    source ~/.local/.shenv.fish
+end
 /home/sol/.local/bin/mise activate fish | source
