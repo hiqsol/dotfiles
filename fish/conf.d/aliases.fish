@@ -1,4 +1,4 @@
-alias a='abstract'
+alias a='boxer abstract'
 alias c='boxer claude'
 alias d='docker'
 alias f='~/prj/instockcom/ferroctl/ferroctl'
@@ -22,6 +22,7 @@ alias cdm='cd ~/prj/hiqsol/nanokai/home/kai/memory'
 alias cdq='cd ~/prj/hiqsol/quotes'
 alias grab='g grab'
 alias lgrab='g lgrab'
+alias llama="gemini --agent llama3-agent"
 alias rehash='source ~/.config/fish/conf.d/aliases.fish'
 alias phm='phpuvm'
 alias upgrade='sudo apt update && sudo apt upgrade'

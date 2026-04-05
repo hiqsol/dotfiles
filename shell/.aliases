@@ -10,7 +10,7 @@ alias -g L='| less'
 alias -g R='| less -R'
 alias -g W='| wc'
 
-alias a='abstract'
+alias a='boxer abstract'
 alias c='boxer claude'
 alias d='docker'
 alias g='regit'
@@ -55,6 +55,7 @@ alias ymp3="ydl --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
 alias ypl3="ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
 alias clone='g clone'
 alias lclone='g lclone'
+alias llama="gemini --agent llama3-agent"
 alias miniv='nvim -u ~/.vim/mini.vim'
 alias nodejs='node'
 alias vconfig='v ~/.vimrc'
