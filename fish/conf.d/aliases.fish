@@ -25,13 +25,13 @@ alias lgrab='g lgrab'
 alias llama="gemini --agent llama3-agent"
 alias y="yazi"
 alias lg="lazygit"
-alias btm="bottom"
 alias rga="ripgrep-all"
 alias ls="eza"
 alias l="eza -la"
 alias rehash='source ~/.config/fish/conf.d/aliases.fish'
 alias phm='phpuvm'
 alias upgrade='sudo apt update && sudo apt upgrade'
+alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
 
 alias ,='cd ..'
 alias ,,='cd ../..'

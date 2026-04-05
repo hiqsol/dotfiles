@@ -58,7 +58,6 @@ alias lclone='g lclone'
 alias llama="gemini --agent llama3-agent"
 alias y="yazi"
 alias lg="lazygit"
-alias btm="bottom"
 alias rga="ripgrep-all"
 alias ls="eza"
 alias l="eza -la"
@@ -88,6 +87,8 @@ alias CapsLock='xdotool key Caps_Lock'
 alias catkin_make='catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 
 alias phm='phpuvm'
+alias upgrade='sudo apt update && sudo apt upgrade'
+alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
 alias regit=~/prj/hiqsol/regit/regit
 alias quotes=~/prj/hiqsol/quotes/bin/quotes
 alias rehome=~/prj/hiqdev/rehome/rehome
