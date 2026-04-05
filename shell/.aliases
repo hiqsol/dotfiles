@@ -13,7 +13,8 @@ alias -g W='| wc'
 alias a='boxer abstract'
 alias c='boxer claude'
 alias d='docker'
-alias g='regit'
+alias g='git'
+alias ga='gita'
 alias h='hidev'
 alias k='kubectl'
 alias l='ll'
@@ -89,18 +90,8 @@ alias catkin_make='catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 alias phm='phpuvm'
 alias upgrade='sudo apt update && sudo apt upgrade'
 alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
-alias regit=~/prj/hiqsol/regit/regit
 alias quotes=~/prj/hiqsol/quotes/bin/quotes
 alias rehome=~/prj/hiqdev/rehome/rehome
-
-qterminalini="~/.config/qterminal.org/qterminal.ini"
-alias cd='cdls'
-alias cdd="sed -i '/^state=@ByteArray/d' $qterminalini ; cd ~/prj/hiqsol/dotfiles/.config"
-alias cdm='cd ~/prj/hiqsol/nanokai/home/kai/memory'
-alias cdh='cd ~/prj/hiqdev'
-alias cdi='cd ~/prj/instockcom'
-alias cdq='cd ~/prj/hiqsol/quotes/src'
-alias cdr='cd ~/prj/hiqsol/regit'
 alias -- -='cd -'
 alias ,='cd ..'
 alias ,,='cd ../..'
