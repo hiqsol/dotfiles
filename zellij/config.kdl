@@ -1,0 +1,10 @@
+keybinds {
+    unbind "Ctrl b"
+    bind "Ctrl q" { SwitchToMode "Tmux"; }
+}
+
+scroll_buffer_size 19000
+theme "default"
+default_layout "compact"
+mouse_mode true
+copy_on_select true

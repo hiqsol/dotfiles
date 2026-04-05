@@ -76,6 +76,12 @@
     default     = simple
 [core]
     autocrlf    = false
+    pager = delta
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're using a light terminal theme
 [web]
     browser     = local-open
 [browser "local-open"]

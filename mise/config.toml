@@ -1,3 +1,13 @@
 [tools]
 eza = "latest"
 neovim = "latest"
+starship = "latest"
+zoxide = "latest"
+atuin = "latest"
+delta = "latest"
+yazi = "latest"
+zellij = "latest"
+ripgrep-all = "latest"
+lazygit = "latest"
+gh = "latest"
+bottom = "latest"

@@ -61,3 +61,8 @@ for file in $plugins; do
         source $file
     fi
 done
+
+eval "$(~/.local/bin/mise activate zsh)"
+eval "$(zoxide init zsh)"
+eval "$(starship init zsh)"
+eval "$(atuin init zsh)"
