@@ -1,5 +1,8 @@
 #!/bin/sh
 
+### Source shared functions
+[ -f ~/.config/shell/functions.sh ] && . ~/.config/shell/functions.sh
+
 ### allow group write
 umask 002
 
@@ -56,4 +59,5 @@ export LESS_TERMCAP_so=$'\E[38;5;016m\E[48;5;220m'  # begin reverse video
 export LESS_TERMCAP_se=$'\E[0m'                     # reset reverse video
 export LESS_TERMCAP_us=$'\E[1;32m'                  # begin underline
 export LESS_TERMCAP_ue=$'\E[0m'                     # reset underline
-export LESS_TERMCAP_zz=$'\E[0m'                     # the last for better output of `env`
+export LESS_TERMCAP_zz=$'\E[0m'
+                     # the last for better output of `env`

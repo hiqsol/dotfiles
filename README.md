@@ -11,7 +11,7 @@ git clone git@github.com:hiqsol/dotfiles ~/.config
 
 ## The Stack
 
-- **Shells:** Fish & Zsh (synchronized aliases)
+- **Shells:** Xonsh (primary), Fish & Zsh (synchronized aliases)
 - **Package Manager:** [mise](https://mise.jdx.dev/) (runtimes & tools)
 - **Editor:** Neovim (LazyVim)
 - **Terminal:** WezTerm

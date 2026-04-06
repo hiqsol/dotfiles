@@ -4,6 +4,15 @@ alias la="ls -laFh ${ls_options}"
 alias lh="ls -lFh  ${ls_options}"
 alias ll="ls -lAFh ${ls_options}"
 
+alias co='composer'
+alias f='~/prj/instockcom/ferroctl/ferroctl'
+alias lt='eza -laT -I .git'
+alias cdd='cd ~/.config'
+alias cdm='cd ~/prj/hiqsol/nanokai/home/kai/memory'
+alias cdq='cd ~/prj/hiqsol/quotes'
+alias grab='g grab'
+alias lgrab='g lgrab'
+
 alias -g G='| rg'
 alias -g H='| head'
 alias -g L='| less'
