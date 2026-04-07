@@ -22,6 +22,6 @@ git clone git@github.com:hiqsol/dotfiles ~/.config
 - **Prompt:** [Starship](https://starship.rs/)
 - **Navigation:** [zoxide](https://github.com/ajeetdsouza/zoxide) (`z`)
 - **History:** [Atuin](https://atuin.sh/)
-- **Git UI:** [lazygit](https://github.com/jesseduffield/lazygit) (`lg`), [delta](https://github.com/dandavison/delta) (pager)
+- **Git UI:** [lazygit](https://github.com/jesseduffield/lazygit) (`lg`)
 - **File Manager:** [yazi](https://yazi-rs.github.io/) (`y`)
 - **System:** [bottom](https://github.com/ClementTsang/bottom) (`btm`)
