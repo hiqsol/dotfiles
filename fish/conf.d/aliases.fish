@@ -1,6 +1,7 @@
 alias a='boxer abstract'
 alias c='boxer claude'
 alias d='docker'
+alias dc='docker compose'
 alias f='~/prj/instockcom/ferroctl/ferroctl'
 alias g='git'
 alias ga='gita'

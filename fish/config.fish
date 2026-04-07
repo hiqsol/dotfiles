@@ -1,11 +1,10 @@
-set -x PATH /home/sol/.local/bin $PATH
-set -x PATH /home/sol/bin $PATH
+set -x PATH ./vendor/bin ./node_modules/.bin $HOME/sbin $HOME/bin $HOME/.config/composer/vendor/bin $HOME/.local/bin $HOME/go/bin /usr/local/go/bin $PATH
 set -x EDITOR nvim
 set -x VISUAL nvim
 set -x NVIM_LOG_FILE $HOME/.cache/nvim/log
 
 # Activate mise first so other tools are in the path
-/home/sol/.local/bin/mise activate fish | source
+$HOME/.local/bin/mise activate fish | source
 
 if status is-interactive
     direnv hook fish | source

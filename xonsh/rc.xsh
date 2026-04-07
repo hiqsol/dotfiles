@@ -5,14 +5,15 @@ import pwd
 from xonsh.built_ins import XSH
 
 # PATH - initialize with shims for mise tools to be found immediately
-$PATH.insert(0, '/home/sol/.local/share/mise/shims')
+$PATH.insert(0, $HOME + '/.local/share/mise/shims')
 $PATH.insert(0, './vendor/bin')
 $PATH.insert(0, './node_modules/.bin')
-$PATH.insert(0, '/home/sol/sbin')
-$PATH.insert(0, '/home/sol/bin')
-$PATH.insert(0, '/home/sol/.config/composer/vendor/bin')
-$PATH.insert(0, '/home/sol/.local/bin')
-$PATH.insert(0, '/home/sol/go/bin')
+$PATH.insert(0, $HOME + '/sbin')
+$PATH.insert(0, $HOME + '/bin')
+$PATH.insert(0, $HOME + '/.config/composer/vendor/bin')
+$PATH.insert(0, $HOME + '/.local/bin')
+$PATH.insert(0, $HOME + '/go/bin')
+$PATH.insert(0, '/usr/local/go/bin')
 
 # Environment variables
 $EDITOR = 'nvim'
@@ -54,6 +55,7 @@ aliases['ls'] = 'eza'
 aliases['a'] = 'boxer abstract'
 aliases['c'] = 'boxer claude'
 aliases['d'] = 'docker'
+aliases['dc'] = 'docker compose'
 aliases['g'] = 'git'
 aliases['ga'] = 'gita'
 aliases['gt'] = 'ga ll'
