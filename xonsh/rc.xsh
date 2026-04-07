@@ -58,9 +58,6 @@ aliases['g'] = 'git'
 aliases['ga'] = 'gita'
 aliases['gt'] = 'ga ll'
 aliases['gtree'] = 'eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
-aliases['h'] = 'hidev'
-aliases['k'] = 'kubectl'
-aliases['p'] = 'psql_default'
 aliases['s'] = 'ssh'
 aliases['v'] = 'nvim'
 aliases['y'] = 'yazi'
@@ -68,16 +65,9 @@ aliases['lg'] = 'lazygit'
 aliases['rga'] = 'ripgrep-all'
 aliases['gm'] = 'gemini'
 
-aliases['dc'] = 'docker compose'
 aliases['dco'] = 'dcomposer'
-aliases['fd'] = 'fdfind'
 aliases['gr'] = 'rg --no-heading'
-aliases['lo'] = 'local-open'
-aliases['vd'] = 'v -d'
-aliases['bat'] = 'batcat'
-aliases['cat'] = 'batcat -p'
 aliases['f'] = '~/prj/instockcom/ferroctl/ferroctl'
-aliases['co'] = 'composer'
 aliases['lt'] = 'eza -laT -I .git'
 aliases['cdd'] = 'cd ~/.config'
 aliases['cdm'] = 'cd ~/prj/hiqsol/nanokai/home/kai/memory'
@@ -88,23 +78,6 @@ aliases['upgrade'] = 'sudo apt update && sudo apt upgrade'
 aliases['upall'] = '~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
 
 # Custom functions (cdp, cdo, cdc)
-def _cdp():
-    parts = os.getcwd().split('/')
-    if len(parts) >= 7:
-        os.chdir('/'.join(parts[:7]))
-
-def _cdo():
-    parts = os.getcwd().split('/')
-    if len(parts) >= 6:
-        os.chdir('/'.join(parts[:6]))
-
-def _cdc():
-    parts = os.getcwd().split('/')
-    if len(parts) >= 7:
-        target = '/'.join(parts[:7]) + '/core'
-        if os.path.exists(target):
-            os.chdir(target)
-
 def _dcomposer(args):
     ssh_auth_sock = os.environ.get('SSH_AUTH_SOCK', '')
     cmd = [
@@ -149,9 +122,6 @@ def _md(args):
     os.makedirs(args[0], exist_ok=True)
     os.chdir(args[0])
 
-aliases['cdp'] = _cdp
-aliases['cdo'] = _cdo
-aliases['cdc'] = _cdc
 aliases['dcomposer'] = _dcomposer
 aliases['reset_ssh_agent'] = _reset_ssh_agent
 aliases['drun'] = _drun

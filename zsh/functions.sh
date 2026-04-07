@@ -1,11 +1,5 @@
 #!/usr/bin/env zsh
 
-rehash() {
-    source $HOME/.config/zsh/.zshenv
-    source $HOME/.config/zsh/.zshrc
-    builtin rehash
-}
-
 # cd to /home/user/prj/organization/project/vendor/organization/PROJECT
 cdvp() {
     pts=(${(s:/:)PWD})
