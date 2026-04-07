@@ -2,6 +2,18 @@
 
 source ~/.shrc
 source ~/.aliases
+
+alias -g G='| rg'
+alias -g H='| head'
+alias -g L='| less'
+alias -g R='| less -R'
+alias -g W='| wc'
+
+alias mv='nocorrect mv'
+alias cp='nocorrect cp'
+alias git='nocorrect git'
+alias mkdir='nocorrect mkdir -p'
+
 source ~/.config/zsh/keys.zsh
 source ~/.config/zsh/console.sh
 source ~/.config/zsh/desktop.sh
