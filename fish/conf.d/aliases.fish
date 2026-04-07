@@ -6,7 +6,6 @@ alias g='git'
 alias ga='gita'
 alias gt='ga ll'
 alias gtree='eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
-alias l='eza -la'
 alias L='less -R'
 alias s='ssh'
 alias v='nvim'
@@ -19,7 +18,8 @@ alias lo='local-open'
 alias lt='eza -laT -I .git'
 alias sl='ssh-add -l'
 alias vd='v -d'
-alias cat='batcat'
+alias bat='batcat'
+alias cat='batcat -p'
 alias cdd='cd ~/.config'
 alias cdm='cd ~/prj/hiqsol/nanokai/home/kai/memory'
 alias cdq='cd ~/prj/hiqsol/quotes'
@@ -31,7 +31,8 @@ alias lg="lazygit"
 alias rga="ripgrep-all"
 alias ls="eza"
 alias l="eza -la"
-alias rehash='source ~/.config/fish/conf.d/aliases.fish'
+alias ll="eza -lAh"
+alias gm='gemini'
 alias phm='phpuvm'
 alias upgrade='sudo apt update && sudo apt upgrade'
 alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
@@ -40,6 +41,8 @@ alias ,='cd ..'
 alias ,,='cd ../..'
 alias ,,,='cd ../../..'
 alias ,,,,='cd ../../../..'
+alias ,,,,,='cd ../../../../..'
+alias ,,,,,,='cd ../../../../../..'
 
 # cd to /home/user/prj/organization/PROJECT
 function cdp

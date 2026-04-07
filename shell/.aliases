@@ -1,9 +1,5 @@
 #!/bin/sh
 
-alias la="ls -laFh ${ls_options}"
-alias lh="ls -lFh  ${ls_options}"
-alias ll="ls -lAFh ${ls_options}"
-
 alias co='composer'
 alias f='~/prj/instockcom/ferroctl/ferroctl'
 alias lt='eza -laT -I .git'
@@ -28,9 +24,8 @@ alias gt='ga ll'
 alias gtree='eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
 alias h='hidev'
 alias k='kubectl'
-alias l='ll'
 alias p='psql_default'
-alias s='chmod -R og-rwx ~/.ssh;ssh'
+alias s='ssh'
 alias v='nvim'
 alias Z='zcalc'
 
@@ -43,7 +38,7 @@ alias dco='dcomposer'
 alias dp='docker_psql_default'
 alias fd='fdfind'
 alias gg='git grep'
-alias gr='rg'
+alias gr='rg --no-heading'
 alias gp='rg --type php'
 alias lo='local-open'
 alias sl='ssh-add -l'
@@ -73,7 +68,7 @@ alias lg="lazygit"
 alias rga="ripgrep-all"
 alias ls="eza"
 alias l="eza -la"
-alias ll="eza -lAFh"
+alias ll="eza -lAh"
 alias miniv='nvim -u ~/.vim/mini.vim'
 alias nodejs='node'
 alias vconfig='v ~/.vimrc'

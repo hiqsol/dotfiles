@@ -47,7 +47,7 @@ except Exception:
 # Aliases - simple ones can be strings
 aliases['la'] = 'ls -laFh ' + $ls_options
 aliases['lh'] = 'ls -lFh ' + $ls_options
-aliases['ll'] = 'eza -lAFh'
+aliases['ll'] = 'eza -lAh'
 aliases['l'] = 'eza -la'
 aliases['ls'] = 'eza'
 
@@ -71,16 +71,17 @@ aliases['gm'] = 'gemini'
 aliases['dc'] = 'docker compose'
 aliases['dco'] = 'dcomposer'
 aliases['fd'] = 'fdfind'
-aliases['gr'] = 'rg'
+aliases['gr'] = 'rg --no-heading'
 aliases['lo'] = 'local-open'
 aliases['vd'] = 'v -d'
-aliases['cat'] = 'batcat'
+aliases['bat'] = 'batcat'
+aliases['cat'] = 'batcat -p'
 aliases['f'] = '~/prj/instockcom/ferroctl/ferroctl'
 aliases['co'] = 'composer'
 aliases['lt'] = 'eza -laT -I .git'
 aliases['cdd'] = 'cd ~/.config'
-aliases['cdm'] = 'cd ~/prj/ровании/nanokai/home/kai/memory'
-aliases['cdq'] = 'cd ~/prj/ровании/quotes'
+aliases['cdm'] = 'cd ~/prj/hiqsol/nanokai/home/kai/memory'
+aliases['cdq'] = 'cd ~/prj/hiqsol/quotes'
 aliases['grab'] = 'g grab'
 aliases['lgrab'] = 'g lgrab'
 aliases['upgrade'] = 'sudo apt update && sudo apt upgrade'
@@ -163,6 +164,8 @@ aliases[','] = 'cd ..'
 aliases[',,'] = 'cd ../..'
 aliases[',,,'] = 'cd ../../..'
 aliases[',,,,'] = 'cd ../../../..'
+aliases[',,,,,'] = 'cd ../../../../..'
+aliases[',,,,,,'] = 'cd ../../../../../..'
 
 # Xonsh specific settings
 $UPDATE_OS_ENVIRON = True
