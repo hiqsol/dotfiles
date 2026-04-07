@@ -79,7 +79,7 @@ aliases['lgrab'] = 'g lgrab'
 aliases['upgrade'] = 'sudo apt update && sudo apt upgrade'
 aliases['upall'] = '~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
 
-# Custom functions (cdp, cdo, cdc)
+# Custom functions
 def _dcomposer(args):
     ssh_auth_sock = os.environ.get('SSH_AUTH_SOCK', '')
     cmd = [

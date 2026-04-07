@@ -29,7 +29,7 @@ md() {
 }
 
 fs() {
-    ssh-keygen -f "/home/sol/.ssh/known_hosts" -R "$1"
+    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
     s "$@"
 }
 
@@ -40,23 +40,6 @@ cdls() {
     fi
 }
 
-# cd to /home/user/prj/organization/PROJECT
-cdp() {
-    target=$(echo "$PWD" | cut -d/ -f1-6)
-    cd "$target"
-}
-
-# cd to /home/user/prj/ORGANIZATION
-cdo() {
-    target=$(echo "$PWD" | cut -d/ -f1-5)
-    cd "$target"
-}
-
-# cd to /home/user/prj/organization/PROJECT/core
-cdc() {
-    target=$(echo "$PWD" | cut -d/ -f1-6)/core
-    cd "$target"
-}
 
 hcd() {
     cd "$HOME/$1"
