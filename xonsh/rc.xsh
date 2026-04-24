@@ -31,6 +31,10 @@ execx($(~/.local/bin/mise activate xonsh))
 execx($(starship init xonsh))
 execx($(zoxide init xonsh))
 
+# xonsh 0.11 defaults $XONSH_HISTORY_FILE to None; on gc/merge that gets
+# stringified and it writes "./None" in the CWD. Pin it to a real path.
+$XONSH_HISTORY_FILE = $HOME + '/.local/share/xonsh/history_json/xonsh-history.json'
+
 # Atuin support
 try:
     execx($(atuin init xonsh))
