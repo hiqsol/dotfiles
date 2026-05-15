@@ -17,3 +17,5 @@ end
 if test -f ~/.local/.shenv.fish
     source ~/.local/.shenv.fish
 end
+
+set -gx PATH "/home/sol/.pixi/bin" $PATH
