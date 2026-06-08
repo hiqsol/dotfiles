@@ -1,7 +1,7 @@
 #!/bin/sh
 
 alias f='~/prj/instockcom/ferroctl/ferroctl'
-alias lt='eza -laT -I .git'
+alias lt='eza -laT -I ".git|.venv|__pycache__"'
 alias cdd='cd ~/.config'
 alias cdm='cd ~/prj/hiqsol/nanokai/home/kai/memory'
 alias cdq='cd ~/prj/hiqsol/quotes'
