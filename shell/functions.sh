@@ -121,8 +121,23 @@ dcpsql() {
     dc exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $*"
 }
 
-dcomposer() {
+dccomposer() {
     docker compose run --rm -v "$SSH_AUTH_SOCK":/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent php-fpm sh -c "git config --global --add safe.directory /app && composer $*"
+}
+
+dcomposer() {
+    docker run --rm --entrypoint composer \
+        --user "$(id -u):$(id -g)" \
+        -e COMPOSER_HOME=/tmp/composer \
+        -e SSH_AUTH_SOCK=/ssh-agent \
+        -e "GIT_SSH_COMMAND=ssh -F /dev/null -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/tmp/known_hosts" \
+        -v /etc/passwd:/etc/passwd:ro \
+        -v /etc/group:/etc/group:ro \
+        -v "$SSH_AUTH_SOCK:/ssh-agent" \
+        -v "$PWD:/app" \
+        -w /app \
+        ghcr.io/hiqdev/docker-ci-images/php-nginx:8.4 \
+        "$@"
 }
 
 kh() {
