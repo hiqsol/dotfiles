@@ -22,19 +22,21 @@ install_devtools() {
 }
 
 composerX() {
-    version=$1
+    composer_version=$1
     shift
-    file="$HOME/sbin/composer$version"
+    dir="$HOME/.local/bin"
+    file="$dir/composer$composer_version"
 
-    if ! [ -x $file ]; then
-        tmp="$HOME/tmp/composer-setup.php"
-        wget https://getcomposer.org/installer -O $tmp
-        php $tmp --install-dir=$HOME/sbin --filename=composer$version
-        rm $tmp
-        $file self --$version
+    if ! [ -x "$file" ]; then
+        tmp="$(mktemp)"
+        mkdir -p "$dir"
+        wget https://getcomposer.org/installer -O "$tmp"
+        php "$tmp" --install-dir="$dir" --filename="composer$composer_version"
+        rm "$tmp"
+        "$file" self --$composer_version
     fi
 
-    $file $@
+    "$file" $@
 }
 
 docker-compose() {

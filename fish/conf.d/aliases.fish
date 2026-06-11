@@ -1,5 +1,5 @@
 alias a='boxer abstract'
-alias c='boxer claude'
+alias c='composerX 2'
 alias d='docker'
 alias dc='docker compose'
 alias f='~/prj/instockcom/ferroctl/ferroctl'
@@ -39,4 +39,22 @@ alias ,,,,,,='cd ../../../../../..'
 
 function dcomposer
     docker compose run --rm -v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent php-fpm sh -c "git config --global --add safe.directory /app && composer $argv"
+end
+
+function composerX
+    set composer_version $argv[1]
+    set -e argv[1]
+    set dir "$HOME/.local/bin"
+    set file "$dir/composer$composer_version"
+
+    if not test -x "$file"
+        set tmp (mktemp)
+        mkdir -p "$dir"
+        wget https://getcomposer.org/installer -O "$tmp"
+        php "$tmp" --install-dir="$dir" --filename="composer$composer_version"
+        rm "$tmp"
+        "$file" self --$composer_version
+    end
+
+    "$file" $argv
 end

@@ -40,7 +40,6 @@ cdls() {
     fi
 }
 
-
 hcd() {
     cd "$HOME/$1"
 }
@@ -75,6 +74,24 @@ dcc() {
     dc run -v "$HOME":"$HOME" -w "$PWD" --entrypoint composer php-fpm "$@"
 }
 
+composerX() {
+    composer_version="$1"
+    shift
+    dir="$HOME/.local/bin"
+    file="$dir/composer$composer_version"
+
+    if ! [ -x "$file" ]; then
+        tmp="$(mktemp)"
+        mkdir -p "$dir"
+        wget https://getcomposer.org/installer -O "$tmp"
+        php "$tmp" --install-dir="$dir" --filename="composer$composer_version"
+        rm "$tmp"
+        "$file" self --"$composer_version"
+    fi
+
+    "$file" "$@"
+}
+
 drun() {
     docker run -it --rm -v "$HOME":"$HOME" -w "$PWD" "$@"
 }
@@ -83,24 +100,25 @@ dphp54() { drun php:5.4-cli php "$@"; }
 dphp81() { drun php:8.1-cli php "$@"; }
 dphp84() { drun hiqdev/php:8.4-cli-alpine php "$@"; }
 dphp() {
-    ver="$1"; shift
+    ver="$1"
+    shift
     drun "php:$ver-cli" php "$@"
 }
 
 dbash() {
-    docker exec -it "$1" bash -c "stty cols $COLUMNS rows $LINES && bash";
+    docker exec -it "$1" bash -c "stty cols $COLUMNS rows $LINES && bash"
 }
 
 dpsql() {
-    docker exec -it --user postgres "$1" sh -c "stty cols $COLUMNS rows $LINES && psql $2";
+    docker exec -it --user postgres "$1" sh -c "stty cols $COLUMNS rows $LINES && psql $2"
 }
 
 dcbash() {
-    dc exec "$1" bash -c "stty cols $COLUMNS rows $LINES && bash";
+    dc exec "$1" bash -c "stty cols $COLUMNS rows $LINES && bash"
 }
 
 dcpsql() {
-    dc exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $*";
+    dc exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $*"
 }
 
 dcomposer() {
