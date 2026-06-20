@@ -3,6 +3,7 @@
 # A script to start and stop OpenVPN connections
 
 import os
+import shlex
 import sys
 import subprocess
 import time
@@ -57,6 +58,28 @@ def stop_vpn():
         print("Failed to stop OpenVPN. Please check manually.")
         sys.exit(1)
 
+def find_vpn_config():
+    """
+    Finds the configuration file used by the running OpenVPN process.
+    """
+    pid = find_vpn_pid()
+    if not pid:
+        return None
+
+    result = subprocess.run(
+        ["ps", "-p", pid, "-o", "args="],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return None
+
+    command = shlex.split(result.stdout.strip())
+    try:
+        return command[command.index("--config") + 1]
+    except (ValueError, IndexError):
+        return None
+
 def start_vpn(config_name):
     """
     Starts an OpenVPN connection with the given configuration name.
@@ -91,19 +114,33 @@ def start_vpn(config_name):
         print("Failed to start OpenVPN. Check logs for details.")
         sys.exit(1)
 
+def restart_vpn():
+    """
+    Restarts OpenVPN with the currently running configuration.
+    """
+    config_file = find_vpn_config()
+    if not config_file:
+        print("Unable to determine the current OpenVPN configuration.")
+        sys.exit(1)
+
+    stop_vpn()
+    start_vpn(os.path.splitext(os.path.basename(config_file))[0])
+
 def main():
     """
     Main function to parse arguments and call the appropriate function.
     """
     if len(sys.argv) != 2:
         script_name = os.path.basename(__file__)
-        print(f"Usage: {script_name} <config_name>|stop")
+        print(f"Usage: {script_name} <config_name>|stop|restart")
         sys.exit(1)
 
     command = sys.argv[1]
 
     if command == "stop":
         stop_vpn()
+    elif command == "restart":
+        restart_vpn()
     else:
         start_vpn(command)
 
