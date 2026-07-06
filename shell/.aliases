@@ -25,6 +25,7 @@ alias c1='composerX 1'
 alias c2='composerX 2'
 alias d1='du -hd1'
 alias dco='dcomposer'
+alias p='psql_default'
 alias dp='docker_psql_default'
 alias gr='rg --no-heading'
 alias ws="ssh -o 'ConnectionAttempts 300'"
