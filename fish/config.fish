@@ -1,4 +1,9 @@
 set -x PATH ./vendor/bin ./node_modules/.bin $HOME/sbin $HOME/bin $HOME/.config/composer/vendor/bin $HOME/.local/bin $HOME/go/bin /usr/local/go/bin $PATH
+if set -q KREW_ROOT
+    set -gx PATH $KREW_ROOT/bin $PATH
+else
+    set -gx PATH $HOME/.krew/bin $PATH
+end
 set -x EDITOR nvim
 set -x VISUAL nvim
 set -x NVIM_LOG_FILE $HOME/.cache/nvim/log
