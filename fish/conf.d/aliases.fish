@@ -42,6 +42,10 @@ function dccomposer
     docker compose run --rm -v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent php-fpm sh -c "git config --global --add safe.directory /app && composer $argv"
 end
 
+function dcbash
+    dc exec $argv[1] bash -c "stty cols $COLUMNS rows $LINES && bash"
+end
+
 function dcomposer
     docker run --rm --entrypoint composer \
         --user (id -u):(id -g) \
