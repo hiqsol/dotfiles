@@ -9,16 +9,13 @@ git clone git@github.com:hiqsol/dotfiles ~/.config
 # Home-level symlinks (~/.zshrc, etc.) are managed by sol/home repo
 ```
 
-## The Stack
+## Tools
 
 - **Shells:** Xonsh (primary), Fish & Zsh (synchronized aliases)
 - **Package Manager:** [mise](https://mise.jdx.dev/) (runtimes & tools)
 - **Editor:** Neovim (LazyVim)
 - **Terminal:** WezTerm
-- **Multiplexer:** Tmux & Zellij (Prefix: `Ctrl+Q`)
-
-## Frontier Tools
-
+- **Multiplexer:** Tmux (Prefix: `Ctrl+Q`)
 - **Prompt:** [Starship](https://starship.rs/)
 - **Navigation:** [zoxide](https://github.com/ajeetdsouza/zoxide) (`z`)
 - **History:** [Atuin](https://atuin.sh/)
