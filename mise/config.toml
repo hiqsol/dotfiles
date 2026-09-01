@@ -1,4 +1,5 @@
 [tools]
+codex = "latest"
 eza = "latest"
 neovim = "latest"
 starship = "latest"
