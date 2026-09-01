@@ -1,0 +1,5 @@
+# Like good old grep
+--no-heading
+
+# Because who cares about case!?
+--smart-case
