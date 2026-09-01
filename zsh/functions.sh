@@ -1,5 +1,11 @@
 #!/usr/bin/env zsh
 
+# cd to /home/user/prj/organization/project
+cdp() {
+    pts=(${(s:/:)PWD})
+    cd "/$pts[1]/$pts[2]/$pts[3]/$pts[4]/$pts[5]"
+}
+
 # cd to /home/user/prj/organization/project/vendor/organization/PROJECT
 cdvp() {
     pts=(${(s:/:)PWD})
