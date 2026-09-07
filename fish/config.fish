@@ -16,7 +16,6 @@ if status is-interactive
     nvm use lts >/dev/null
     zoxide init fish | source
     starship init fish | source
-    atuin init fish | source
 end
 
 if test -f ~/.local/.shenv.fish

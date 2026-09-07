@@ -77,5 +77,4 @@ done
 eval "$(~/.local/bin/mise activate zsh)"
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
-eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"

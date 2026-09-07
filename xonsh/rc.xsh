@@ -35,12 +35,6 @@ execx($(zoxide init xonsh))
 # stringified and it writes "./None" in the CWD. Pin it to a real path.
 $XONSH_HISTORY_FILE = $HOME + '/.local/share/xonsh/history_json/xonsh-history.json'
 
-# Atuin support
-try:
-    execx($(atuin init xonsh))
-except Exception:
-    pass
-
 # Direnv for xonsh usually requires xontrib
 # If it's not installed, we can try to fall back to the direnv hook if it ever supports it
 # but for now we'll just try to load the xontrib if it exists
