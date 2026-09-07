@@ -38,6 +38,12 @@ alias ,,,,='cd ../../../..'
 alias ,,,,,='cd ../../../../..'
 alias ,,,,,,='cd ../../../../../..'
 
+# cd to /home/user/prj/organization/project
+function cdp
+    set parts (string split / -- $PWD)
+    cd /$parts[1]/$parts[2]/$parts[3]/$parts[4]/$parts[5]
+end
+
 function dccomposer
     docker compose run --rm -v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent php-fpm sh -c "git config --global --add safe.directory /app && composer $argv"
 end
