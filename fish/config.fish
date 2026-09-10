@@ -13,7 +13,6 @@ $HOME/.local/bin/mise activate fish | source
 
 if status is-interactive
     direnv hook fish | source
-    nvm use lts >/dev/null
     zoxide init fish | source
     starship init fish | source
 end

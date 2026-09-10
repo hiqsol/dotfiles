@@ -65,7 +65,6 @@ plugins=(
     ~/.fzf.zsh
     ~/.vim/plugged/zsh-autosuggestions/zsh-autosuggestions.zsh
     ~/.config/zsh/local.sh
-    ~/.config/nvm/nvm.sh
 )
 
 for file in $plugins; do
