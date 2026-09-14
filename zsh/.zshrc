@@ -65,7 +65,6 @@ plugins=(
     ~/.fzf.zsh
     ~/.vim/plugged/zsh-autosuggestions/zsh-autosuggestions.zsh
     ~/.config/zsh/local.sh
-    ~/.config/nvm/nvm.sh
 )
 
 for file in $plugins; do
@@ -77,5 +76,4 @@ done
 eval "$(~/.local/bin/mise activate zsh)"
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
-eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
