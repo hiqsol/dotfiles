@@ -37,7 +37,6 @@ alias grn='rg --no-line-number --no-filename'
 alias girp='grep -IR --include=\*.php --exclude-dir=vendor'
 alias grep='grep --color=auto'
 alias vim='nvim'
-alias vpn='ovpn'
 alias ovim='/usr/bin/vim'
 alias diff="diff --color"
 alias x509="openssl x509 -text -noout -in"

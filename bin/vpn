@@ -1,148 +1,500 @@
 #!/usr/bin/env python3
 
-# A script to start and stop OpenVPN connections
+"""Start, stop and inspect OpenVPN connections via systemd.
 
+Supervision is systemd's job, not ours: each connection is an instance of
+openvpn-client@.service, with a drop-in (tracked at
+~/.config/etc/systemd/system/openvpn-client@.service.d/override.conf) adding
+Restart=always and pointing --config at ~/Sync/vpn/<name>.ovpn. Run
+`vpn doctor` to check that half is installed.
+
+This script deliberately does not use pgrep/kill/ps. `pgrep -x openvpn` matches
+any openvpn on the box, including a server instance, and parsing `ps -o args=`
+to recover which config is live is lossy for configs reached via a symlink or a
+subdirectory. systemctl knows the answer exactly.
+"""
+
+import difflib
 import os
-import shlex
-import sys
+import re
 import subprocess
-import time
+import sys
 
-# --- Configuration ---
-# The directory where your .ovpn configuration files are stored.
 CONFIG_DIR = os.path.expanduser("~/Sync/vpn")
+UNIT = "openvpn-client@{}.service"
+UNIT_GLOB = "openvpn-client@*.service"
+DROPIN = "/etc/systemd/system/openvpn-client@.service.d/override.conf"
+DROPIN_SRC = os.path.expanduser(
+    "~/.config/etc/systemd/system/openvpn-client@.service.d/override.conf"
+)
 
-def run_as_root(command):
-    """
-    Executes a command with sudo if the script is not run as root.
+# Friendly names, carried over from the old bash `ovpn` script. `ahsol` is the
+# one actually in daily use and was missing from that table.
+ALIASES = {
+    "default": "ahsol",
+    "ah": "ams_sol_udp",
+    "ahsol": "ahsol",
+    "breeze": "breeze_sol",
+    "mobile": "ams_sol_mobile",
+    "usa": "usa_sol_tcp",
+}
+
+# Directives that make an .ovpn a root code-execution vector. The configs live
+# in a Syncthing folder, so any paired device can rewrite them; the systemd
+# drop-in passes --script-security 0, which blocks most of these but NOT
+# `plugin`. Warn loudly rather than pretend.
+UNSAFE = {
+    "up", "down", "up-restart", "route-up", "route-pre-down", "ipchange",
+    "tls-verify", "tls-crypt-v2-verify", "auth-user-pass-verify",
+    "client-connect", "client-disconnect", "learn-address", "plugin",
+    "script-security", "dns-updown", "setenv", "chroot", "askpass",
+}
+
+_TTY = sys.stdout.isatty()
+
+
+def c(code, text):
+    return f"\033[{code}m{text}\033[0m" if _TTY else text
+
+
+def red(t):
+    return c("31", t)
+
+
+def green(t):
+    return c("32", t)
+
+
+def yellow(t):
+    return c("33", t)
+
+
+def bold(t):
+    return c("1", t)
+
+
+def run(*cmd):
+    """Run a read-only command, capturing output. Never used for sudo."""
+    return subprocess.run(cmd, capture_output=True, text=True)
+
+
+def sudo(*cmd):
+    """Run a command as root, inheriting stdio so the password prompt shows.
+
+    Capturing output here is what made the old script hang silently whenever
+    sudo wanted a password.
     """
     if os.geteuid() != 0:
-        return subprocess.run(["sudo"] + command, capture_output=True, text=True)
-    else:
-        return subprocess.run(command, capture_output=True, text=True)
+        cmd = ("sudo",) + cmd
+    return subprocess.run(cmd).returncode
 
-def find_vpn_pid():
-    """
-    Finds the PID of the openvpn process.
-    Returns the PID as a string, or None if not found.
-    """
-    result = subprocess.run(["pgrep", "-x", "openvpn"], capture_output=True, text=True)
-    if result.stdout.strip():
-        return result.stdout.strip()
-    return None
 
-def stop_vpn():
-    """
-    Stops the running OpenVPN process.
-    """
-    print("Attempting to stop OpenVPN...")
-    pid = find_vpn_pid()
+def die(msg):
+    print(red(f"error: {msg}"), file=sys.stderr)
+    sys.exit(1)
 
-    if not pid:
-        print("No OpenVPN process found running.")
-        return
 
-    print(f"Found OpenVPN process with PID: {pid}")
-    
-    # The command expects a list of strings
-    result = run_as_root(["kill", pid])
+# --- configs ---------------------------------------------------------------
 
-    if result.returncode != 0:
-        print(f"Error trying to kill process {pid}: {result.stderr}")
-    
-    time.sleep(1)
 
-    if not find_vpn_pid():
-        print("OpenVPN stopped successfully.")
-    else:
-        print("Failed to stop OpenVPN. Please check manually.")
-        sys.exit(1)
+def config_path(name):
+    return os.path.join(CONFIG_DIR, f"{name}.ovpn")
 
-def find_vpn_config():
-    """
-    Finds the configuration file used by the running OpenVPN process.
-    """
-    pid = find_vpn_pid()
-    if not pid:
-        return None
 
-    result = subprocess.run(
-        ["ps", "-p", pid, "-o", "args="],
-        capture_output=True,
-        text=True,
+def resolve(name):
+    """Map a friendly name to an instance name and check the config exists."""
+    name = ALIASES.get(name, name)
+    if "/" in name:
+        die(f"'{name}' contains a slash; systemd instance names cannot. "
+            "Add a top-level symlink in ~/Sync/vpn instead.")
+    if not os.path.isfile(config_path(name)):
+        die(f"no config at {config_path(name)}\nTry: vpn list")
+    return name
+
+
+def config_names():
+    if not os.path.isdir(CONFIG_DIR):
+        return []
+    return sorted(
+        f[:-5] for f in os.listdir(CONFIG_DIR) if f.endswith(".ovpn")
     )
-    if result.returncode != 0:
-        return None
 
-    command = shlex.split(result.stdout.strip())
+
+def directives(name):
+    """Parse an .ovpn into {directive: [args]}, stopping at inline blocks."""
+    out = {}
     try:
-        return command[command.index("--config") + 1]
-    except (ValueError, IndexError):
-        return None
+        lines = open(config_path(name), errors="replace").read().splitlines()
+    except OSError as e:
+        die(str(e))
+    for line in lines:
+        line = line.strip()
+        if line.startswith("<"):
+            break
+        if not line or line[0] in "#;":
+            continue
+        parts = line.split()
+        out.setdefault(parts[0], parts[1:])
+    return out
 
-def start_vpn(config_name):
+
+def unsafe_directives(name):
+    return sorted(set(directives(name)) & UNSAFE)
+
+
+# --- systemd ---------------------------------------------------------------
+
+
+def live_instances():
+    """Instance names of every openvpn-client@ unit that is not inactive.
+
+    Includes 'activating' so a unit mid-connect or in auto-restart is found.
     """
-    Starts an OpenVPN connection with the given configuration name.
+    r = run("systemctl", "list-units", "--type=service", "--all",
+            "--plain", "--no-legend", UNIT_GLOB)
+    found = []
+    for line in r.stdout.splitlines():
+        fields = line.split()
+        if len(fields) < 3 or not fields[0].startswith("openvpn-client@"):
+            continue
+        if fields[2] == "inactive":
+            continue
+        found.append(fields[0].split("@", 1)[1].rsplit(".service", 1)[0])
+    return found
+
+
+def one_live(action):
+    found = live_instances()
+    if not found:
+        print("No VPN connection is up.")
+        sys.exit(0)
+    if len(found) > 1:
+        die(f"{len(found)} connections are up ({', '.join(found)}); "
+            f"name one: vpn {action} <name>")
+    return found[0]
+
+
+def prop(instance, *names):
+    r = run("systemctl", "show", UNIT.format(instance),
+            *[f"--property={n}" for n in names])
+    return dict(
+        line.split("=", 1) for line in r.stdout.splitlines() if "=" in line
+    )
+
+
+# --- commands --------------------------------------------------------------
+
+
+def require_dropin():
+    """Refuse to start until the drop-in is in effect.
+
+    Without it the stock unit runs `--config %i.conf` relative to
+    /etc/openvpn/client, which fails with a confusing
+    "Error opening configuration file: <name>.conf".
     """
-    config_file = os.path.join(CONFIG_DIR, f"{config_name}.ovpn")
+    merged = run("systemctl", "cat", "openvpn-client@.service").stdout
+    if "/home/sol/Sync/vpn/%i.ovpn" in merged:
+        return
+    print(red("the systemd drop-in is not in effect, so the unit would look "
+              "for /etc/openvpn/client/<name>.conf instead of "
+              "~/Sync/vpn/<name>.ovpn."), file=sys.stderr)
+    print(f"\nInstall it with:\n"
+          f"  sudo install -D -m 0644 -T \\\n"
+          f"    {DROPIN_SRC} \\\n"
+          f"    {DROPIN}\n"
+          f"  sudo systemctl daemon-reload\n\n"
+          f"Then: vpn doctor", file=sys.stderr)
+    sys.exit(1)
 
-    if not os.path.isfile(config_file):
-        print(f"Error: Configuration file not found at '{config_file}'")
+
+def stray_openvpn():
+    """PIDs of openvpn processes that no openvpn-client@ unit owns.
+
+    Detection only -- the control path is still purely systemctl. A stray
+    daemon (e.g. from the old launcher) holds the tunnel device and would make
+    the unit fail to open it, so it is worth naming explicitly rather than
+    letting openvpn fail with a device-busy error.
+    """
+    r = run("pgrep", "-x", "openvpn")
+    pids = set(r.stdout.split())
+    if not pids:
+        return []
+    owned = set()
+    for inst in live_instances():
+        pid = prop(inst, "MainPID").get("MainPID", "")
+        if pid and pid != "0":
+            owned.add(pid)
+    return sorted(pids - owned)
+
+
+def cmd_start(name):
+    require_dropin()
+    stray = stray_openvpn()
+    if stray:
+        print(red(f"openvpn is already running outside systemd "
+                  f"(pid {', '.join(stray)})."), file=sys.stderr)
+        print("It holds the tunnel device, so the unit cannot start. "
+              "SIGTERM makes it tear down its routes cleanly:\n"
+              f"  sudo kill {' '.join(stray)}", file=sys.stderr)
         sys.exit(1)
+    instance = resolve(name)
+    bad = unsafe_directives(instance)
+    if bad:
+        print(yellow(f"warning: {instance}.ovpn contains {', '.join(bad)} — "
+                     "these can run code as root. Review before continuing."))
+    for other in live_instances():
+        if other != instance:
+            print(f"Stopping {other} first...")
+            sudo("systemctl", "stop", UNIT.format(other))
+    print(f"Starting {instance}...")
+    if sudo("systemctl", "start", UNIT.format(instance)) != 0:
+        die(f"systemctl start failed; see: vpn logs")
+    # `systemctl start` returning does NOT mean the tunnel is up: openvpn sends
+    # sd_notify READY=1 from context_init_1(), before its first TCP connect.
+    cmd_status()
 
-    if find_vpn_pid():
-        script_name = os.path.basename(__file__)
-        print(f"An OpenVPN process is already running. Please stop it first with '{script_name} stop'.")
-        sys.exit(1)
 
-    print(f"Starting OpenVPN with config: {config_name}")
-    
-    command = ["openvpn", "--config", config_file, "--daemon"]
-    result = run_as_root(command)
+def cmd_stop():
+    instance = one_live("stop")
+    print(f"Stopping {instance}...")
+    sudo("systemctl", "stop", UNIT.format(instance))
 
-    if result.returncode != 0:
-        print(f"Error starting OpenVPN: {result.stderr}")
-        # The original script exits here, but it might be better to check pgrep
-        # in case the daemon started despite a non-zero exit code on some messages.
 
-    print("Waiting 3 seconds for startup...")
-    time.sleep(3)
+def cmd_restart():
+    instance = one_live("restart")
+    print(f"Restarting {instance}...")
+    sudo("systemctl", "restart", UNIT.format(instance))
+    cmd_status()
 
-    if find_vpn_pid():
-        print("OpenVPN started successfully.")
+
+def cmd_status():
+    found = live_instances()
+    if not found:
+        print(f"{bold('unit'):<10} {red('no connection')}")
+        return
+    for instance in found:
+        p = prop(instance, "ActiveState", "SubState", "NRestarts",
+                 "ExecMainStatus")
+        state = f"{p.get('ActiveState', '?')} ({p.get('SubState', '?')})"
+        active = p.get("ActiveState") == "active"
+        print(f"{bold('config'):<10} {instance}")
+        line = f"{bold('unit'):<10} {green(state) if active else red(state)}"
+        # NRestarts counts only systemd's automatic restarts, not openvpn's
+        # internal SIGUSR1 soft restarts. 0 means openvpn never exited --
+        # either nothing went wrong or it self-healed in-process. Above 0 means
+        # it burned through connect-retry-max and systemd re-exec'd it: still
+        # recovered, just the slower path. A climbing count is the signature of
+        # a restart loop, so this is always worth showing, not only when set.
+        restarts = p.get("NRestarts", "0") or "0"
+        line += (f"   restarts={green(restarts) if restarts == '0' else yellow(restarts)}")
+        if p.get("ExecMainStatus") not in ("0", "", None):
+            line += f"   last exit={red(p['ExecMainStatus'])}"
+        print(line)
+
+        d = directives(instance)
+        dev = (d.get("dev") or ["tun0"])[0]
+        r = run("ip", "-br", "addr", "show", dev)
+        if r.returncode != 0 or not r.stdout.strip():
+            print(f"{bold('tunnel'):<10} {red(dev + ' does not exist')}")
+        else:
+            f = r.stdout.split()
+            up = f[1] in ("UP", "UNKNOWN")
+            addr = " ".join(f[2:]) or "no address"
+            print(f"{bold('tunnel'):<10} "
+                  f"{green(dev + ' ' + f[1]) if up else red(dev + ' ' + f[1])}"
+                  f"   {addr if f[2:] else red(addr)}")
+
+        # A tunnel can be fully up with no DNS: if dns-updown is blocked, the
+        # pushed `dhcp-option DNS` servers are never installed and openvpn
+        # only logs a WARNING. Reporting "up" without this would be a lie.
+        r = run("resolvectl", "status", dev)
+        if r.returncode == 0:
+            # Anchor the line: resolvectl prints "Current DNS Server:" first,
+            # which a loose "DNS Servers?:" pattern matches instead, showing
+            # only the one server in use rather than all of them.
+            m = re.search(r"^\s*DNS Servers:\s*(.+)$", r.stdout, re.M)
+            if m:
+                dom = re.search(r"^\s*DNS Domain:\s*(.+)$", r.stdout, re.M)
+                suffix = f"   domain {dom.group(1).strip()}" if dom else ""
+                print(f"{bold('dns'):<10} {green(m.group(1).strip())}{suffix}")
+            else:
+                print(f"{bold('dns'):<10} "
+                      f"{yellow('none on ' + dev)} — check `vpn logs` for "
+                      f"'dns updown'")
+
+        # The check that matters. If the server's own address resolves via the
+        # tunnel, openvpn is trying to reach its server through the dead tunnel
+        # it is establishing -> EHOSTUNREACH, permanently. This is the exact
+        # failure that used to need a manual `vpn restart`.
+        remote = (d.get("remote") or [None])[0]
+        if not remote:
+            print(f"{bold('route'):<10} {yellow('no remote in config')}")
+            continue
+        r = run("ip", "route", "get", remote)
+        path = r.stdout.split("\n")[0].strip()
+        if r.returncode != 0:
+            print(f"{bold('route'):<10} {red('unreachable: ' + remote)}")
+        elif re.search(rf"\bdev\s+{re.escape(dev)}\b", path):
+            print(f"{bold('route'):<10} {red(path)}")
+            print(f"{'':<10} {red('server address is routed INTO the tunnel')}"
+                  f" — run: vpn restart")
+        else:
+            print(f"{bold('route'):<10} {green(path)}")
+
+
+def cmd_list():
+    live = set(live_instances())
+    rev = {}
+    for a, target in ALIASES.items():
+        if a != target:
+            rev.setdefault(target, []).append(a)
+    for name in config_names():
+        mark = green(" * ") if name in live else "   "
+        alias = rev.get(name)
+        extra = f"  ({', '.join(sorted(alias))})" if alias else ""
+        print(f"{mark}{name}{extra}")
+
+
+def cmd_logs(args):
+    instance = one_live("logs")
+    cmd = ["journalctl", "-u", UNIT.format(instance), "-n", "200"]
+    if "-f" in args or "--follow" in args:
+        cmd.append("-f")
+    os.execvp(cmd[0], cmd)
+
+
+def cmd_show(name):
+    """Print a config, collapsing inline <ca>/<cert>/<key> blocks."""
+    instance = resolve(name)
+    inside = None
+    for line in open(config_path(instance), errors="replace"):
+        tag = line.strip()
+        if inside:
+            if tag == f"</{inside}>":
+                inside = None
+            continue
+        m = re.fullmatch(r"<(\w[\w-]*)>", tag)
+        if m:
+            inside = m.group(1)
+            print(f"<{inside}> ... </{inside}>")
+            continue
+        print(line, end="")
+
+
+def cmd_doctor():
+    ok = True
+
+    def check(good, label, detail="", fatal=True):
+        """fatal=False reports a real problem without failing the exit code,
+        for latent issues in configs that are not currently in use."""
+        nonlocal ok
+        if not good and fatal:
+            ok = False
+        tag = green("ok") if good else (red("FAIL") if fatal else yellow("warn"))
+        print(f"  {tag}  {label}" + (f"  {detail}" if detail else ""))
+
+    print(bold("systemd drop-in"))
+    if not os.path.exists(DROPIN):
+        check(False, "installed", f"missing {DROPIN}")
+        print(f"\n  Install it with:\n    sudo install -D -m 0644 -T \\\n"
+              f"      {DROPIN_SRC} \\\n      {DROPIN}\n"
+              f"    sudo systemctl daemon-reload")
     else:
-        print("Failed to start OpenVPN. Check logs for details.")
-        sys.exit(1)
+        check(True, "installed", DROPIN)
+        try:
+            want = open(DROPIN_SRC).read()
+            have = open(DROPIN).read()
+        except OSError as e:
+            check(False, "readable", str(e))
+        else:
+            check(want == have, "matches the copy tracked in ~/.config")
+            if want != have:
+                sys.stdout.writelines(difflib.unified_diff(
+                    want.splitlines(True), have.splitlines(True),
+                    fromfile="repo", tofile="installed"))
+    merged = run("systemctl", "cat", "openvpn-client@.service").stdout
+    check("Restart=always" in merged, "Restart=always is in effect")
+    check("ProtectHome=read-only" in merged, "ProtectHome allows ~/Sync/vpn")
 
-def restart_vpn():
-    """
-    Restarts OpenVPN with the currently running configuration.
-    """
-    config_file = find_vpn_config()
-    if not config_file:
-        print("Unable to determine the current OpenVPN configuration.")
-        sys.exit(1)
+    print(bold("\nconfigs"))
+    live = set(live_instances())
+    check(os.path.isdir(CONFIG_DIR), CONFIG_DIR)
+    for name in config_names():
+        d = directives(name)
+        bad = sorted(set(d) & UNSAFE)
+        if bad:
+            check(False, f"{name}.ovpn", f"root-exec directives: {', '.join(bad)}")
+        elif "persist-tun" in d:
+            # The bug this whole setup exists to fix. Only fatal for the config
+            # that is actually up; elsewhere it is a latent trap worth knowing
+            # about before you switch to that config.
+            check(False, f"{name}.ovpn",
+                  "has persist-tun: will wedge permanently after suspend/resume",
+                  fatal=name in live)
+        elif "connect-retry-max" not in d:
+            check(False, f"{name}.ovpn",
+                  "no connect-retry-max: can retry forever instead of letting "
+                  "systemd restart it",
+                  fatal=name in live)
+        else:
+            check(True, f"{name}.ovpn")
 
-    stop_vpn()
-    start_vpn(os.path.splitext(os.path.basename(config_file))[0])
+    print(bold("\nshell"))
+    aliases = os.path.expanduser("~/.config/shell/.aliases")
+    stale = os.path.exists(aliases) and any(
+        "alias vpn=" in l for l in open(aliases, errors="replace"))
+    check(not stale, "no alias shadowing this script in shell/.aliases")
+
+    sys.exit(0 if ok else 1)
+
+
+def cmd_complete():
+    print("\n".join(
+        ["stop", "restart", "status", "list", "logs", "show", "doctor"]
+        + config_names() + [a for a in ALIASES if a not in config_names()]))
+
+
+USAGE = """usage: vpn <name>|stop|restart|status|list|logs [-f]|show <name>|doctor
+
+  vpn <name>      bring up ~/Sync/vpn/<name>.ovpn via openvpn-client@<name>
+  vpn stop        stop the live connection
+  vpn restart     restart the live connection
+  vpn status      unit state, tunnel device, and the server-route health check
+  vpn list        available configs; * marks the live one
+  vpn logs [-f]   journal for the live unit
+  vpn show <name> print a config with key material elided
+  vpn doctor      check the systemd drop-in and the configs
+"""
+
 
 def main():
-    """
-    Main function to parse arguments and call the appropriate function.
-    """
-    if len(sys.argv) != 2:
-        script_name = os.path.basename(__file__)
-        print(f"Usage: {script_name} <config_name>|stop|restart")
-        sys.exit(1)
+    args = sys.argv[1:]
+    if not args or args[0] in ("-h", "--help", "help"):
+        print(USAGE, end="")
+        sys.exit(0 if args else 1)
 
-    command = sys.argv[1]
-
-    if command == "stop":
-        stop_vpn()
-    elif command == "restart":
-        restart_vpn()
+    cmd, rest = args[0], args[1:]
+    if cmd == "--complete":
+        cmd_complete()
+    elif cmd == "stop":
+        cmd_stop()
+    elif cmd == "restart":
+        cmd_restart()
+    elif cmd == "status":
+        cmd_status()
+    elif cmd == "list":
+        cmd_list()
+    elif cmd == "logs":
+        cmd_logs(rest)
+    elif cmd == "doctor":
+        cmd_doctor()
+    elif cmd == "show":
+        if not rest:
+            die("show needs a config name")
+        cmd_show(rest[0])
     else:
-        start_vpn(command)
+        cmd_start(cmd)
+
 
 if __name__ == "__main__":
     main()
