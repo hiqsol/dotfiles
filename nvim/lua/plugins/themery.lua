@@ -4,7 +4,6 @@ return {
   { "ellisonleao/gruvbox.nvim" }, -- gruvbox-material-black
   { "folke/tokyonight.nvim" }, -- tokyonight-moon (blackish)
   { "Mofiqul/dracula.nvim" }, -- dracula with black variant
-  { "nyoom-engineering/oxocarbon.nvim" }, -- oxocarbon dark
   { "catppuccin/nvim", name = "catppuccin" }, -- mocha black
   { "rebelot/kanagawa.nvim" }, -- kanagawa-dragon (black)
   { "projekt0n/github-nvim-theme" }, -- github_dark_default (black bg)
@@ -21,7 +20,6 @@ return {
           "default",
           "cyberdream",
           "carbonfox",
-          "oxocarbon",
           "github_dark_default",
           "tokyonight-moon",
           "dracula",
