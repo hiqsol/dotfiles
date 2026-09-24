@@ -65,6 +65,20 @@ return {
 			event = { Down = { streak = 1, button = "Left" } },
 			action = wezterm.action.SelectTextAtMouseCursor("Cell"),
 		},
+		-- Wheel scrolls scrollback in normal screen; in alt screen (less, man)
+		-- keep default: wezterm sends Up/Down keys
+		{
+			event = { Down = { streak = 1, button = { WheelUp = 1 } } },
+			mods = "NONE",
+			alt_screen = false,
+			action = wezterm.action.ScrollByLine(-3),
+		},
+		{
+			event = { Down = { streak = 1, button = { WheelDown = 1 } } },
+			mods = "NONE",
+			alt_screen = false,
+			action = wezterm.action.ScrollByLine(3),
+		},
 	},
 
 	-- Scrollback buffer
