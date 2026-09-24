@@ -60,6 +60,19 @@ return {
 			mods = "CTRL",
 			action = wezterm.action.OpenLinkAtMouseCursor,
 		},
+		-- Same inside apps with mouse reporting (Claude Code, tmux with mouse on)
+		{
+			event = { Up = { streak = 1, button = "Left" } },
+			mods = "CTRL",
+			mouse_reporting = true,
+			action = wezterm.action.OpenLinkAtMouseCursor,
+		},
+		{
+			event = { Down = { streak = 1, button = "Left" } },
+			mods = "CTRL",
+			mouse_reporting = true,
+			action = wezterm.action.Nop,
+		},
 		-- Default left-click to select (works well)
 		{
 			event = { Down = { streak = 1, button = "Left" } },
