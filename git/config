@@ -52,6 +52,7 @@
     cfg         = "!$EDITOR ~/prj/hiqsol/dotfiles/.config/git/config"
     ups         = "!git push -u origin HEAD"
     safe        = "!git config --global --add safe.directory $(pwd)"
+    w           = worktree
 [user]
     name        = Andrii Vasyliev
     email       = sol@hiqdev.com
