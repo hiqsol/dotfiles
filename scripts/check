@@ -3,8 +3,8 @@
 # Lint the dotfiles repo.
 #
 #   scripts/check           full check (what `mise run check` and CI run)
-#   scripts/check --staged  fast pre-commit check: syntax of staged files,
-#                           gitleaks on staged changes, gen-shell --check
+#   scripts/check --staged  fast pre-commit check of staged contents: syntax,
+#                           lint (shellcheck, shfmt, taplo), gitleaks, gen-shell
 #
 # Works without mise as long as the tools are on $PATH. Missing tools are
 # skipped with a warning locally and fail in CI (when $CI is set).
@@ -166,12 +166,19 @@ python_syntax() {
 shellcheck_files() {
     # -s per kind: files without a shebang (e.g. shell/.profile) were
     # classified by location
-    local kind rc=0
+    local kind f rc=0
     local -a list
     for kind in sh bash; do
         mapfile -t list < <(files "$kind")
         [ "${#list[@]}" -gt 0 ] || continue
-        shellcheck -f gcc -s "$kind" "${list[@]}" || rc=1
+        if [ "$mode" = staged ]; then
+            for f in "${list[@]}"; do
+                read_file "$f" | shellcheck -f gcc -s "$kind" - | sed "s|^-:|$f:|"
+                [ "${PIPESTATUS[1]}" -eq 0 ] || rc=1
+            done
+        else
+            shellcheck -f gcc -s "$kind" "${list[@]}" || rc=1
+        fi
     done
     return "$rc"
 }
@@ -179,9 +186,16 @@ shellcheck_files() {
 shfmt_files() {
     # Formatting is enforced only for scripts owned by this repo's tooling,
     # not for sourced dotfiles. Style: 4 spaces, indented case branches.
+    local f rc=0
     local -a list
     mapfile -t list < <(files sh bash | grep -E '^(bin|scripts|\.githooks)/')
     [ "${#list[@]}" -gt 0 ] || return 0
+    if [ "$mode" = staged ]; then
+        for f in "${list[@]}"; do
+            read_file "$f" | shfmt -i 4 -ci -d --filename "$f" || rc=1
+        done
+        return "$rc"
+    fi
     shfmt -i 4 -ci -d "${list[@]}"
 }
 
@@ -237,13 +251,16 @@ has zsh && need zsh "zsh -n" && run_step "zsh -n" syntax_check zsh zsh
 has fish && need fish "fish -n" && run_step "fish -n" syntax_check fish fish
 has python && need python3 "python syntax" && run_step "python syntax" python_syntax
 
+if has sh || has bash; then
+    need shellcheck shellcheck && run_step shellcheck shellcheck_files
+    need shfmt shfmt && run_step "shfmt (bin, scripts, .githooks)" shfmt_files
+fi
+
 if [ "$mode" = staged ]; then
     has toml && need taplo "taplo (staged)" && run_step "taplo (staged)" taplo_staged
     need gitleaks "gitleaks (staged)" &&
         run_step "gitleaks (staged)" gitleaks git --staged --no-banner --redact -v --log-level warn
 else
-    need shellcheck shellcheck && run_step shellcheck shellcheck_files
-    need shfmt shfmt && run_step "shfmt (bin, scripts, .githooks)" shfmt_files
     need stylua stylua && run_step "stylua nvim/" stylua_nvim
     need taplo taplo && run_step taplo taplo_files
     need rumdl markdown && run_step "markdown (rumdl)" markdown_files
