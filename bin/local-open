@@ -32,5 +32,7 @@ else
             *"127.0.0.1"*) path="$(echo "$path" | sed -e "s/127\\.0\\.0\\.1/$alt_localhost/")" ;;
         esac
     fi
-    ssh -l "$user" -p "$port" "$host" "$open_cmd '$path'"
+    # escape single quotes for the remote shell: ' -> '\''
+    quoted_path="$(printf '%s' "$path" | sed "s/'/'\\\\''/g")"
+    ssh -l "$user" -p "$port" "$host" "$open_cmd '$quoted_path'"
 fi

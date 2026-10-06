@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
-import os
+import shlex
+import subprocess
 import sys
 
 # pop the first argument, which is the script name
 args = sys.argv
 cmd = args.pop(0)
+if len(args) < 3:
+    sys.exit("usage: {} OPS SRC[,SRC...] DST [DST...]".format(cmd))
 ops = args.pop(0)
 srcs = args.pop(0)
 
@@ -14,9 +17,9 @@ excludes = "--exclude=.ccls-cache --exclude=.cache --exclude=.git --exclude=buil
 cmds = []
 for src in srcs.split(","):
     for dst in args:
-        line = 'rsync --filter=":- .gitignore" {} {} {} {}'.format(excludes, ops, src, dst)
+        line = ["rsync", "--filter=:- .gitignore"] + excludes.split() + shlex.split(ops) + [src, dst]
         cmds.append(line)
 
-line = " & ".join(cmds)
-print(line)
-os.system(line)
+print(" & ".join(shlex.join(line) for line in cmds), flush=True)
+procs = [subprocess.Popen(line) for line in cmds]
+sys.exit(max(p.wait() for p in procs))
