@@ -1,0 +1,47 @@
+#!/bin/bash
+# Desktop notifications when memory gets dangerously tight.
+# Watches MemAvailable, swap usage and memory pressure (PSI).
+# Run as systemd user service: systemctl --user enable --now memwatch
+
+INTERVAL=${MEMWATCH_INTERVAL:-15} # seconds between checks
+REPEAT=${MEMWATCH_REPEAT:-300}    # re-notify while still bad, seconds
+WARN_AVAIL=15                     # % of RAM available
+CRIT_AVAIL=7
+WARN_SWAP=50 # % of swap used
+CRIT_SWAP=80
+WARN_PSI=10 # "some" avg10 from /proc/pressure/memory
+CRIT_PSI=30
+
+top_procs() {
+	ps -eo rss=,comm= --sort=-rss | head -5 |
+		awk '{printf "%5.1fG  %s\n", $1/1048576, $2}'
+}
+
+prev=0
+last=0
+while true; do
+	read -r avail_pct swap_pct < <(awk '
+        /^MemTotal:/     {t=$2} /^MemAvailable:/ {a=$2}
+        /^SwapTotal:/    {st=$2} /^SwapFree:/     {sf=$2}
+        END {printf "%d %d\n", a*100/t, st ? (st-sf)*100/st : 0}' /proc/meminfo)
+	psi=$(awk -F'[ =]' '/^some/ {printf "%d", $3}' /proc/pressure/memory)
+
+	level=0
+	((avail_pct < WARN_AVAIL || swap_pct > WARN_SWAP || psi > WARN_PSI)) && level=1
+	((avail_pct < CRIT_AVAIL || swap_pct > CRIT_SWAP || psi > CRIT_PSI)) && level=2
+
+	now=$(date +%s)
+	if ((level > 0 && (level > prev || now - last >= REPEAT))); then
+		if ((level == 2)); then
+			urgency=critical title="Memory CRITICAL"
+		else urgency=normal title="Memory getting low"; fi
+		notify-send -u "$urgency" -a memwatch -i dialog-warning "$title" \
+			"Available ${avail_pct}%, swap ${swap_pct}%, pressure ${psi}%
+$(top_procs)"
+		last=$now
+	elif ((level == 0 && prev > 0)); then
+		notify-send -u low -a memwatch "Memory OK" "Available ${avail_pct}%"
+	fi
+	prev=$level
+	sleep "$INTERVAL"
+done

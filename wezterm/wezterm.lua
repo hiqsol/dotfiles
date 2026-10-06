@@ -130,7 +130,8 @@ return {
 	},
 
 	-- Scrollback buffer
-	scrollback_lines = 100000,
+	-- 10k lines per pane; 100k grew to hundreds of MB across many tabs
+	scrollback_lines = 10000,
 
 	-- Optional launch menu for quickly opening shell or ssh
 	launch_menu = {
