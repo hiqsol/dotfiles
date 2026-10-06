@@ -9,6 +9,7 @@ See the header of shell/shell.toml for the source format.
 """
 
 import re
+import shlex
 import sys
 import tomllib
 from pathlib import Path
@@ -170,15 +171,35 @@ def fish_env_value(value):
     return "".join('"$HOME"' if p is None else fish_literal(p) for p in parts)
 
 
+FISH_SEP = re.compile(r"(\s*(?:&&|\|\||[;|])\s*)")
+
+
+def fish_expand(value, aliases, seen=()):
+    """Inline aliases used in command position: an abbreviation expands only
+    the word typed, so the text it inserts must not rely on other aliases."""
+    out = []
+    for part in FISH_SEP.split(value):
+        word, sep, rest = part.partition(" ")
+        if FISH_SEP.fullmatch(part) or word not in aliases or word in seen:
+            out.append(part)
+            continue
+        inner = fish_expand(aliases[word], aliases, seen + (word,))
+        out.append(inner + sep + rest)
+    return "".join(out)
+
+
 def gen_fish(data):
     lines = [f"# {HEADER}", ""]
     for name, value in entries(data, "env", "fish"):
         lines.append(f"set -gx {name} {fish_env_value(value)}")
     lines.append("")
-    for name, value in entries(data, "aliases", "fish"):
-        if has_ctrl(value.replace("\t", "")):
-            raise Error(f"[aliases] {name}: control characters are not supported")
-        lines.append(f"alias {name}={fish_single(value)}")
+    # abbreviations, not aliases: the history shows the real command
+    aliases = dict(entries(data, "aliases", "fish"))
+    lines.append("status is-interactive; or return")
+    lines.append("")
+    for name, value in aliases.items():
+        value = fish_expand(value, aliases, (name,))
+        lines.append(f"abbr -a -- {name} {fish_single(value)}")
     return "\n".join(lines) + "\n"
 
 
@@ -188,13 +209,32 @@ def xonsh_env_value(value):
     return " + ".join("$HOME" if p is None else repr(p) for p in home_parts(value))
 
 
+def xonsh_alias(value):
+    """A list alias for simple commands: xonsh keeps quotes in string aliases
+    and turns ones with `|` into exec aliases that drop their arguments.
+    Command lists (&&, ;, |) stay strings."""
+    lexer = shlex.shlex(value, posix=True, punctuation_chars=";&|")
+    lexer.whitespace_split = True
+    words = list(lexer)
+    if any(w and set(w) <= set(";&|") for w in words):
+        return repr(value)
+    items = []
+    for w in words:
+        if w == "~" or w.startswith("~/"):
+            w = "$HOME" + w[1:]
+        if "$" in HOME_RE.sub("", w):
+            return repr(value)
+        items.append(xonsh_env_value(w))
+    return "[" + ", ".join(items) + "]"
+
+
 def gen_xonsh(data):
     lines = [f"# {HEADER}", ""]
     for name, value in entries(data, "env", "xonsh"):
         lines.append(f"${name} = {xonsh_env_value(value)}")
     lines.append("")
     for name, value in entries(data, "aliases", "xonsh"):
-        lines.append(f"aliases[{name!r}] = {value!r}")
+        lines.append(f"aliases[{name!r}] = {xonsh_alias(value)}")
     return "\n".join(lines) + "\n"
 
 

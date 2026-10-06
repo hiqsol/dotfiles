@@ -12,8 +12,13 @@
 # Shell keys: sh (zsh + bash), fish, xonsh.
 #
 # Env values are literal; only `$HOME` (anywhere) and a leading `~/` are
-# expanded. Alias values are command lines passed through verbatim, so they
-# must parse in every shell they go to.
+# expanded. Alias values are POSIX command lines and must parse in every shell
+# they go to:
+#   sh     aliases, verbatim
+#   fish   abbreviations (history shows the real command); aliases used in
+#          command position are inlined, as abbreviations don't nest
+#   xonsh  simple commands become argument lists (quotes removed, `~`/`$HOME`
+#          expanded); command lists (&&, ;, |) stay strings
 #
 # Keep logic out of here: functions, conditionals, PATH and runtime-computed
 # values (e.g. FZF_DEFAULT_COMMAND) stay in the per-shell files.
@@ -29,7 +34,7 @@ LC_ALL = "en_US.UTF-8"
 PAGER = "less -S"
 EDITOR = "nvim"
 VISUAL = "nvim"
-BROWSER = { default = "x-www-browser:local-open", xonsh = "local-open" }
+BROWSER = "x-www-browser:local-open"
 NVIM_LOG_FILE = "$HOME/.cache/nvim/log"
 RIPGREP_CONFIG_PATH = "~/.config/ripgrep/.ripgreprc"
 
@@ -73,12 +78,11 @@ cdd = "cd ~/.config"
 ls = "eza"
 ll = "eza -lAh"
 cat = "bat"   # pages only when needed, plain output when piped; bat from mise
-lt = { default = 'eza -laT -I ".git|.venv|__pycache__"', xonsh = "eza -laT -I .git" }
+lt = 'eza -laT -I ".git|.venv|__pycache__"'
 gtree = 'eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
 d1 = "du -hd1"
 
 # git
-gt = "ga ll"
 grab = "g grab"
 lgrab = "g lgrab"
 clone = "g clone"
@@ -89,7 +93,7 @@ lg = "lazygit"
 gr = "rg --no-heading"
 grn = "rg --no-line-number --no-filename"
 gir = "grep -IR"
-girp = { default = 'grep -IR --include=\*.php --exclude-dir=vendor', xonsh = false }  # xonsh keeps the backslash
+girp = "grep -IR --include='*.php' --exclude-dir=vendor"
 grep = { sh = "grep --color=auto" }
 diff = { sh = "diff --color" }
 
