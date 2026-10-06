@@ -1,0 +1,4 @@
+#!/bin/sh
+# composer in the docker compose php-fpm service, with the ssh agent forwarded
+exec docker compose run --rm -v "$SSH_AUTH_SOCK":/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent php-fpm \
+    sh -c "git config --global --add safe.directory /app && composer $*"

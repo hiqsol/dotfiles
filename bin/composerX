@@ -1,0 +1,18 @@
+#!/bin/sh
+# composerX MAJOR [ARGS...] - run composer MAJOR (1 or 2), installing it on first use
+set -e
+ver="$1"
+shift
+dir="$HOME/.local/bin"
+file="$dir/composer$ver"
+
+if ! [ -x "$file" ]; then
+    tmp="$(mktemp)"
+    mkdir -p "$dir"
+    wget https://getcomposer.org/installer -O "$tmp"
+    php "$tmp" --install-dir="$dir" --filename="composer$ver"
+    rm "$tmp"
+    "$file" self --"$ver"
+fi
+
+exec "$file" "$@"

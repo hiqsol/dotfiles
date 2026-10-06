@@ -1,0 +1,3 @@
+#!/bin/sh
+# composer in the docker compose php-fpm service, with $HOME mounted
+exec docker compose run -v "$HOME":"$HOME" -w "$PWD" --entrypoint composer php-fpm "$@"

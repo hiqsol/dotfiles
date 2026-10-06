@@ -1,0 +1,9 @@
+#!/bin/sh
+# psql_default [DB [ARGS...]] - psql, DB defaults to the contents of ~/hostname
+if [ -z "$1" ]; then
+    name=$(cat "$HOME/hostname")
+else
+    name="$1"
+    shift
+fi
+exec psql "$name" "$@"

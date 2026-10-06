@@ -1,0 +1,3 @@
+#!/bin/sh
+# dpsql CONTAINER [DB] - psql in a running container
+exec docker exec -it --user postgres "$1" sh -c "stty cols $(tput cols) rows $(tput lines) && psql $2"

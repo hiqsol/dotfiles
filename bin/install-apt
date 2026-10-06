@@ -1,0 +1,35 @@
+#!/bin/sh
+# install-apt [console|devtools|desktop]... - apt packages for a new host (default: console)
+set -e
+
+console() {
+    sudo apt install \
+        net-tools curl apt-transport-https \
+        ca-certificates gnupg \
+        grc zsh fish tmux fuse git-lfs \
+        ansible
+}
+
+devtools() {
+    sudo apt install \
+        build-essential cmake pkg-config
+}
+
+desktop() {
+    console
+    sudo apt install openvpn openssh-server \
+        keepassxc feh ffmpeg flameshot kruler \
+        arandr qt5-style-kvantum \
+        fonts-terminus gnome-font-viewer
+}
+
+[ $# -eq 0 ] && set -- console
+for target; do
+    case "$target" in
+        console | devtools | desktop) "$target" ;;
+        *)
+            echo "unknown target: $target" >&2
+            exit 1
+            ;;
+    esac
+done

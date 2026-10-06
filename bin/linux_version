@@ -1,0 +1,5 @@
+#!/bin/sh
+command -v lsb_release >/dev/null && lsb_release -a
+cat /etc/*release
+cat /etc/issue*
+cat /proc/version

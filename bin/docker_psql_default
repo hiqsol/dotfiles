@@ -1,0 +1,13 @@
+#!/bin/sh
+# docker_psql_default [HOST [DB [ARGS...]]] - psql as postgres, HOST=pgsql DB=postgres
+host=pgsql
+name=postgres
+if [ -n "$1" ]; then
+    host="$1"
+    shift
+fi
+if [ -n "$1" ]; then
+    name="$1"
+    shift
+fi
+exec psql -h "$host" -U postgres "$name" "$@"

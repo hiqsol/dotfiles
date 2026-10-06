@@ -1,0 +1,16 @@
+#!/bin/sh
+# apt-php-modules [install|remove] [VERSION] - apt install/remove the usual PHP modules
+cmd="${1:-install}"
+ver="${2:-$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')}"
+echo "PHP $ver"
+
+extra=""
+[ "$ver" != "7.4" ] && extra="$extra php$ver-opcache php$ver-dom"
+[ "$ver" != "8.1" ] && extra="$extra php$ver-json"
+
+# shellcheck disable=SC2086 # $extra is a word list
+exec sudo apt "$cmd" -y "php$ver-cli" "php$ver-common" \
+    "php$ver-bcmath" "php$ver-gmp" $extra \
+    "php$ver-imap" "php$ver-mailparse" "php$ver-mbstring" \
+    "php$ver-curl" "php$ver-intl" \
+    "php$ver-readline" "php$ver-soap" "php$ver-xml" "php$ver-zip"

@@ -1,0 +1,5 @@
+#!/bin/sh
+# dphp VERSION [ARGS...] - run php:VERSION-cli in docker
+ver="$1"
+shift
+exec drun "php:$ver-cli" php "$@"

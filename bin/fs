@@ -1,0 +1,4 @@
+#!/bin/sh
+# fs HOST [ARGS...] - forget HOST's known key, then ssh to it
+ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
+exec ssh "$@"

@@ -1,0 +1,4 @@
+#!/bin/sh
+# kh NAMESPACE CONTAINER - shell in the first pod whose name starts with CONTAINER
+pod=$(kubectl get pods -n "$1" | grep "^$2" | cut -f 1 -d ' ')
+exec kubectl exec -i -t -n "$1" "$pod" -c "$2" -- sh -c "bash || ash || sh"
