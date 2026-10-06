@@ -10,7 +10,6 @@ if ! xset q > /dev/null 2> /dev/null; then
     export DISPLAY
 fi
 
-export NVIM_LOG_FILE="$HOME/.cache/nvim/log"
 if [ -f ~/.local/.shenv ]; then
     . ~/.local/.shenv
 fi

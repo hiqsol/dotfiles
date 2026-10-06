@@ -1,0 +1,271 @@
+#!/usr/bin/env python3
+"""Generate per-shell env/alias files from shell/shell.toml.
+
+Usage: scripts/gen-shell [--check]
+
+  --check   don't write; exit 1 if any generated file is missing or stale
+
+See the header of shell/shell.toml for the source format.
+"""
+
+import re
+import sys
+import tomllib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SOURCE = ROOT / "shell" / "shell.toml"
+HEADER = "GENERATED from shell/shell.toml by scripts/gen-shell — do not edit"
+
+SHELLS = ("sh", "fish", "xonsh")
+KEYS = set(SHELLS) | {"default"}
+
+ENV_NAME = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
+ALIAS_NAME = re.compile(r"[A-Za-z0-9_,.+:@%-]+\Z")
+SH_SAFE = re.compile(r"[A-Za-z0-9_,.+:@%/=-]+\Z")
+HOME_RE = re.compile(r"\$HOME\b|\$\{HOME\}")
+
+
+class Error(Exception):
+    pass
+
+
+def resolve(section, name, value, shell):
+    """Value of an entry for a shell, or None if the shell is skipped."""
+    if isinstance(value, dict):
+        bad = set(value) - KEYS
+        if bad:
+            raise Error(f"[{section}] {name}: unknown keys {sorted(bad)}, allowed {sorted(KEYS)}")
+        value = value.get(shell, value.get("default"))
+    if value is None or value is False:
+        return None
+    if not isinstance(value, str):
+        raise Error(f"[{section}] {name}: value must be a string, false or a table")
+    return value
+
+
+def entries(data, section, shell):
+    for name, value in data.get(section, {}).items():
+        value = resolve(section, name, value, shell)
+        if value is not None:
+            yield name, value
+
+
+def home_parts(value):
+    """Split an env value into literal strings and HOME markers (None)."""
+    if value == "~" or value.startswith("~/"):
+        value = "$HOME" + value[1:]
+    parts = []
+    pos = 0
+    for m in HOME_RE.finditer(value):
+        if m.start() > pos:
+            parts.append(value[pos:m.start()])
+        parts.append(None)
+        pos = m.end()
+    if pos < len(value):
+        parts.append(value[pos:])
+    return parts or [""]
+
+
+def has_ctrl(s):
+    return any(ord(ch) < 32 or ord(ch) == 127 for ch in s)
+
+
+# --- sh (zsh + bash) ------------------------------------------------------
+
+def sh_single(s):
+    if "'" in s and not re.search(r'["$`\\!]', s):
+        return '"' + s + '"'
+    return "'" + s.replace("'", "'\\''") + "'"
+
+
+def sh_ansi_c(s):
+    out = []
+    for ch in s:
+        if ch == "\\":
+            out.append("\\\\")
+        elif ch == "'":
+            out.append("\\'")
+        elif ch == "\x1b":
+            out.append("\\E")
+        elif ch == "\t":
+            out.append("\\t")
+        elif ch == "\n":
+            out.append("\\n")
+        elif has_ctrl(ch):
+            out.append(f"\\x{ord(ch):02x}")
+        else:
+            out.append(ch)
+    return "$'" + "".join(out) + "'"
+
+
+def sh_double(s):
+    return re.sub(r'([\\"$`])', r"\\\1", s)
+
+
+def sh_env_value(value):
+    parts = home_parts(value)
+    if not any(has_ctrl(p) for p in parts if p is not None):
+        if None not in parts and SH_SAFE.match(value):
+            return value
+        if None not in parts:
+            return sh_single(value)
+        return '"' + "".join("$HOME" if p is None else sh_double(p) for p in parts) + '"'
+    return "".join('"$HOME"' if p is None else sh_ansi_c(p) for p in parts)
+
+
+def sh_alias(name, value):
+    dashes = "-- " if name.startswith("-") else ""
+    return f"alias {dashes}{name}={sh_single(value)}"
+
+
+def gen_sh_env(data):
+    lines = [f"# {HEADER}", "# shellcheck shell=bash", ""]
+    for name, value in entries(data, "env", "sh"):
+        lines.append(f"export {name}={sh_env_value(value)}")
+    return "\n".join(lines) + "\n"
+
+
+def gen_sh_aliases(data):
+    lines = [f"# {HEADER}", "# shellcheck shell=bash", ""]
+    for name, value in entries(data, "aliases", "sh"):
+        lines.append(sh_alias(name, value))
+    return "\n".join(lines) + "\n"
+
+
+# --- fish -----------------------------------------------------------------
+
+FISH_ESC = {"\x1b": "\\e", "\t": "\\t", "\n": "\\n", "\r": "\\r"}
+
+
+def fish_single(s):
+    if "'" in s and not re.search(r'["$\\]', s):
+        return '"' + s + '"'
+    return "'" + s.replace("\\", "\\\\").replace("'", "\\'") + "'"
+
+
+def fish_double(s):
+    return re.sub(r'([\\"$])', r"\\\1", s)
+
+
+def fish_literal(s):
+    """Quote a literal string, putting control chars outside the quotes."""
+    out = []
+    for chunk in re.split(r"([\x00-\x1f\x7f])", s):
+        if not chunk:
+            continue
+        if has_ctrl(chunk):
+            out.append(FISH_ESC.get(chunk, f"\\x{ord(chunk):02x}"))
+        else:
+            out.append(fish_single(chunk))
+    return "".join(out) or "''"
+
+
+def fish_env_value(value):
+    parts = home_parts(value)
+    if None in parts and not any(has_ctrl(p) for p in parts if p is not None):
+        return '"' + "".join("$HOME" if p is None else fish_double(p) for p in parts) + '"'
+    if None not in parts and SH_SAFE.match(value):
+        return value
+    return "".join('"$HOME"' if p is None else fish_literal(p) for p in parts)
+
+
+def gen_fish(data):
+    lines = [f"# {HEADER}", ""]
+    for name, value in entries(data, "env", "fish"):
+        lines.append(f"set -gx {name} {fish_env_value(value)}")
+    lines.append("")
+    for name, value in entries(data, "aliases", "fish"):
+        if has_ctrl(value.replace("\t", "")):
+            raise Error(f"[aliases] {name}: control characters are not supported")
+        lines.append(f"alias {name}={fish_single(value)}")
+    return "\n".join(lines) + "\n"
+
+
+# --- xonsh ----------------------------------------------------------------
+
+def xonsh_env_value(value):
+    return " + ".join("$HOME" if p is None else repr(p) for p in home_parts(value))
+
+
+def gen_xonsh(data):
+    lines = [f"# {HEADER}", ""]
+    for name, value in entries(data, "env", "xonsh"):
+        lines.append(f"${name} = {xonsh_env_value(value)}")
+    lines.append("")
+    for name, value in entries(data, "aliases", "xonsh"):
+        lines.append(f"aliases[{name!r}] = {value!r}")
+    return "\n".join(lines) + "\n"
+
+
+# --- main -----------------------------------------------------------------
+
+TARGETS = {
+    "shell/generated.env.sh": gen_sh_env,
+    "shell/generated.aliases.sh": gen_sh_aliases,
+    "fish/conf.d/00-generated.fish": gen_fish,
+    "xonsh/generated.xsh": gen_xonsh,
+}
+
+
+def validate(data):
+    unknown = set(data) - {"env", "aliases"}
+    if unknown:
+        raise Error(f"unknown top-level tables {sorted(unknown)}, allowed: env, aliases")
+    for name in data.get("env", {}):
+        if not ENV_NAME.match(name):
+            raise Error(f"[env] {name!r}: invalid variable name")
+    for name, value in data.get("aliases", {}).items():
+        if not ALIAS_NAME.match(name):
+            raise Error(f"[aliases] {name!r}: invalid alias name")
+        for shell in SHELLS:
+            v = resolve("aliases", name, value, shell)
+            if v is not None and has_ctrl(v.replace("\t", "")):
+                raise Error(f"[aliases] {name}: control characters are not supported")
+
+
+def main(argv):
+    check = False
+    for arg in argv:
+        if arg == "--check":
+            check = True
+        elif arg in ("-h", "--help"):
+            print(__doc__.strip())
+            return 0
+        else:
+            print(f"gen-shell: unknown argument {arg!r}", file=sys.stderr)
+            return 2
+
+    try:
+        with SOURCE.open("rb") as f:
+            data = tomllib.load(f)
+        validate(data)
+        outputs = {path: gen(data) for path, gen in TARGETS.items()}
+    except (Error, tomllib.TOMLDecodeError, OSError) as e:
+        print(f"gen-shell: {SOURCE.relative_to(ROOT)}: {e}", file=sys.stderr)
+        return 2
+
+    stale = []
+    for path, content in outputs.items():
+        target = ROOT / path
+        try:
+            current = target.read_text()
+        except FileNotFoundError:
+            current = None
+        if current == content:
+            continue
+        stale.append(path)
+        if not check:
+            target.write_text(content)
+            print(f"gen-shell: wrote {path}")
+
+    if check and stale:
+        for path in stale:
+            print(f"gen-shell: {path} is stale", file=sys.stderr)
+        print("gen-shell: run scripts/gen-shell", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

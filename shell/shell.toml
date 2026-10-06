@@ -1,0 +1,131 @@
+# Single source of truth for simple env vars and aliases in all shells.
+# After editing run `scripts/gen-shell` and commit the generated files:
+#   shell/generated.env.sh       sourced by shell/.shrc     (zsh, bash)
+#   shell/generated.aliases.sh   sourced by shell/.aliases  (zsh, bash)
+#   fish/conf.d/00-generated.fish                           (fish)
+#   xonsh/generated.xsh          sourced by xonsh/rc.xsh    (xonsh)
+#
+# Values:
+#   "..."                        same value in every shell
+#   { sh = "...", fish = "..." } per-shell values; shells not listed are skipped
+#   "..."  `default` is the fallback, false skips
+# Shell keys: sh (zsh + bash), fish, xonsh.
+#
+# Env values are literal; only `$HOME` (anywhere) and a leading `~/` are
+# expanded. Alias values are command lines passed through verbatim, so they
+# must parse in every shell they go to.
+#
+# Keep logic out of here: functions, conditionals, PATH and runtime-computed
+# values (e.g. FZF_DEFAULT_COMMAND) stay in the per-shell files.
+
+[env]
+BLOCKSIZE = "K"                         # show disk information in K-blocks
+CLICOLOR = "1"                          # colorize ls output (FreeBSD only)
+LSCOLORS = "Gxfxcxdxbxegedabagacad"     # see https://github.com/trapd00r/LS_COLORS
+TERM = { sh = "screen-256color" }       # proper 256-colors TERM
+LANGUAGE = "en_US:en"
+LANG = "en_US.UTF-8"                    # .shrc overrides to en_US.utf8 on Linux
+LC_ALL = "en_US.UTF-8"
+PAGER = "less -S"
+EDITOR = "nvim"
+VISUAL = "nvim"
+BROWSER = { default = "x-www-browser:local-open", xonsh = "local-open" }
+NVIM_LOG_FILE = "$HOME/.cache/nvim/log"
+RIPGREP_CONFIG_PATH = "~/.config/ripgrep/.ripgreprc"
+
+# less config
+LESS = "-i -x4 -M -R -F -X"
+LESS_TERMCAP_mb = "\u001b[1;31m"                  # begin bold
+LESS_TERMCAP_md = "\u001b[1;36m"                  # begin blink
+LESS_TERMCAP_me = "\u001b[0m"                     # reset bold/blink
+LESS_TERMCAP_so = "\u001b[38;5;016m\u001b[48;5;220m" # begin reverse video
+LESS_TERMCAP_se = "\u001b[0m"                     # reset reverse video
+LESS_TERMCAP_us = "\u001b[1;32m"                  # begin underline
+LESS_TERMCAP_ue = "\u001b[0m"                     # reset underline
+LESS_TERMCAP_zz = "\u001b[0m"                     # the last for better output of `env`
+
+[aliases]
+# one-letter
+c = "composerX 2"
+d = "docker"
+f = "~/prj/instockcom/ferroctl/ferroctl"
+g = "git"
+k = "kubectl"
+l = "eza -la"
+p = "psql_default"
+s = "ssh"
+v = "nvim"
+y = "yazi"
+L = "less -R"                           # zsh/.zshrc redefines L as a global alias
+Z = { sh = "zcalc" }
+
+# navigation
+cdd = "cd ~/.config"
+"-" = { sh = "cd -" }
+"," = "cd .."
+",," = "cd ../.."
+",,," = "cd ../../.."
+",,,," = "cd ../../../.."
+",,,,," = "cd ../../../../.."
+",,,,,," = "cd ../../../../../.."
+
+# listing
+ls = "eza"
+ll = "eza -lAh"
+lt = { default = 'eza -laT -I ".git|.venv|__pycache__"', xonsh = "eza -laT -I .git" }
+gtree = 'eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
+d1 = "du -hd1"
+
+# git
+gt = "ga ll"
+grab = "g grab"
+lgrab = "g lgrab"
+clone = "g clone"
+lclone = "g lclone"
+lg = "lazygit"
+
+# search
+gr = "rg --no-heading"
+grn = "rg --no-line-number --no-filename"
+gir = "grep -IR"
+girp = { default = 'grep -IR --include=\*.php --exclude-dir=vendor', xonsh = false }  # xonsh keeps the backslash
+grep = { sh = "grep --color=auto" }
+diff = { sh = "diff --color" }
+
+# editors
+vim = "nvim"
+ovim = "/usr/bin/vim"
+vimdiff = "v -d"
+zconfig = "v ~/.config/zsh/.zshrc"
+
+# docker, php, db
+dc = "docker compose"
+dphp54 = "drun php:5.4-cli php"
+dphp81 = "drun php:8.1-cli php"
+dphp84 = "drun hiqdev/php:8.4-cli-alpine php"
+dco = "dcomposer"
+dp = "docker_psql_default"
+c1 = "composerX 1"
+c2 = "composerX 2"
+phm = "phpuvm"
+
+# ssh, network
+ws = "ssh -o 'ConnectionAttempts 300'"
+rmsshkey = 'ssh-keygen -f "$HOME/.ssh/known_hosts" -R'
+nwget = "wget --no-check-certificate"
+x509 = "openssl x509 -text -noout -in"
+
+# AI
+
+# media
+ymp3 = "yt-dlp --add-metadata --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
+ypl3 = "ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
+
+# tmux
+ls-tmux = "tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}\t#{pane_tty}\t#{pane_pid}\t#{pane_current_command}'"
+
+# system
+upgrade = "sudo apt update && sudo apt upgrade"
+upall = "~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade"
+inithome = { sh = "wget https://raw.githubusercontent.com/hiqdev/rehome/master/rehome ; python rehome init https://github.com/hiqsol/dotfiles ; rm rehome" }
+rehome = { sh = "~/prj/hiqdev/rehome/rehome" }

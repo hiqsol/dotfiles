@@ -7,6 +7,7 @@ reset_ssh_agent() {
     ### XXX NOT $HOME because of `sudo -s`
     SOCK="/home/$USER/.ssh/ssh-agent.sock"
     # Find agent sockets owned by current user
+    # shellcheck disable=SC2044 # agent socket paths have no spaces
     for sock in $(find /tmp -name "agent.*" -user "$USER" 2>/dev/null); do
         export SSH_AUTH_SOCK="$sock"
         # exit 1 = agent alive without identities, only 2 = no agent
@@ -27,151 +28,36 @@ restart_ssh_agent() {
 }
 
 md() {
-    mkdir -p "$@" && cd "$@"
+    mkdir -p "$@" && cd "$@" || return
 }
 
-fs() {
-    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$1"
-    s "$@"
-}
 
 cdls() {
-    cd "$1"
+    cd "$1" || return
     if [ "$PWD" != "$HOME" ]; then
-        ls -F ${ls_options}
+        # shellcheck disable=SC2154 # set in .shrc
+        ls -F ${ls_options:+"$ls_options"}
     fi
 }
 
 # cd to /home/user/prj/organization/project
 cdp() {
-    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-6)"
+    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-6)" || return
 }
 
 # cd to /home/user/prj/organization/project/vendor/organization/PROJECT
 cdvp() {
-    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-9)"
+    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-9)" || return
 }
 
 # cd to /home/user/prj/organization/project/vendor/ORGANIZATION
 cdv() {
     _cdv_6=$(printf '%s\n' "$PWD" | cut -d/ -f7)
     _cdv_7=$(printf '%s\n' "$PWD" | cut -d/ -f8)
-    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-6)/${_cdv_6:-vendor}/${_cdv_7:-hiqdev}"
+    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-6)/${_cdv_6:-vendor}/${_cdv_7:-hiqdev}" || return
     unset _cdv_6 _cdv_7
 }
 
 hcd() {
-    cd "$HOME/$1"
-}
-
-psql_default() {
-    if [ -z "$1" ]; then
-        name=$(cat "$HOME/hostname")
-    else
-        name="$1"
-        shift
-    fi
-    psql "$name" "$@"
-}
-
-docker_psql_default() {
-    if [ -z "$1" ]; then
-        host=pgsql
-    else
-        host="$1"
-        shift
-    fi
-    if [ -z "$1" ]; then
-        name=postgres
-    else
-        name="$1"
-        shift
-    fi
-    psql -h "$host" -U postgres "$name" "$@"
-}
-
-dcc() {
-    dc run -v "$HOME":"$HOME" -w "$PWD" --entrypoint composer php-fpm "$@"
-}
-
-composerX() {
-    composer_version="$1"
-    shift
-    dir="$HOME/.local/bin"
-    file="$dir/composer$composer_version"
-
-    if ! [ -x "$file" ]; then
-        tmp="$(mktemp)"
-        mkdir -p "$dir"
-        wget https://getcomposer.org/installer -O "$tmp"
-        php "$tmp" --install-dir="$dir" --filename="composer$composer_version"
-        rm "$tmp"
-        "$file" self --"$composer_version"
-    fi
-
-    "$file" "$@"
-}
-
-drun() {
-    docker run -it --rm -v "$HOME":"$HOME" -w "$PWD" "$@"
-}
-
-dphp54() { drun php:5.4-cli php "$@"; }
-dphp81() { drun php:8.1-cli php "$@"; }
-dphp84() { drun hiqdev/php:8.4-cli-alpine php "$@"; }
-dphp() {
-    ver="$1"
-    shift
-    drun "php:$ver-cli" php "$@"
-}
-
-dbash() {
-    docker exec -it "$1" bash -c "stty cols $COLUMNS rows $LINES && bash"
-}
-
-dpsql() {
-    docker exec -it --user postgres "$1" sh -c "stty cols $COLUMNS rows $LINES && psql $2"
-}
-
-dcbash() {
-    dc exec "$1" bash -c "stty cols $COLUMNS rows $LINES && bash"
-}
-
-dcpsql() {
-    dc exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $*"
-}
-
-dccomposer() {
-    docker compose run --rm -v "$SSH_AUTH_SOCK":/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent php-fpm sh -c "git config --global --add safe.directory /app && composer $*"
-}
-
-dcomposer() {
-    docker run --rm --entrypoint composer \
-        --user "$(id -u):$(id -g)" \
-        -e COMPOSER_HOME=/tmp/composer \
-        -e SSH_AUTH_SOCK=/ssh-agent \
-        -e "GIT_SSH_COMMAND=ssh -F /dev/null -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/tmp/known_hosts" \
-        -v /etc/passwd:/etc/passwd:ro \
-        -v /etc/group:/etc/group:ro \
-        -v "$SSH_AUTH_SOCK:/ssh-agent" \
-        -v "$PWD:/app" \
-        -w /app \
-        ghcr.io/hiqdev/docker-ci-images/php-nginx:8.4 \
-        "$@"
-}
-
-kh() {
-    pod=$(kubectl get pods -n "$1" | grep "^$2" | cut -f 1 -d ' ')
-    kubectl exec -i -t -n "$1" "$pod" -c "$2" "--" sh -c "bash || ash || sh"
-}
-
-path() {
-    echo "$("cd" "$(dirname "$1")" && pwd)/$(basename "$1")"
-}
-
-linux_version() {
-    command -v lsb_release >/dev/null && lsb_release -a
-    cat /etc/*release
-    cat /etc/issue*
-    cat /proc/version
+    cd "$HOME/$1" || return
 }

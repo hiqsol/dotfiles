@@ -12,32 +12,18 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 ### Project-local bins go LAST so an untrusted repo cannot shadow system commands
 export PATH="$PATH:./vendor/bin:./node_modules/.bin"
 
-### Show disk information in K-Blocks
-export BLOCKSIZE=K
-### Colorize ls output, unfortunately works for FreeBSD only
-export CLICOLOR=1
-### See later: https://github.com/trapd00r/LS_COLORS
-export LSCOLORS="Gxfxcxdxbxegedabagacad"
-### Proper 256-colors TERM
-export TERM=screen-256color
+### Simple env vars live in ~/.config/shell/shell.toml, run scripts/gen-shell after editing.
+### Sourced before the logic below, which may override (e.g. LANG on Linux).
+[ -f ~/.config/shell/generated.env.sh ] && . ~/.config/shell/generated.env.sh
 
 ### Activate english UTF8 locale and OS specific ls_options
-### first default settings
-    export LANGUAGE=en_US:en
-    export LANG=en_US.UTF-8
-    export LC_ALL=en_US.UTF-8
-    ls_options=''
-if [ `uname` = "Linux" ]; then
+ls_options=''
+# shellcheck disable=SC2034 # used by cdls in functions.sh
+if [ "$(uname)" = "Linux" ]; then
     export LANG=en_US.utf8
     export LC_ALL=en_US.utf8
     ls_options='--color'
 fi
-
-### Set default PAGER && EDITOR && VISUAL
-export PAGER="less -S"
-export EDITOR=nvim
-export VISUAL=nvim
-export BROWSER="x-www-browser:local-open"
 
 ### SSH agent: stable symlink for tmux reattach
 SOCK="/home/$USER/.ssh/ssh-agent.sock"
@@ -49,20 +35,7 @@ if [ ! -S "$SSH_AUTH_SOCK" ]; then
     reset_ssh_agent
 fi
 
-export RIPGREP_CONFIG_PATH=~/.config/ripgrep/.ripgreprc
 ### fd is `fdfind` when installed from Debian/Ubuntu apt, `fd` otherwise (e.g. mise)
 if command -v fdfind >/dev/null 2>&1; then _fd=fdfind; else _fd=fd; fi
 export FZF_DEFAULT_COMMAND="$_fd --type f --strip-cwd-prefix -H -L -E .git"
 unset _fd
-
-### less config
-export LESS='-i -x4 -M -R -F -X'
-export LESS_TERMCAP_mb=$'\E[1;31m'                  # begin bold
-export LESS_TERMCAP_md=$'\E[1;36m'                  # begin blink
-export LESS_TERMCAP_me=$'\E[0m'                     # reset bold/blink
-export LESS_TERMCAP_so=$'\E[38;5;016m\E[48;5;220m'  # begin reverse video
-export LESS_TERMCAP_se=$'\E[0m'                     # reset reverse video
-export LESS_TERMCAP_us=$'\E[1;32m'                  # begin underline
-export LESS_TERMCAP_ue=$'\E[0m'                     # reset underline
-export LESS_TERMCAP_zz=$'\E[0m'
-                     # the last for better output of `env`

@@ -3,6 +3,7 @@
 source ~/.shrc
 source ~/.aliases
 
+### zsh-only aliases (global and nocorrect); shared ones are in ~/.config/shell/shell.toml
 alias -g G='| rg'
 alias -g H='| head'
 alias -g L='| less'
@@ -15,9 +16,7 @@ alias git='nocorrect git'
 alias mkdir='nocorrect mkdir -p'
 
 source ~/.config/zsh/keys.zsh
-source ~/.config/zsh/console.sh
-source ~/.config/zsh/desktop.sh
-source ~/.config/zsh/functions.sh
+[[ -s /etc/grc.zsh ]] && source /etc/grc.zsh  # grc colouring (fish mirrors this list)
 
 ### AUTOLOADS
 fpath=(~/.config/zsh/completion $fpath)
@@ -75,6 +74,11 @@ for file in $plugins; do
     fi
 done
 
-eval "$(~/.local/bin/mise activate zsh)"
+if [[ -x ~/.local/bin/mise ]]; then
+    eval "$(~/.local/bin/mise activate zsh)"
+else
+    # lazy installer: the only one, mise brings everything else
+    mise() { ~/.config/bin/install-mise && ~/.local/bin/mise "$@" }
+fi
 eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"

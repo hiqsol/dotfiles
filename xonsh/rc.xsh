@@ -25,13 +25,10 @@ for _p in ['./vendor/bin', './node_modules/.bin']:
     $PATH.append(_p)
 del _p
 
-# Environment variables
-$EDITOR = 'nvim'
-$VISUAL = 'nvim'
-$PAGER = 'less -S'
-$BROWSER = 'local-open'
-$LANG = 'en_US.UTF-8'
-$LC_ALL = 'en_US.UTF-8'
+# Simple env vars and aliases live in ~/.config/shell/shell.toml,
+# run scripts/gen-shell after editing.
+source ~/.config/xonsh/generated.xsh
+
 $ls_options = '--color' if os.uname().sysname == 'Linux' else ''
 
 # Mise activation
@@ -56,47 +53,8 @@ except Exception:
 # Aliases - simple ones can be strings
 aliases['la'] = 'ls -laFh ' + $ls_options
 aliases['lh'] = 'ls -lFh ' + $ls_options
-aliases['ll'] = 'eza -lAh'
-aliases['l'] = 'eza -la'
-aliases['ls'] = 'eza'
 
-aliases['a'] = 'boxer abstract'
-aliases['c'] = 'composerX 2'
-aliases['d'] = 'docker'
-aliases['dc'] = 'docker compose'
-aliases['g'] = 'git'
-aliases['ga'] = 'gita'
-aliases['gt'] = 'ga ll'
-aliases['gtree'] = 'eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
-aliases['s'] = 'ssh'
-aliases['v'] = 'nvim'
-aliases['y'] = 'yazi'
-aliases['lg'] = 'lazygit'
-aliases['rga'] = 'ripgrep-all'
-aliases['gm'] = 'gemini'
-
-aliases['dco'] = 'dcomposer'
-aliases['gr'] = 'rg --no-heading'
-aliases['f'] = '~/prj/instockcom/ferroctl/ferroctl'
-aliases['lt'] = 'eza -laT -I .git'
-aliases['cdd'] = 'cd ~/.config'
-aliases['grab'] = 'g grab'
-aliases['lgrab'] = 'g lgrab'
-aliases['upgrade'] = 'sudo apt update && sudo apt upgrade'
-aliases['upall'] = '~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
-
-# Custom functions
-def _dcomposer(args):
-    ssh_auth_sock = os.environ.get('SSH_AUTH_SOCK', '')
-    cmd = [
-        "docker", "compose", "run", "--rm",
-        "-v", f"{ssh_auth_sock}:/ssh-agent",
-        "-e", "SSH_AUTH_SOCK=/ssh-agent",
-        "php-fpm", "sh", "-c",
-        f"git config --global --add safe.directory /app && composer {' '.join(args)}"
-    ]
-    subprocess.run(cmd)
-
+# Functions that change shell state; the rest are scripts in ~/.config/bin
 def _reset_ssh_agent():
     user = os.environ.get('USER')
     sock_link = f"/home/{user}/.ssh/ssh-agent.sock"
@@ -116,51 +74,13 @@ def _reset_ssh_agent():
             pass
     return False
 
-def _composerX(args):
-    if not args: return
-    version, rest = args[0], args[1:]
-    bindir = os.path.join(os.environ['HOME'], '.local', 'bin')
-    file = os.path.join(bindir, f'composer{version}')
-    if not os.access(file, os.X_OK):
-        import tempfile
-        fd, tmp = tempfile.mkstemp()
-        os.close(fd)
-        os.makedirs(bindir, exist_ok=True)
-        subprocess.run(['wget', 'https://getcomposer.org/installer', '-O', tmp])
-        subprocess.run(['php', tmp, f'--install-dir={bindir}', f'--filename=composer{version}'])
-        os.remove(tmp)
-        subprocess.run([file, 'self', f'--{version}'])
-    return subprocess.run([file] + rest).returncode
-
-def _drun(args):
-    cmd = ["docker", "run", "-it", "--rm", "-v", f"{os.environ['HOME']}:{os.environ['HOME']}", "-w", os.getcwd()] + args
-    subprocess.run(cmd)
-
-def _dbash(args):
-    if not args: return
-    cmd = ["docker", "exec", "-it", args[0], "bash", "-c", f"stty cols {os.environ.get('COLUMNS', 80)} rows {os.environ.get('LINES', 24)} && bash"]
-    subprocess.run(cmd)
-
 def _md(args):
     if not args: return
     os.makedirs(args[0], exist_ok=True)
     os.chdir(args[0])
 
-aliases['dcomposer'] = _dcomposer
-aliases['composerX'] = _composerX
 aliases['reset_ssh_agent'] = _reset_ssh_agent
-aliases['drun'] = _drun
-aliases['dbash'] = _dbash
-aliases['dphp84'] = lambda args: _drun(["hiqdev/php:8.4-cli-alpine", "php"] + args)
 aliases['md'] = _md
-
-# Navigational aliases
-aliases[','] = 'cd ..'
-aliases[',,'] = 'cd ../..'
-aliases[',,,'] = 'cd ../../..'
-aliases[',,,,'] = 'cd ../../../..'
-aliases[',,,,,'] = 'cd ../../../../..'
-aliases[',,,,,,'] = 'cd ../../../../../..'
 
 # Xonsh specific settings
 $UPDATE_OS_ENVIRON = True
