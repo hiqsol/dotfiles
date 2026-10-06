@@ -42,14 +42,6 @@ execx($(zoxide init xonsh))
 # stringified and it writes "./None" in the CWD. Pin it to a real path.
 $XONSH_HISTORY_FILE = $HOME + '/.local/share/xonsh/history_json/xonsh-history.json'
 
-# Direnv for xonsh usually requires xontrib
-# If it's not installed, we can try to fall back to the direnv hook if it ever supports it
-# but for now we'll just try to load the xontrib if it exists
-try:
-    xontrib load direnv
-except Exception:
-    pass
-
 # Aliases - simple ones can be strings
 aliases['la'] = 'ls -laFh ' + $ls_options
 aliases['lh'] = 'ls -lFh ' + $ls_options

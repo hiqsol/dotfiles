@@ -11,5 +11,4 @@ if [[ $- == *i* ]]; then
     eval "$(~/.local/bin/mise activate bash)"
     eval "$(zoxide init bash)"
     eval "$(starship init bash)"
-    eval "$(direnv hook bash)"
 fi

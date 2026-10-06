@@ -81,4 +81,3 @@ else
     mise() { ~/.config/bin/install-mise && ~/.local/bin/mise "$@" }
 fi
 eval "$(zoxide init zsh)"
-eval "$(direnv hook zsh)"

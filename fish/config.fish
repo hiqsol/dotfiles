@@ -27,7 +27,6 @@ else
 end
 
 if status is-interactive
-    direnv hook fish | source
     zoxide init fish | source
     starship init fish | source
 
