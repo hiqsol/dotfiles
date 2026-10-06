@@ -8,6 +8,7 @@ Personal dotfiles installed as `~/.config`. Cloned directly into `~/.config` fro
 - Simple aliases and env vars go in `shell/shell.toml`, then run
   `scripts/gen-shell` and commit the generated files (`*generated*`, never
   edit them by hand). `scripts/gen-shell --check` fails if they are stale.
+  Fish gets them as abbreviations (`abbr`), not aliases.
 - Commands that take arguments or need logic are POSIX `sh` scripts in `bin/`
   (on PATH in every shell), not shell functions.
 - Per-shell files are only for logic (conditionals, PATH, tool init) and
@@ -18,7 +19,8 @@ Personal dotfiles installed as `~/.config`. Cloned directly into `~/.config` fro
 - No lazy installers except `mise` (it installs everything else): add tools to
   `mise/config.toml` instead.
 - Neovim uses LazyVim — plugins go in `lua/plugins/`, config in `lua/config/`.
-- Tmux prefix is `Ctrl+Q`, not default `Ctrl+B`.
+- WezTerm (with its built-in mux) is used locally, tmux on remote hosts. Tmux
+  prefix is `Ctrl+Q`, not default `Ctrl+B`.
 - Git config is at `git/config`, not `~/.gitconfig`.
 - In the process of moving to mise for tools installation.
 - Checks: `mise run check` (or `scripts/check`) before committing; `mise run doctor`
