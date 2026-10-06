@@ -145,15 +145,15 @@ cmd_status() {
 [[ $# -eq 0 ]] && usage
 
 case "$1" in
-install)
-    shift
-    cmd_install "$@"
-    ;;
-use)
-    shift
-    cmd_use "$@"
-    ;;
-list) cmd_list ;;
-status) cmd_status ;;
-*) usage ;;
+    install)
+        shift
+        cmd_install "$@"
+        ;;
+    use)
+        shift
+        cmd_use "$@"
+        ;;
+    list) cmd_list ;;
+    status) cmd_status ;;
+    *) usage ;;
 esac

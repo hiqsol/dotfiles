@@ -1,0 +1,271 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2329  # functions are invoked indirectly via run_step
+# Lint the dotfiles repo.
+#
+#   scripts/check           full check (what `mise run check` and CI run)
+#   scripts/check --staged  fast pre-commit check: syntax of staged files,
+#                           gitleaks on staged changes, gen-shell --check
+#
+# Works without mise as long as the tools are on $PATH. Missing tools are
+# skipped with a warning locally and fail in CI (when $CI is set).
+set -uo pipefail
+
+cd "$(dirname "$0")/.." || exit 2
+
+mode=full
+case "${1:-}" in
+    --staged) mode=staged ;;
+    "") ;;
+    -h | --help)
+        awk 'NR > 2 && /^#/ { sub(/^# ?/, ""); print; next } NR > 2 { exit }' "$0"
+        exit 0
+        ;;
+    *)
+        echo "unknown option: $1" >&2
+        exit 2
+        ;;
+esac
+
+if [ -t 1 ]; then
+    red=$'\e[31m' green=$'\e[32m' yellow=$'\e[33m' bold=$'\e[1m' reset=$'\e[0m'
+else
+    red='' green='' yellow='' bold='' reset=''
+fi
+
+results=()
+failed=0
+
+record() { # record STATUS NAME [NOTE]
+    results+=("$1|$2|${3:-}")
+    [ "$1" = FAIL ] && failed=1
+    return 0
+}
+
+have() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# need TOOL STEP: true if TOOL exists, otherwise records SKIP (FAIL in CI)
+need() {
+    have "$1" && return 0
+    if [ -n "${CI:-}" ]; then
+        record FAIL "$2" "$1 not installed"
+    else
+        record SKIP "$2" "$1 not installed"
+    fi
+    return 1
+}
+
+# run_step NAME CMD...: run CMD, show its output only on failure
+run_step() {
+    local name=$1 out
+    shift
+    printf '%s... ' "$name"
+    if out=$("$@" 2>&1); then
+        printf '%sok%s\n' "$green" "$reset"
+        record PASS "$name"
+    else
+        printf '%sFAIL%s\n' "$red" "$reset"
+        printf '%s\n' "$out" | sed 's/^/    /'
+        record FAIL "$name"
+    fi
+}
+
+# --- file discovery -------------------------------------------------------
+
+# Content source for a file: working tree (full) or index (staged).
+read_file() {
+    if [ "$mode" = staged ]; then git show ":$1"; else cat -- "$1"; fi
+}
+
+# Print the kind of a file: sh bash zsh fish csh python toml md lua or other.
+classify() {
+    local f=$1 first
+    case "$f" in
+        *.fish) echo fish && return ;;
+        *.toml) echo toml && return ;;
+        *.md) echo md && return ;;
+        *.lua) echo lua && return ;;
+        *.py) echo python && return ;;
+        *.zsh | zsh/.z* | zsh/completion/*) echo zsh && return ;;
+    esac
+    first=$(read_file "$f" 2>/dev/null | head -n1)
+    case "$first" in
+        '#!'*bash*) echo bash && return ;;
+        '#!'*zsh*) echo zsh && return ;;
+        '#!'*/sh | '#!'*/sh' '* | '#!'*' sh' | '#!'*dash*) echo sh && return ;;
+        '#!'*csh*) echo csh && return ;;
+        '#!'*python*) echo python && return ;;
+        '#!'*fish*) echo fish && return ;;
+        '#compdef'*) echo zsh && return ;;
+    esac
+    # no (useful) shebang: decide by location
+    case "$f" in
+        zsh/*) echo zsh ;;
+        shell/.profile | shell/.login) echo sh ;;
+        shell/.bashrc) echo bash ;;
+        bin/* | scripts/* | .githooks/*) echo sh ;; # executables must have a shebang; shellcheck will say so
+        *) echo other ;;
+    esac
+}
+
+declare -A files_by_kind=()
+
+collect_files() {
+    local f kind
+    local -a list
+    if [ "$mode" = staged ]; then
+        mapfile -t list < <(git diff --cached --name-only --diff-filter=ACMR)
+    else
+        # tracked + untracked-but-not-ignored (new files show up before `git add`)
+        mapfile -t list < <(git ls-files -co --exclude-standard)
+    fi
+    for f in "${list[@]}"; do
+        if [ "$mode" = staged ]; then
+            # skip symlinks (mode 120000) and submodules
+            case "$(git ls-files -s -- "$f" | cut -d' ' -f1)" in 120000 | 160000) continue ;; esac
+        else
+            [ -f "$f" ] && [ ! -L "$f" ] || continue
+        fi
+        kind=$(classify "$f")
+        files_by_kind[$kind]+="$f"$'\n'
+    done
+}
+
+has() { # has KIND: any files of that kind?
+    [ -n "${files_by_kind[$1]:-}" ]
+}
+
+files() { # files KIND...: list files of given kinds
+    local k
+    for k in "$@"; do printf '%s' "${files_by_kind[$k]:-}"; done
+}
+
+# --- checks ---------------------------------------------------------------
+
+# syntax_check SHELL KIND: SHELL -n on every file of KIND
+syntax_check() {
+    local sh=$1 kind=$2 f rc=0
+    while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        read_file "$f" | "$sh" -n 2>&1 | sed "s|^|$f: |"
+        [ "${PIPESTATUS[1]}" -eq 0 ] || rc=1
+    done < <(files "$kind")
+    return "$rc"
+}
+
+python_syntax() {
+    local f rc=0
+    while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        read_file "$f" | python3 -c 'import ast, sys; ast.parse(sys.stdin.read(), sys.argv[1])' "$f" || rc=1
+    done < <(files python)
+    return "$rc"
+}
+
+shellcheck_files() {
+    # -s per kind: files without a shebang (e.g. shell/.profile) were
+    # classified by location
+    local kind rc=0
+    local -a list
+    for kind in sh bash; do
+        mapfile -t list < <(files "$kind")
+        [ "${#list[@]}" -gt 0 ] || continue
+        shellcheck -f gcc -s "$kind" "${list[@]}" || rc=1
+    done
+    return "$rc"
+}
+
+shfmt_files() {
+    # Formatting is enforced only for scripts owned by this repo's tooling,
+    # not for sourced dotfiles. Style: 4 spaces, indented case branches.
+    local -a list
+    mapfile -t list < <(files sh bash | grep -E '^(bin|scripts|\.githooks)/')
+    [ "${#list[@]}" -gt 0 ] || return 0
+    shfmt -i 4 -ci -d "${list[@]}"
+}
+
+stylua_nvim() {
+    # run from nvim/ so nvim/stylua.toml is picked up
+    (cd nvim && stylua --check .)
+}
+
+taplo_files() {
+    local -a list
+    mapfile -t list < <(files toml)
+    [ "${#list[@]}" -gt 0 ] || return 0
+    RUST_LOG=warn taplo check "${list[@]}"
+}
+
+taplo_staged() {
+    local f rc=0
+    while IFS= read -r f; do
+        [ -n "$f" ] || continue
+        git show ":$f" | RUST_LOG=warn taplo check - >/dev/null 2>&1 ||
+            {
+                echo "$f: invalid TOML"
+                rc=1
+            }
+    done < <(files toml)
+    return "$rc"
+}
+
+markdown_files() {
+    local -a list
+    mapfile -t list < <(files md)
+    [ "${#list[@]}" -gt 0 ] || return 0
+    rumdl check --no-cache "${list[@]}" # reads .markdownlint.yaml
+}
+
+gen_shell_check() {
+    if [ -x scripts/gen-shell ]; then
+        run_step "gen-shell up to date" scripts/gen-shell --check
+    elif [ -e scripts/gen-shell ]; then
+        record FAIL "gen-shell up to date" "scripts/gen-shell is not executable"
+    else
+        record SKIP "gen-shell up to date" "scripts/gen-shell not present"
+    fi
+}
+
+# --- main -----------------------------------------------------------------
+
+collect_files
+
+has bash && need bash "bash -n" && run_step "bash -n" syntax_check bash bash
+has sh && need sh "sh -n" && run_step "sh -n" syntax_check sh sh
+has zsh && need zsh "zsh -n" && run_step "zsh -n" syntax_check zsh zsh
+has fish && need fish "fish -n" && run_step "fish -n" syntax_check fish fish
+has python && need python3 "python syntax" && run_step "python syntax" python_syntax
+
+if [ "$mode" = staged ]; then
+    has toml && need taplo "taplo (staged)" && run_step "taplo (staged)" taplo_staged
+    need gitleaks "gitleaks (staged)" &&
+        run_step "gitleaks (staged)" gitleaks git --staged --no-banner --redact -v --log-level warn
+else
+    need shellcheck shellcheck && run_step shellcheck shellcheck_files
+    need shfmt shfmt && run_step "shfmt (bin, scripts, .githooks)" shfmt_files
+    need stylua stylua && run_step "stylua nvim/" stylua_nvim
+    need taplo taplo && run_step taplo taplo_files
+    need rumdl markdown && run_step "markdown (rumdl)" markdown_files
+    if [ -d .github/workflows ]; then
+        need actionlint actionlint && run_step actionlint actionlint
+    fi
+    need gitleaks gitleaks &&
+        run_step "gitleaks (history)" gitleaks git --no-banner --redact -v --log-level warn
+fi
+
+gen_shell_check
+
+echo
+echo "${bold}Summary${reset}"
+for r in "${results[@]}"; do
+    IFS='|' read -r status name note <<<"$r"
+    case "$status" in
+        PASS) color=$green ;;
+        FAIL) color=$red ;;
+        *) color=$yellow ;;
+    esac
+    printf '  %s%-4s%s  %s%s\n' "$color" "$status" "$reset" "$name" "${note:+ ($note)}"
+done
+
+exit $failed

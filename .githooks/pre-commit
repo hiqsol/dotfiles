@@ -1,0 +1,6 @@
+#!/bin/sh
+# Fast checks on what is being committed: syntax of staged files, gitleaks on
+# staged changes, generated shell files up to date. Full lint: scripts/check.
+# Enabled per clone with: git config core.hooksPath .githooks
+# Bypass once with: git commit --no-verify
+exec "$(git rev-parse --show-toplevel)/scripts/check" --staged

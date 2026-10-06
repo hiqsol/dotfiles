@@ -1,0 +1,29 @@
+# Repo-scoped mise config: tasks for working on the dotfiles themselves.
+#
+# Named `.mise.toml` on purpose. mise looks for `mise.toml`, `mise.local.toml`
+# and `.config/mise.toml` in every parent directory, so from $HOME
+# `~/.config/mise.toml` would match `.config/mise.toml` and these tasks would
+# show up everywhere under ~. `.mise.toml` is only found from inside ~/.config.
+# Do NOT put tasks in mise/config.toml or mise/tasks/: that is the global config.
+#
+# mise treats a parent dir named `.config` specially, so {{config_root}} here is
+# $HOME, not ~/.config. Tasks therefore run from the caller's cwd and locate the
+# scripts via git (works the same in a CI checkout).
+
+[tasks.check]
+description = "Lint the repo: shellcheck, shfmt, fish/zsh/bash -n, stylua, taplo, rumdl, actionlint, gitleaks"
+dir = "{{cwd}}"
+run = '"$(git rev-parse --show-toplevel)/scripts/check"'
+# Linters are also in the global mise/config.toml; listing them here lets CI
+# install only these (it ignores mise/config.toml, see .github/workflows).
+tools = { shellcheck = "latest", shfmt = "latest", stylua = "latest", taplo = "latest", gitleaks = "latest", rumdl = "latest", actionlint = "latest" }
+
+[tasks.doctor]
+description = "Sanity-check the live environment: dead aliases, broken symlinks, stale shims"
+dir = "{{cwd}}"
+run = '"$(git rev-parse --show-toplevel)/scripts/doctor"'
+
+[tasks.gen]
+description = "Regenerate shell alias/env files from shell/shell.toml"
+dir = "{{cwd}}"
+run = '"$(git rev-parse --show-toplevel)/scripts/gen-shell"'

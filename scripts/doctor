@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+# Sanity-check the live environment built from these dotfiles.
+#
+# Prints warnings; exits 0 unless something is badly broken (not a git repo,
+# shell configs fail to load). Run via `mise run doctor` or directly.
+set -uo pipefail
+
+cd "$(dirname "$0")/.." || exit 2
+repo=$(pwd -P)
+
+if [ -t 1 ]; then
+    yellow=$'\e[33m' red=$'\e[31m' green=$'\e[32m' bold=$'\e[1m' reset=$'\e[0m'
+else
+    yellow='' red='' green='' bold='' reset=''
+fi
+
+warnings=0
+broken=0
+
+section() { printf '\n%s== %s%s\n' "$bold" "$1" "$reset"; }
+warn() {
+    printf '  %swarn%s %s\n' "$yellow" "$reset" "$1"
+    warnings=$((warnings + 1))
+}
+error() {
+    printf '  %sERROR%s %s\n' "$red" "$reset" "$1"
+    broken=1
+}
+ok() { printf '  %sok%s\n' "$green" "$reset"; }
+
+# warn_lines PREFIX: warn for every non-empty stdin line, "ok" if none
+warn_lines() {
+    local line n=0
+    while IFS= read -r line; do
+        [ -n "$line" ] || continue
+        warn "$1$line"
+        n=$((n + 1))
+    done
+    [ "$n" -gt 0 ] || ok
+}
+
+git rev-parse --git-dir >/dev/null 2>&1 || {
+    echo "not a git repo: $repo" >&2
+    exit 2
+}
+
+# --- fish -----------------------------------------------------------------
+# For aliases: the first command word must resolve. For user functions
+# (defined under ~/.config/fish) and aliases: absolute or ~ paths must exist.
+section "fish aliases and functions"
+if command -v fish >/dev/null 2>&1; then
+    # shellcheck disable=SC2016  # fish code, expanded by fish
+    fish_script='
+function __doctor_paths -a kind name text
+    # only paths under $HOME: absolute paths in functions are often
+    # container or remote paths (docker -v /app ...)
+    for tok in (string split -n " " -- $text)
+        set tok (string trim -c "\"'"'"';|&" -- $tok)
+        set -l p (string replace -r "^(~|\\\$HOME)/" "$HOME/" -- $tok)
+        string match -q -- "$HOME/*" $p; or continue
+        string match -qr "[*?{}()\\\$]" -- $p; and continue
+        test -e $p; or echo "$kind $name: missing path $tok"
+    end
+end
+for fn in (functions -n)
+    set -l d (functions --details --verbose $fn)
+    if string match -q "alias *" -- $d[5]
+        set -l body (string replace -r "^alias [^= ]+[= ]" "" -- $d[5])
+        set -l words (string split -n " " -- $body)
+        while set -q words[1]; and contains -- $words[1] sudo command builtin exec env nohup time noglob
+            set -e words[1]
+        end
+        while set -q words[1]; and string match -qr "^[A-Za-z_][A-Za-z0-9_]*=" -- $words[1]
+            set -e words[1]
+        end
+        set -q words[1]; or continue
+        set -l w (string trim -c "\"'"'"'" -- $words[1])
+        set -l x (string replace -r "^~" $HOME -- $w)
+        type -q -- $x; or echo "alias $fn: command not found: $w"
+        __doctor_paths alias $fn "$body"
+    else if string match -q "$__fish_config_dir/*" -- $d[1]
+        __doctor_paths function $fn (functions --no-details $fn | string join " ")
+    end
+end
+'
+    if out=$(fish -c "$fish_script" 2>&1); then
+        warn_lines "" <<<"$out"
+    else
+        error "fish failed to load config: $out"
+    fi
+else
+    warn "fish not installed"
+fi
+
+# --- zsh ------------------------------------------------------------------
+section "zsh aliases"
+if command -v zsh >/dev/null 2>&1; then
+    # shellcheck disable=SC2016  # zsh code, expanded by zsh
+    zsh_script='
+for k v in ${(kv)aliases}; do
+    words=(${(z)v})
+    while (( $#words )) && [[ ${(Q)words[1]} == (sudo|command|builtin|exec|env|nohup|time|noglob|nocorrect) ]]; do
+        shift words
+    done
+    while (( $#words )) && [[ ${(Q)words[1]} == [A-Za-z_][A-Za-z0-9_]#=* ]]; do
+        shift words
+    done
+    (( $#words )) || continue
+    w=${(Q)words[1]}
+    whence -- ${~w} >/dev/null || print -r -- "alias $k: command not found: $w"
+    for tok in $words; do
+        tok=${(Q)tok}
+        p=${tok/#\~\//$HOME/}
+        p=${p/#\$HOME\//$HOME/}
+        [[ $p == $HOME/* ]] || continue
+        [[ $p == *[\*\?\{\}\(\)\$]* ]] && continue
+        [[ -e $p ]] || print -r -- "alias $k: missing path $tok"
+    done
+done
+'
+    if out=$(zsh -ic "$zsh_script" </dev/null 2>/dev/null); then
+        warn_lines "" <<<"$out"
+    else
+        error "zsh -i failed to load config"
+    fi
+else
+    warn "zsh not installed"
+fi
+
+# --- symlinks -------------------------------------------------------------
+section "broken symlinks in repo"
+warn_lines "" < <(git ls-files -co --exclude-standard -z | while IFS= read -r -d '' f; do
+    [ -L "$f" ] && [ ! -e "$f" ] && echo "$f -> $(readlink "$f")"
+done)
+
+section "broken symlinks in ~ pointing into ~/.config"
+warn_lines "" < <(find "$HOME" -maxdepth 2 -xdev -type l 2>/dev/null | while IFS= read -r l; do
+    t=$(readlink "$l")
+    case "$t" in
+        .config/* | */.config/* | "$repo"/*) [ -e "$l" ] || echo "${l/#$HOME/\~} -> $t" ;;
+    esac
+done)
+
+# --- hardcoded home -------------------------------------------------------
+section "hardcoded $HOME in tracked files"
+warn_lines "" < <(git grep --no-color -n -I -F -- "$HOME")
+
+# --- git hygiene ----------------------------------------------------------
+section "tracked files matching .gitignore"
+warn_lines "" < <(git ls-files -ci --exclude-standard)
+
+section "pre-commit hook"
+if [ "$(git config --local core.hooksPath)" = .githooks ]; then
+    ok
+else
+    warn "hooks not enabled: run 'git config core.hooksPath .githooks'"
+fi
+
+# --- mise -----------------------------------------------------------------
+section "mise"
+if command -v mise >/dev/null 2>&1; then
+    # run from $HOME so only the global config counts
+    warn_lines "not installed: " < <(cd "$HOME" && mise ls --missing --no-header 2>/dev/null | awk '{print $1 " " $2}')
+    shims="${MISE_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/mise}/shims"
+    if [ -d "$shims" ]; then
+        # A shim fails with "No version is set" when no config activates its
+        # tool (`mise which` fails) AND there is no non-mise binary of the
+        # same name on $PATH to fall back to.
+        nomise_path=$(printf '%s' "$PATH" | tr ':' '\n' | grep -vxF "$shims" | paste -sd:)
+        # shellcheck disable=SC2016  # $1 is for the inner sh -c
+        dead=$(find "$shims" -mindepth 1 -maxdepth 1 -printf '%f\n' |
+            (cd "$HOME" && xargs -P 8 -I{} sh -c 'mise which -- "$1" >/dev/null 2>&1 || echo "$1"' _ {}) |
+            while IFS= read -r b; do
+                PATH=$nomise_path command -v -- "$b" >/dev/null 2>&1 || echo "$b"
+            done | sort | paste -sd' ')
+        if [ -n "$dead" ]; then
+            warn "shims failing with 'No version is set' (tool removed from config? try 'mise reshim' or 'mise prune'): $dead"
+        else
+            ok
+        fi
+    fi
+else
+    warn "mise not installed"
+fi
+
+echo
+if [ "$broken" -ne 0 ]; then
+    echo "${red}doctor: errors found${reset}"
+    exit 1
+fi
+echo "doctor: $warnings warning(s)"
+exit 0

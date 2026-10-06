@@ -1,0 +1,44 @@
+name: check
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # mise/config.toml is the personal global toolset (node, rust, neovim,
+      # ...). In a checkout mise would load it as a project config, so ignore
+      # it: CI needs only the linters listed as `tools` of the `check` task in
+      # .mise.toml, which `mise run check` installs on demand.
+      MISE_IGNORED_CONFIG_PATHS: ${{ github.workspace }}/mise/config.toml
+      MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # avoid API rate limits resolving "latest"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # gitleaks scans the whole history
+
+      - name: Install fish and zsh
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends fish zsh
+
+      - uses: jdx/mise-action@v5
+        with:
+          install: false # `mise run check` installs only the task's tools
+          cache_save_post: true # so the cache includes those task tools
+
+      - name: Check
+        run: mise run check

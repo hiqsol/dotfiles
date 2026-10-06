@@ -1,0 +1,6 @@
+# shellcheck config for this repo (applies only to files under ~/.config).
+
+# Dotfiles source other user files at runtime (~/.shrc, ~/.aliases,
+# $NVM_DIR/nvm.sh, ...) whose paths shellcheck can't or shouldn't resolve.
+disable=SC1090
+disable=SC1091
