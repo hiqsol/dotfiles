@@ -61,5 +61,3 @@ alias ypl3='ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignor
 alias ls-tmux="tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}	#{pane_tty}	#{pane_pid}	#{pane_current_command}'"
 alias upgrade='sudo apt update && sudo apt upgrade'
 alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
-alias inithome='wget https://raw.githubusercontent.com/hiqdev/rehome/master/rehome ; python rehome init https://github.com/hiqsol/dotfiles ; rm rehome'
-alias rehome='~/prj/hiqdev/rehome/rehome'
