@@ -9,7 +9,9 @@ reset_ssh_agent() {
     # Find agent sockets owned by current user
     for sock in $(find /tmp -name "agent.*" -user "$USER" 2>/dev/null); do
         export SSH_AUTH_SOCK="$sock"
-        if ssh-add -l >/dev/null 2>&1; then
+        # exit 1 = agent alive without identities, only 2 = no agent
+        ssh-add -l >/dev/null 2>&1
+        if [ $? -ne 2 ]; then
             echo "Agent link changed to $SSH_AUTH_SOCK"
             rm -f "$SOCK"
             ln -sf "$SSH_AUTH_SOCK" "$SOCK"
@@ -20,7 +22,7 @@ reset_ssh_agent() {
 }
 
 restart_ssh_agent() {
-    ssh-agent -s
+    eval "$(ssh-agent -s)"
     reset_ssh_agent
 }
 
@@ -38,6 +40,24 @@ cdls() {
     if [ "$PWD" != "$HOME" ]; then
         ls -F ${ls_options}
     fi
+}
+
+# cd to /home/user/prj/organization/project
+cdp() {
+    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-6)"
+}
+
+# cd to /home/user/prj/organization/project/vendor/organization/PROJECT
+cdvp() {
+    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-9)"
+}
+
+# cd to /home/user/prj/organization/project/vendor/ORGANIZATION
+cdv() {
+    _cdv_6=$(printf '%s\n' "$PWD" | cut -d/ -f7)
+    _cdv_7=$(printf '%s\n' "$PWD" | cut -d/ -f8)
+    cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-6)/${_cdv_6:-vendor}/${_cdv_7:-hiqdev}"
+    unset _cdv_6 _cdv_7
 }
 
 hcd() {
@@ -150,7 +170,7 @@ path() {
 }
 
 linux_version() {
-    command -v lsb_version && lsb_version -a
+    command -v lsb_release >/dev/null && lsb_release -a
     cat /etc/*release
     cat /etc/issue*
     cat /proc/version

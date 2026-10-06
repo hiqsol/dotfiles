@@ -15,8 +15,6 @@ alias dco='dcomposer'
 alias gr='rg --no-heading'
 alias lt='eza -laT -I ".git|.venv|__pycache__"'
 alias cdd='cd ~/.config'
-alias cdm='cd ~/prj/hiqsol/nanokai/home/kai/memory'
-alias cdq='cd ~/prj/hiqsol/quotes'
 alias grab='g grab'
 alias lgrab='g lgrab'
 alias llama="gemini --agent llama3-agent"
@@ -31,6 +29,28 @@ alias phm='phpuvm'
 alias upgrade='sudo apt update && sudo apt upgrade'
 alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
 
+alias p='psql_default'
+alias c1='composerX 1'
+alias c2='composerX 2'
+alias d1='du -hd1'
+alias dp='docker_psql_default'
+alias ws="ssh -o 'ConnectionAttempts 300'"
+alias gir='grep -IR'
+alias grn='rg --no-line-number --no-filename'
+alias girp='grep -IR --include=\*.php --exclude-dir=vendor'
+alias vim='nvim'
+alias ovim='/usr/bin/vim'
+alias vimdiff='v -d'
+alias zconfig='v ~/.config/zsh/.zshrc'
+alias x509="openssl x509 -text -noout -in"
+alias ymp3="yt-dlp --add-metadata --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
+alias ypl3="ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
+alias clone='g clone'
+alias lclone='g lclone'
+alias nwget='wget --no-check-certificate'
+alias rmsshkey='ssh-keygen -f "$HOME/.ssh/known_hosts" -R'
+alias ls-tmux="tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}	#{pane_tty}	#{pane_pid}	#{pane_current_command}'"
+
 alias ,='cd ..'
 alias ,,='cd ../..'
 alias ,,,='cd ../../..'
@@ -40,8 +60,90 @@ alias ,,,,,,='cd ../../../../../..'
 
 # cd to /home/user/prj/organization/project
 function cdp
-    set parts (string split / -- $PWD)
-    cd /$parts[1]/$parts[2]/$parts[3]/$parts[4]/$parts[5]
+    set parts (string split -n / -- $PWD)
+    cd /(string join / -- $parts[1..5])
+end
+
+# cd to /home/user/prj/organization/project/vendor/organization/PROJECT
+function cdvp
+    set parts (string split -n / -- $PWD)
+    cd /(string join / -- $parts[1..8])
+end
+
+# cd to /home/user/prj/organization/project/vendor/ORGANIZATION
+function cdv
+    set parts (string split -n / -- $PWD)
+    set -q parts[6]; or set parts[6] vendor
+    set -q parts[7]; or set parts[7] hiqdev
+    cd /(string join / -- $parts[1..7])
+end
+
+function psql_default
+    if test -z "$argv[1]"
+        set name (cat $HOME/hostname)
+    else
+        set name $argv[1]
+        set -e argv[1]
+    end
+    psql $name $argv
+end
+
+function docker_psql_default
+    set host pgsql
+    set name postgres
+    if test -n "$argv[1]"
+        set host $argv[1]
+        set -e argv[1]
+    end
+    if test -n "$argv[1]"
+        set name $argv[1]
+        set -e argv[1]
+    end
+    psql -h $host -U postgres $name $argv
+end
+
+function drun
+    docker run -it --rm -v $HOME:$HOME -w $PWD $argv
+end
+
+function dphp54
+    drun php:5.4-cli php $argv
+end
+
+function dphp81
+    drun php:8.1-cli php $argv
+end
+
+function dphp84
+    drun hiqdev/php:8.4-cli-alpine php $argv
+end
+
+function dphp
+    drun php:$argv[1]-cli php $argv[2..-1]
+end
+
+function dbash
+    docker exec -it $argv[1] bash -c "stty cols $COLUMNS rows $LINES && bash"
+end
+
+function dpsql
+    docker exec -it --user postgres $argv[1] sh -c "stty cols $COLUMNS rows $LINES && psql $argv[2]"
+end
+
+function dcpsql
+    dc exec --user postgres pgsql sh -c "stty cols $COLUMNS rows $LINES && psql $argv"
+end
+
+function kh
+    set pod (kubectl get pods -n $argv[1] | grep "^$argv[2]" | cut -f 1 -d ' ')
+    kubectl exec -i -t -n $argv[1] $pod -c $argv[2] -- sh -c "bash || ash || sh"
+end
+
+function linux_version
+    command -q lsb_release; and lsb_release -a
+    cat /etc/*release
+    cat /etc/issue*
+    cat /proc/version
 end
 
 function dccomposer

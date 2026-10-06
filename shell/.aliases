@@ -3,8 +3,6 @@
 alias f='~/prj/instockcom/ferroctl/ferroctl'
 alias lt='eza -laT -I ".git|.venv|__pycache__"'
 alias cdd='cd ~/.config'
-alias cdm='cd ~/prj/hiqsol/nanokai/home/kai/memory'
-alias cdq='cd ~/prj/hiqsol/quotes'
 alias grab='g grab'
 alias lgrab='g lgrab'
 
@@ -17,12 +15,12 @@ alias ga='gita'
 alias gt='ga ll'
 alias gtree='eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
 alias k='kubectl'
+alias L='less -R'
 alias p='psql_default'
 alias s='ssh'
 alias v='nvim'
 alias Z='zcalc'
 
-alias al='~/.config/ansible/bin/a local localhost'
 alias c1='composerX 1'
 alias c2='composerX 2'
 alias d1='du -hd1'
@@ -31,7 +29,6 @@ alias dp='docker_psql_default'
 alias gr='rg --no-heading'
 alias ws="ssh -o 'ConnectionAttempts 300'"
 
-alias apg='apg -M SNCL -m 12'
 alias gir='grep -IR'
 alias grn='rg --no-line-number --no-filename'
 alias girp='grep -IR --include=\*.php --exclude-dir=vendor'
@@ -51,9 +48,6 @@ alias rga="ripgrep-all"
 alias ls="eza"
 alias l="eza -la"
 alias ll="eza -lAh"
-alias miniv='nvim -u ~/.vim/mini.vim'
-alias nodejs='node'
-alias vconfig='v ~/.vimrc'
 alias vimdiff='v -d'
 alias zconfig='v ~/.config/zsh/.zshrc'
 
@@ -61,16 +55,10 @@ alias nwget='wget --no-check-certificate'
 alias rmsshkey='ssh-keygen -f "$HOME/.ssh/known_hosts" -R '
 alias inithome='wget https://raw.githubusercontent.com/hiqdev/rehome/master/rehome ; python rehome init https://github.com/hiqsol/dotfiles ; rm rehome'
 alias ls-tmux="tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}	#{pane_tty}	#{pane_pid}	#{pane_current_command}'"
-alias set-kbrate='xset r rate 200 40'
-alias set-xkbmap='setxkbmap -model pc105 -layout us,ua,ru -option grp:shift_caps_switch -option grp:lalt_lshift_toggle -option compose:ralt'
-alias skb='set-kbrate;set-xkbmap'
-alias CapsLock='xdotool key Caps_Lock'
-alias catkin_make='catkin_make -DCMAKE_EXPORT_COMPILE_COMMANDS=1'
 
 alias phm='phpuvm'
 alias upgrade='sudo apt update && sudo apt upgrade'
 alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
-alias quotes=~/prj/hiqsol/quotes/bin/quotes
 alias rehome=~/prj/hiqdev/rehome/rehome
 alias -- -='cd -'
 alias ,='cd ..'
