@@ -4,7 +4,7 @@
 \set audit_request_run_id `echo "$(hostname)---$(date '+%Y-%m-%d_%H:%M:%S.%3N')"`
 
 SET audit.app_client_id = 0;
-SET audit.app_client_login = :audit_user;
+SET audit.app_client_login = :'audit_user';
 SET audit.app_name = 'psql';
 SET audit.app_request_run_id = :'audit_request_run_id';
 SET audit.trace_id = :'audit_trace_id';

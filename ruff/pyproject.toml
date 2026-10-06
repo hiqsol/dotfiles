@@ -1,7 +1,6 @@
 [tool.ruff]
 line-length = 200
 indent-width = 4
-ignore = ["E701", "E702"]
 
-[tool.ruff.format]
-exclude = ["*.py"]
+[tool.ruff.lint]
+ignore = ["E701", "E702"]
