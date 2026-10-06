@@ -42,14 +42,14 @@
     ma		= submodule add
     ms		= submodule status
     publish     = "!git push -u origin $(git branch-name)"
-    filter-out  = "!f() { git filter-branch --force --index-filter \
-                    'git rm -r --cached --ignore-unmatch '$1 \
+    filter-out  = "!f() { FILTER_OUT_PATH=\"$1\" git filter-branch --force --index-filter \
+                    'git rm -r --cached --ignore-unmatch -- \"$FILTER_OUT_PATH\"' \
                     --prune-empty --tag-name-filter cat -- --all; }; f"
     t           = tag --sort=-creatordate --format='%(creatordate:short)  %(refname:strip=2)'
-    test        = "!f() { sh -c 'ls -la '$1; }; f"
+    test        = "!f() { ls -la \"$1\"; }; f"
     tl          = log --no-walk --tags --format=format:'%C(red)%h%C(reset) %C(green)%ai%C(reset) %C(blue)%aN%C(reset) %s %C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
 
-    cfg         = "!$EDITOR ~/prj/hiqsol/dotfiles/.config/git/config"
+    cfg         = "!$EDITOR ~/.config/git/config"
     ups         = "!git push -u origin HEAD"
     safe        = "!git config --global --add safe.directory $(pwd)"
     w           = worktree
