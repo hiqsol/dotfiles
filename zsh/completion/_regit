@@ -1,3 +1,0 @@
-#compdef regit
-
-compdef regit=git

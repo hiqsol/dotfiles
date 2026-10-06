@@ -1,6 +1,0 @@
-#!/bin/sh
-# Deprecated: merged into `vpn` (which is now a systemd front-end, not a
-# process launcher). Kept as a shim because this name is on $PATH and in
-# muscle memory. Delete once the reflex is gone.
-echo "ovpn is deprecated, use vpn (running it for you)" >&2
-exec vpn "$@"
