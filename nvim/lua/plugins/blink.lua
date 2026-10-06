@@ -1,16 +1,12 @@
+-- blink.cmp is LazyVim's default completion engine; these opts are merged
+-- with LazyVim's defaults (sources lsp/path/snippets/buffer already included)
 return {
   {
     "saghen/blink.cmp",
-    config = function()
-      local blink = require("blink.cmp")
-      blink.setup({
-        keymap = {
-          preset = "super-tab", -- або "default"
-        },
-        sources = {
-          default = { "lsp", "path", "buffer" },
-        },
-      })
-    end,
+    opts = {
+      keymap = {
+        preset = "super-tab", -- або "default"
+      },
+    },
   },
 }

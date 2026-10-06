@@ -1,7 +1,7 @@
 return {
-  { "scottmckendry/cyberdream.nvim", colors = { bg = "#000000" } },
+  { "scottmckendry/cyberdream.nvim", opts = { colors = { bg = "#000000" } } },
   { "EdenEast/nightfox.nvim" }, -- carbonfox (pure black)
-  { "ellisonleao/gruvbox.nvim" }, -- gruvbox-material-black
+  { "ellisonleao/gruvbox.nvim" }, -- gruvbox
   { "folke/tokyonight.nvim" }, -- tokyonight-moon (blackish)
   { "Mofiqul/dracula.nvim" }, -- dracula with black variant
   { "catppuccin/nvim", name = "catppuccin" }, -- mocha black
@@ -27,7 +27,7 @@ return {
           "kanagawa-dragon",
           "darkplus",
           "habamax",
-          "gruvbox-material-black",
+          "gruvbox",
           "monokai",
         },
         livePreview = true,
