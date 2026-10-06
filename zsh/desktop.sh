@@ -68,7 +68,7 @@ install_telegram() {
 }
 
 discord() {
-    $file = /usr/bin/discord
+    file=/usr/bin/discord
     if ! [ -x $file ]; then
         install_discord
     fi

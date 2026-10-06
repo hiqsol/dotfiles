@@ -39,18 +39,6 @@ composerX() {
     "$file" $@
 }
 
-docker-compose() {
-    echo "\033[0;31mDEPRECATED use docker compose instead"
-    file="$HOME/sbin/docker-compose"
-
-    if [ ! -x $file ]; then
-        curl -L https://github.com/docker/compose/releases/download/v2.23.1/docker-compose-linux-x86_64 -o $file
-        chmod a+x $file
-    fi
-
-    $file $@
-}
-
 nginx-proxy-common() {
     # cd ~/prj/vendor
     # nginx-proxy-common start 1.2.3.4
@@ -90,12 +78,13 @@ ydl() {
 nvm() {
     file="$HOME/.config/nvm/nvm.sh"
 
-    if [ ! -x $file ]; then
+    if [ ! -f "$file" ]; then
         curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-        source $file
     fi
 
-    nvm $@
+    unset -f nvm
+    [ -s "$file" ] && . "$file"
+    nvm "$@"
 }
 
 mise() {
@@ -131,41 +120,12 @@ vim8() {
     $file $@
 }
 
-hub() {
-    file="/usr/local/sbin/hub"
-
-    if [ ! -x $file ]; then
-        cd ~/tmp
-        wget https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
-        tar zvxvf hub-linux-amd64-2.14.2.tgz
-        sudo ./hub-linux-amd64-2.14.2/install
-        cp ./hub-linux-amd64-2.14.2/etc/hub.zsh_completion ~/.config/zsh/completion/_hub
-        cd -
-    fi
-
-    $file $@
-}
-
 kubectl() {
     file="$HOME/sbin/kubectl"
 
     if [ ! -x $file ]; then
         url=https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
         curl -L $url -o $file
-        chmod a+x $file
-    fi
-
-    $file $@
-}
-
-helm() {
-    file="$HOME/sbin/helm"
-
-    if [ ! -x $file ]; then
-        url=https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
-        curl -L $url -o ~/tmp/helm.tgz
-        tar xf ~/tmp/helm.tgz -C ~/tmp
-        mv ~/tmp/linux-amd64/helm $file
         chmod a+x $file
     fi
 
@@ -212,9 +172,4 @@ apt_php_modules() {
 get_php_version() {
     ver=`php -v`
     echo ${ver:4:3}
-}
-
-install_node12() {
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-    sudo apt -y install nodejs
 }

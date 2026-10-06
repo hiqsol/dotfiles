@@ -57,6 +57,8 @@ setopt HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_SAVE_NO_DUPS HIST_FIND_NO_DUPS
 
 ### PROMPT
 ZLE_RPROMPT_INDENT=0
+# keep promptline in zsh on purpose: a different prompt than fish/starship
+# makes it obvious which shell is running, so starship is not used in zsh
 source ~/.config/zsh/git_status.sh
 source ~/.config/zsh/promptline.sh
 
@@ -75,5 +77,4 @@ done
 
 eval "$(~/.local/bin/mise activate zsh)"
 eval "$(zoxide init zsh)"
-eval "$(starship init zsh)"
 eval "$(direnv hook zsh)"
