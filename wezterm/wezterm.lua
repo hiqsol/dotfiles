@@ -1,10 +1,38 @@
 local wezterm = require("wezterm")
 
+local BASE_FONT_SIZE = 13.0
+
+-- Default Increase/DecreaseFontSize multiply by 1.1, giving fractional pixel
+-- sizes that render blurry. Step by whole logical pixels instead and snap
+-- font_size (points) so the resulting pixel size is an integer.
+local function step_font_size(delta)
+	return wezterm.action_callback(function(window, _)
+		local dpi = window:get_dimensions().dpi
+		local overrides = window:get_config_overrides() or {}
+		local pt = overrides.font_size or BASE_FONT_SIZE
+		local step = dpi / 96 -- one logical pixel in device pixels
+		local px = math.floor(pt * dpi / 72 / step + 0.5) + delta
+		if px < 6 then
+			return
+		end
+		overrides.font_size = px * step * 72 / dpi
+		window:set_config_overrides(overrides)
+	end)
+end
+
+local function reset_font_size()
+	return wezterm.action_callback(function(window, _)
+		local overrides = window:get_config_overrides() or {}
+		overrides.font_size = nil
+		window:set_config_overrides(overrides)
+	end)
+end
+
 return {
 	-- Appearance
 	tab_bar_at_bottom = true,
 	use_fancy_tab_bar = true,
-	font_size = 10.0,
+	font_size = BASE_FONT_SIZE,
 	window_frame = {
 		font_size = 10.0,
 	},
@@ -33,6 +61,13 @@ return {
 
 	-- Keybindings for splits
 	keys = {
+		{ key = "=", mods = "CTRL", action = step_font_size(1) },
+		{ key = "+", mods = "CTRL", action = step_font_size(1) },
+		{ key = "+", mods = "CTRL|SHIFT", action = step_font_size(1) },
+		{ key = "-", mods = "CTRL", action = step_font_size(-1) },
+		{ key = "_", mods = "CTRL|SHIFT", action = step_font_size(-1) },
+		{ key = "0", mods = "CTRL", action = reset_font_size() },
+
 		{ key = "Enter", mods = "ALT", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 		{ key = "Enter", mods = "CTRL", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
 
