@@ -5,15 +5,25 @@ import pwd
 from xonsh.built_ins import XSH
 
 # PATH - initialize with shims for mise tools to be found immediately
-$PATH.insert(0, $HOME + '/.local/share/mise/shims')
-$PATH.insert(0, './vendor/bin')
-$PATH.insert(0, './node_modules/.bin')
-$PATH.insert(0, $HOME + '/sbin')
-$PATH.insert(0, $HOME + '/bin')
-$PATH.insert(0, $HOME + '/.config/composer/vendor/bin')
-$PATH.insert(0, $HOME + '/.local/bin')
-$PATH.insert(0, $HOME + '/go/bin')
-$PATH.insert(0, '/usr/local/go/bin')
+for _p in reversed([
+    $HOME + '/.local/share/mise/shims',
+    $HOME + '/sbin',
+    $HOME + '/bin',
+    $HOME + '/.config/composer/vendor/bin',
+    $HOME + '/.local/bin',
+    $HOME + '/go/bin',
+    '/usr/local/go/bin',
+]):
+    $PATH.insert(0, _p)
+del _p
+
+# Project-local bins go LAST so an untrusted repo cannot shadow system commands.
+# Drop any copies inherited from a parent shell first, then append.
+for _p in ['./vendor/bin', './node_modules/.bin']:
+    while _p in $PATH:
+        $PATH.remove(_p)
+    $PATH.append(_p)
+del _p
 
 # Environment variables
 $EDITOR = 'nvim'
@@ -51,7 +61,7 @@ aliases['l'] = 'eza -la'
 aliases['ls'] = 'eza'
 
 aliases['a'] = 'boxer abstract'
-aliases['c'] = 'boxer claude'
+aliases['c'] = 'composerX 2'
 aliases['d'] = 'docker'
 aliases['dc'] = 'docker compose'
 aliases['g'] = 'git'
@@ -70,8 +80,6 @@ aliases['gr'] = 'rg --no-heading'
 aliases['f'] = '~/prj/instockcom/ferroctl/ferroctl'
 aliases['lt'] = 'eza -laT -I .git'
 aliases['cdd'] = 'cd ~/.config'
-aliases['cdm'] = 'cd ~/prj/hiqsol/nanokai/home/kai/memory'
-aliases['cdq'] = 'cd ~/prj/hiqsol/quotes'
 aliases['grab'] = 'g grab'
 aliases['lgrab'] = 'g lgrab'
 aliases['upgrade'] = 'sudo apt update && sudo apt upgrade'
@@ -108,6 +116,22 @@ def _reset_ssh_agent():
             pass
     return False
 
+def _composerX(args):
+    if not args: return
+    version, rest = args[0], args[1:]
+    bindir = os.path.join(os.environ['HOME'], '.local', 'bin')
+    file = os.path.join(bindir, f'composer{version}')
+    if not os.access(file, os.X_OK):
+        import tempfile
+        fd, tmp = tempfile.mkstemp()
+        os.close(fd)
+        os.makedirs(bindir, exist_ok=True)
+        subprocess.run(['wget', 'https://getcomposer.org/installer', '-O', tmp])
+        subprocess.run(['php', tmp, f'--install-dir={bindir}', f'--filename=composer{version}'])
+        os.remove(tmp)
+        subprocess.run([file, 'self', f'--{version}'])
+    return subprocess.run([file] + rest).returncode
+
 def _drun(args):
     cmd = ["docker", "run", "-it", "--rm", "-v", f"{os.environ['HOME']}:{os.environ['HOME']}", "-w", os.getcwd()] + args
     subprocess.run(cmd)
@@ -123,6 +147,7 @@ def _md(args):
     os.chdir(args[0])
 
 aliases['dcomposer'] = _dcomposer
+aliases['composerX'] = _composerX
 aliases['reset_ssh_agent'] = _reset_ssh_agent
 aliases['drun'] = _drun
 aliases['dbash'] = _dbash
