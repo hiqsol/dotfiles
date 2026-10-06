@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal dotfiles for `~/.config`. Symlinked from `~/prj/hiqsol/dotfiles`.
+Personal dotfiles for `~/.config`. Cloned directly into `~/.config` from GitHub `hiqsol/dotfiles`.
 
 ## Setup
 
