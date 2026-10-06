@@ -47,7 +47,7 @@ git rev-parse --git-dir >/dev/null 2>&1 || {
 # --- fish -----------------------------------------------------------------
 # For aliases: the first command word must resolve. For user functions
 # (defined under ~/.config/fish) and aliases: absolute or ~ paths must exist.
-section "fish aliases and functions"
+section "fish abbreviations, aliases and functions"
 if command -v fish >/dev/null 2>&1; then
     # shellcheck disable=SC2016  # fish code, expanded by fish
     fish_script='
@@ -62,28 +62,34 @@ function __doctor_paths -a kind name text
         test -e $p; or echo "$kind $name: missing path $tok"
     end
 end
+function __doctor_cmd -a kind name body
+    set -l words (string split -n " " -- $body)
+    while set -q words[1]; and contains -- $words[1] sudo command builtin exec env nohup time noglob
+        set -e words[1]
+    end
+    while set -q words[1]; and string match -qr "^[A-Za-z_][A-Za-z0-9_]*=" -- $words[1]
+        set -e words[1]
+    end
+    set -q words[1]; or return
+    set -l w (string trim -c "\"'"'"'" -- $words[1])
+    set -l x (string replace -r "^~" $HOME -- $w)
+    type -q -- $x; or echo "$kind $name: command not found: $w"
+    __doctor_paths $kind $name "$body"
+end
+for line in (abbr --show)
+    set -l m (string match -rg "^abbr -a .*-- (\S+) (.*)\$" -- $line); or continue
+    __doctor_cmd abbr $m[1] (string unescape -- $m[2])
+end
 for fn in (functions -n)
     set -l d (functions --details --verbose $fn)
     if string match -q "alias *" -- $d[5]
-        set -l body (string replace -r "^alias [^= ]+[= ]" "" -- $d[5])
-        set -l words (string split -n " " -- $body)
-        while set -q words[1]; and contains -- $words[1] sudo command builtin exec env nohup time noglob
-            set -e words[1]
-        end
-        while set -q words[1]; and string match -qr "^[A-Za-z_][A-Za-z0-9_]*=" -- $words[1]
-            set -e words[1]
-        end
-        set -q words[1]; or continue
-        set -l w (string trim -c "\"'"'"'" -- $words[1])
-        set -l x (string replace -r "^~" $HOME -- $w)
-        type -q -- $x; or echo "alias $fn: command not found: $w"
-        __doctor_paths alias $fn "$body"
+        __doctor_cmd alias $fn (string replace -r "^alias [^= ]+[= ]" "" -- $d[5])
     else if string match -q "$__fish_config_dir/*" -- $d[1]
         __doctor_paths function $fn (functions --no-details $fn | string join " ")
     end
 end
 '
-    if out=$(fish -c "$fish_script" 2>&1); then
+    if out=$(fish -i -c "$fish_script" </dev/null 2>&1); then
         warn_lines "" <<<"$out"
     else
         error "fish failed to load config: $out"
