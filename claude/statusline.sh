@@ -15,6 +15,7 @@ SHOW_WEEKLY="${SHOW_WEEKLY:-0}"                      # set to 1 to show weekly +
 USAGE_FILE="${USAGE_FILE:-$HOME/.claude/usage-exact.json}"
 CREDENTIALS_FILE="${CREDENTIALS_FILE:-$HOME/.claude/.credentials.json}"
 SETTINGS_FILE="${SETTINGS_FILE:-$HOME/.claude/settings.json}"
+STATUSLINE_FG="${STATUSLINE_FG:-222;222;222}"         # text RGB, empty = Claude Code default (dimmed)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 tz_date() {
@@ -111,7 +112,7 @@ JSON=$(cat)
 # rate_limits). rate_limits.* is native since Claude Code 2.1.x (Pro/Max) —
 # preferred over the API call when present.
 IFS=$'\x1f' read -r J_MODEL_DISPLAY J_MODEL_RAW J_CTX_PCT J_CTX_SIZE J_COST J_DURATION J_CWD \
-    J_RL_5H_PCT J_RL_5H_RESET J_RL_7D_PCT J_RL_7D_RESET \
+    J_RL_5H_PCT J_RL_5H_RESET J_RL_7D_PCT J_RL_7D_RESET J_PROJECT_DIR \
     < <(echo "$JSON" | jq -r '[
         (if .model | type == "object" then .model.display_name // "" else "" end),
         (if .model | type == "string" then .model else "" end),
@@ -123,7 +124,8 @@ IFS=$'\x1f' read -r J_MODEL_DISPLAY J_MODEL_RAW J_CTX_PCT J_CTX_SIZE J_COST J_DU
         (.rate_limits.five_hour.used_percentage // ""),
         (.rate_limits.five_hour.resets_at // ""),
         (.rate_limits.seven_day.used_percentage // ""),
-        (.rate_limits.seven_day.resets_at // "")
+        (.rate_limits.seven_day.resets_at // ""),
+        (.workspace.project_dir // .workspace.current_dir // "")
     ] | join("\u001f")' 2>/dev/null)
 
 # ── Model ─────────────────────────────────────────────────────────────────────
@@ -139,6 +141,10 @@ case "$MODEL" in
 esac
 # strip control bytes — model name comes from untrusted JSON (terminal OSC injection)
 MODEL="${MODEL//[$'\x01'-$'\x1f'$'\x7f']/}"
+
+# ── Project (basename of the dir Claude was started in) ────────────────────
+PROJECT="${J_PROJECT_DIR##*/}"
+PROJECT="${PROJECT//[$'\x01'-$'\x1f'$'\x7f']/}"
 
 # ── Effort level (from settings.json — not yet in stdin JSON) ────────────────
 EFFORT_LABEL=""
@@ -174,9 +180,9 @@ BRANCH="" DIRTY=""
 if [ -n "$CWD" ] && [ -d "$CWD" ]; then
     BRANCH=$(git -C "$CWD" --no-optional-locks symbolic-ref --short HEAD 2>/dev/null)
     if [ -n "$BRANCH" ] && git -C "$CWD" --no-optional-locks diff --quiet HEAD 2>/dev/null; then
-        [ -n "$(git -C "$CWD" --no-optional-locks ls-files --others --exclude-standard 2>/dev/null)" ] && DIRTY="★"
+        [ -n "$(git -C "$CWD" --no-optional-locks ls-files --others --exclude-standard 2>/dev/null)" ] && DIRTY=1
     else
-        [ -n "$BRANCH" ] && DIRTY="★"
+        [ -n "$BRANCH" ] && DIRTY=1
     fi
 fi
 [ -z "$BRANCH" ] && BRANCH="(no git)"
@@ -329,7 +335,12 @@ fi
 
 # ── Assemble ──────────────────────────────────────────────────────────────────
 PARTS=()
-[ -n "$BRANCH" ] && PARTS+=("🌿 $BRANCH$DIRTY")
+[ -n "$PROJECT" ] && PARTS+=("📁$PROJECT")
+if [ -n "$DIRTY" ]; then
+    PARTS+=("🍁$BRANCH")
+elif [ -n "$BRANCH" ]; then
+    PARTS+=("🌿$BRANCH")
+fi
 if [ -n "$MODEL" ] && [ -n "$EFFORT_LABEL" ]; then
     PARTS+=("$MODEL/$EFFORT_LABEL")
 elif [ -n "$MODEL" ]; then
@@ -350,4 +361,6 @@ for part in "${PARTS[@]}"; do
     [ -z "$RESULT" ] && RESULT="$part" || RESULT="$RESULT │ $part"
 done
 
+# \e[22m cancels Claude Code's dim, then the explicit text color
+[ -n "$STATUSLINE_FG" ] && RESULT=$'\e[22;38;2;'"${STATUSLINE_FG}m${RESULT}"$'\e[0m'
 echo "${RESULT}"
