@@ -27,9 +27,12 @@ fi
 
 ### SSH agent: stable symlink for tmux reattach
 SOCK="/home/$USER/.ssh/ssh-agent.sock"
-if [ -n "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
-    ln -sf "$SSH_AUTH_SOCK" "$SOCK"
+# Link to the resolved socket: wrappers (herdr) may hand us a link to $SOCK
+_real=$(readlink -f "$SSH_AUTH_SOCK" 2>/dev/null)
+if [ -n "$_real" ] && [ "$_real" != "$SOCK" ] && [ -S "$_real" ]; then
+    ln -sfn "$_real" "$SOCK"
 fi
+unset _real
 export SSH_AUTH_SOCK="$SOCK"
 if [ ! -S "$SSH_AUTH_SOCK" ]; then
     reset_ssh_agent
