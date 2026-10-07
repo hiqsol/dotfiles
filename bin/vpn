@@ -193,7 +193,7 @@ def require_dropin():
     "Error opening configuration file: <name>.conf".
     """
     merged = run("systemctl", "cat", "openvpn-client@.service").stdout
-    if "/home/sol/Sync/vpn/%i.ovpn" in merged:
+    if config_path("%i") in merged:
         return
     print(red("the systemd drop-in is not in effect, so the unit would look "
               "for /etc/openvpn/client/<name>.conf instead of "
