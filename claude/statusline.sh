@@ -5,7 +5,7 @@
 # Dependencies: bash, jq, curl
 # License: MIT
 #
-# Default: 🌿 main★ │ Snt 4.6 │ 🟢 Ctx ▓▓▓░░░ 42% │ ⏳ 🟡 ▓▓░░░░ 35% ↻ 2h30m │ $0.12 ⏱ 1h4m
+# Default: 📂.config 🍁master 👾Opus5.5/hi 🧠1M▰▰▰▱▱▱42% ⏳35% 2h30m 📅61% fri23h 🕐1h4m
 # ════════════════════════════════════════════════════════════════════════════
 
 # ── Configuration (override via environment variables) ────────────────────────
@@ -16,6 +16,8 @@ USAGE_FILE="${USAGE_FILE:-$HOME/.claude/usage-exact.json}"
 CREDENTIALS_FILE="${CREDENTIALS_FILE:-$HOME/.claude/.credentials.json}"
 SETTINGS_FILE="${SETTINGS_FILE:-$HOME/.claude/settings.json}"
 STATUSLINE_FG="${STATUSLINE_FG:-222;222;222}"         # text RGB, empty = Claude Code default (dimmed)
+STATUSLINE_WARN="${STATUSLINE_WARN:-230;190;80}"      # RGB for ≥50% usage
+STATUSLINE_CRIT="${STATUSLINE_CRIT:-240;90;90}"       # RGB for ≥70% usage
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 tz_date() {
@@ -70,7 +72,7 @@ num() {
     echo "$(( 10#${v:-0} ))"   # 10# forces base 10 — a leading zero would be read as octal
 }
 
-# make_bar <percent> → sets BAR_COLOR and BAR_STR (6-block bar)
+# make_bar <percent> → sets BAR_COLOR (ANSI fg, empty below 50%) and BAR_STR (6-block bar)
 make_bar() {
     local pct; pct="$(num "$1")"
     [ "$pct" -gt 100 ] && pct=100
@@ -78,19 +80,27 @@ make_bar() {
     local empty=$(( 6 - filled ))
     BAR_STR=""
     local i
-    for ((i=0; i<filled; i++)); do BAR_STR+="▓"; done
-    for ((i=0; i<empty;  i++)); do BAR_STR+="░"; done
-    if   [ "$pct" -lt 50 ]; then BAR_COLOR="🟢"
-    elif [ "$pct" -lt 80 ]; then BAR_COLOR="🟡"
-    else                         BAR_COLOR="🔴"
+    for ((i=0; i<filled; i++)); do BAR_STR+="▰"; done
+    for ((i=0; i<empty;  i++)); do BAR_STR+="▱"; done
+    if   [ "$pct" -lt 50 ]; then BAR_COLOR=""
+    elif [ "$pct" -lt 70 ]; then BAR_COLOR=$'\e[38;2;'"${STATUSLINE_WARN}m"
+    else                         BAR_COLOR=$'\e[38;2;'"${STATUSLINE_CRIT}m"
     fi
 }
 
-# render_quota <emoji> <percent> <reset_epoch> → "emoji color bar pct% [↻ remain]".
+# paint <text> → text in BAR_COLOR, then back to the base text color
+paint() {
+    if [ -z "$BAR_COLOR" ]; then echo "$1"; return; fi
+    local restore=$'\e[39m'
+    [ -n "$STATUSLINE_FG" ] && restore=$'\e[38;2;'"${STATUSLINE_FG}m"
+    echo "${BAR_COLOR}$1${restore}"
+}
+
+# render_quota <emoji> <percent> <reset_epoch> [stale] → "emoji pct%[💤] [remain]".
 # A reset moment already in the past means the window rolled over → usage back to 0%.
 # Needs NOW set by the caller.
 render_quota() {
-    local emoji="$1" reset="$3" remain="" pct
+    local emoji="$1" reset="$3" stale="$4" remain="" pct
     pct="$(num "$2")"
     if [ -n "$reset" ] && [ "$reset" -gt "$NOW" ] 2>/dev/null; then
         remain=$(format_remaining $(( reset - NOW )))
@@ -98,8 +108,10 @@ render_quota() {
         pct=0
     fi
     make_bar "$pct"
-    local out="${emoji} ${BAR_COLOR} ${BAR_STR} ${pct}%"
-    [ -n "$remain" ] && out="${out} ↻ ${remain}"
+    local out
+    out="${emoji}$(paint "${pct}%")"
+    [ "$stale" = 1 ] && out+="💤"
+    [ -n "$remain" ] && out+=" ${remain}"
     echo "$out"
 }
 
@@ -132,13 +144,8 @@ IFS=$'\x1f' read -r J_MODEL_DISPLAY J_MODEL_RAW J_CTX_PCT J_CTX_SIZE _ J_DURATIO
 MODEL="$J_MODEL_DISPLAY"
 MODEL=$(echo "$MODEL" | sed 's/Default (\(.*\))/\1/' | sed 's/Claude //' | sed 's/ (.*//')
 [ -z "$MODEL" ] && MODEL="$J_MODEL_RAW"
-case "$MODEL" in
-  claude-sonnet-4-6*|Sonnet\ 4.6*) MODEL="Snt 4.6" ;;
-  claude-sonnet-4-5*|Sonnet\ 4.5*) MODEL="Snt 4.5" ;;
-  claude-opus-4-6*|Opus\ 4.6*)     MODEL="Opus 4.6" ;;
-  claude-opus-4-5*|Opus\ 4.5*)     MODEL="Opus 4.5" ;;
-  claude-haiku-4*|Haiku\ 4*)       MODEL="Haiku 4"  ;;
-esac
+MODEL="${MODEL/Sonnet/Snt}"
+MODEL="${MODEL// /}"
 # strip control bytes — model name comes from untrusted JSON (terminal OSC injection)
 MODEL="${MODEL//[$'\x01'-$'\x1f'$'\x7f']/}"
 
@@ -165,7 +172,7 @@ elif [ "$J_CTX_SIZE" -gt 0 ] 2>/dev/null; then CTX_LABEL="$(( J_CTX_SIZE / 1000 
 fi
 
 make_bar "$CTX_PERCENT"
-CTX_COLOR="$BAR_COLOR" CTX_BAR="$BAR_STR"
+CTX_DISPLAY="🧠${CTX_LABEL}$(paint "${BAR_STR}${CTX_PERCENT}%")"
 
 # ── Session duration ──────────────────────────────────────────────────────────
 DURATION_STR=""
@@ -184,7 +191,6 @@ if [ -n "$CWD" ] && [ -d "$CWD" ]; then
         [ -n "$BRANCH" ] && DIRTY=1
     fi
 fi
-[ -z "$BRANCH" ] && BRANCH="(no git)"
 [ "${#BRANCH}" -gt 30 ] && BRANCH="${BRANCH:0:27}..."
 
 # ── Refresh usage via Anthropic OAuth API ────────────────────────────────────
@@ -290,71 +296,56 @@ if [ -f "$USAGE_FILE" ]; then
     fi
 fi
 
-# ── Render ────────────────────────────────────────────────────────────────────
-[ -n "$SESS_PCT" ] && [ "$SESS_PCT" != "null" ] && \
-    BLOCK_DISPLAY="$(render_quota "⏳" "$SESS_PCT" "$SESS_EPOCH")"
-
-if [ "$SHOW_WEEKLY" = "1" ]; then
-    WEEK_INT="" WEEK_COLOR="" WEEK_RESET_LABEL="" SONNET_INT="" SONNET_COLOR=""
-    if [ -n "$WEEK_PCT" ] && [ "$WEEK_PCT" != "null" ]; then
-        WEEK_INT="$(num "$WEEK_PCT")"; make_bar "$WEEK_INT"; WEEK_COLOR="$BAR_COLOR"
-        if [ -n "$WEEK_EPOCH" ]; then
-            # GNU date -d @epoch || BSD date -r epoch
-            WEEK_RESET_LABEL=$(tz_date "${TIMEZONE}" -d "@$WEEK_EPOCH" +"%a %Hh" 2>/dev/null \
-                || tz_date "${TIMEZONE}" -r "$WEEK_EPOCH" +"%a %Hh" 2>/dev/null)
-            WEEK_RESET_LABEL=$(echo "$WEEK_RESET_LABEL" | tr '[:upper:]' '[:lower:]')
-        fi
-    fi
-    if [ -n "$SONNET_PCT" ] && [ "$SONNET_PCT" != "null" ]; then
-        SONNET_INT="$(num "$SONNET_PCT")"; make_bar "$SONNET_INT"; SONNET_COLOR="$BAR_COLOR"
-    fi
-    if [ -n "$WEEK_INT" ] && [ -n "$SONNET_INT" ]; then
-        WEEK_SONNET_DISPLAY="📅 ${WEEK_COLOR} ${WEEK_INT}% / Snt ${SONNET_COLOR} ${SONNET_INT}%"
-        [ -n "$WEEK_RESET_LABEL" ] && WEEK_SONNET_DISPLAY+=" ↻ ${WEEK_RESET_LABEL}"
-    elif [ -n "$WEEK_INT" ]; then
-        WEEK_SONNET_DISPLAY="📅 ${WEEK_COLOR} ${WEEK_INT}%"
-        [ -n "$WEEK_RESET_LABEL" ] && WEEK_SONNET_DISPLAY+=" ↻ ${WEEK_RESET_LABEL}"
-    elif [ -n "$SONNET_INT" ]; then
-        WEEK_SONNET_DISPLAY="Snt ${SONNET_COLOR} ${SONNET_INT}%"
-    fi
-fi
-
-# ── Stale indicator — ⚠ in place of color dot. Only when session came from the
+# ── Stale indicator — 💤 after the percentage. Only when session came from the
 # cache: stdin rate_limits are always fresh, so cache age is irrelevant there.
 IS_STALE=0
 if [ "$SESS_FROM_CACHE" = 1 ] && [ -f "$USAGE_FILE" ] && [ "$REFRESH_INTERVAL" -gt 0 ] 2>/dev/null; then
     [ "$(cache_age_sec)" -gt $(( REFRESH_INTERVAL * 3 )) ] && IS_STALE=1   # 3 missed refresh windows
 fi
-if [ "$IS_STALE" = 1 ] && [ -n "$BLOCK_DISPLAY" ]; then
-    # Exactly one color dot is present; the other two replacements are no-ops.
-    BLOCK_DISPLAY="${BLOCK_DISPLAY/🟢/⚠}"
-    BLOCK_DISPLAY="${BLOCK_DISPLAY/🟡/⚠}"
-    BLOCK_DISPLAY="${BLOCK_DISPLAY/🔴/⚠}"
+
+# ── Render ────────────────────────────────────────────────────────────────────
+[ -n "$SESS_PCT" ] && [ "$SESS_PCT" != "null" ] && \
+    BLOCK_DISPLAY="$(render_quota "⏳" "$SESS_PCT" "$SESS_EPOCH" "$IS_STALE")"
+
+if [ "$SHOW_WEEKLY" = "1" ]; then
+    WEEK_RESET_LABEL=""
+    if [ -n "$WEEK_PCT" ] && [ "$WEEK_PCT" != "null" ]; then
+        make_bar "$WEEK_PCT"; WEEK_SONNET_DISPLAY="📅$(paint "$(num "$WEEK_PCT")%")"
+        if [ -n "$WEEK_EPOCH" ]; then
+            # GNU date -d @epoch || BSD date -r epoch
+            WEEK_RESET_LABEL=$(tz_date "${TIMEZONE}" -d "@$WEEK_EPOCH" +"%a%Hh" 2>/dev/null \
+                || tz_date "${TIMEZONE}" -r "$WEEK_EPOCH" +"%a%Hh" 2>/dev/null)
+            WEEK_RESET_LABEL=$(echo "$WEEK_RESET_LABEL" | tr '[:upper:]' '[:lower:]')
+        fi
+    fi
+    if [ -n "$SONNET_PCT" ] && [ "$SONNET_PCT" != "null" ]; then
+        make_bar "$SONNET_PCT"
+        [ -n "$WEEK_SONNET_DISPLAY" ] && WEEK_SONNET_DISPLAY+="/Snt" || WEEK_SONNET_DISPLAY="📅Snt"
+        WEEK_SONNET_DISPLAY+="$(paint "$(num "$SONNET_PCT")%")"
+    fi
+    [ -n "$WEEK_SONNET_DISPLAY" ] && [ -n "$WEEK_RESET_LABEL" ] && WEEK_SONNET_DISPLAY+=" ${WEEK_RESET_LABEL}"
 fi
 
 # ── Assemble ──────────────────────────────────────────────────────────────────
 PARTS=()
-[ -n "$PROJECT" ] && PARTS+=("📁$PROJECT")
+[ -n "$PROJECT" ] && PARTS+=("📂$PROJECT")
 if [ -n "$DIRTY" ]; then
     PARTS+=("🍁$BRANCH")
 elif [ -n "$BRANCH" ]; then
     PARTS+=("🌿$BRANCH")
 fi
 if [ -n "$MODEL" ] && [ -n "$EFFORT_LABEL" ]; then
-    PARTS+=("${MODEL/ /}/$EFFORT_LABEL")
+    PARTS+=("👾$MODEL/$EFFORT_LABEL")
 elif [ -n "$MODEL" ]; then
-    PARTS+=("${MODEL/ /}")
+    PARTS+=("👾$MODEL")
 fi
-[ -n "$CTX_PERCENT" ]         && PARTS+=("$CTX_LABEL$CTX_COLOR$CTX_BAR${CTX_PERCENT}%")
+PARTS+=("$CTX_DISPLAY")
 [ -n "$BLOCK_DISPLAY" ]       && PARTS+=("$BLOCK_DISPLAY")
 [ -n "$WEEK_SONNET_DISPLAY" ] && PARTS+=("$WEEK_SONNET_DISPLAY")
 # Duration only — no cost, subscription isn't billed per token
-[ -n "$DURATION_STR" ] && PARTS+=("⏱ $DURATION_STR")
+[ -n "$DURATION_STR" ] && PARTS+=("🕐$DURATION_STR")
 
-RESULT=""
-for part in "${PARTS[@]}"; do
-    [ -z "$RESULT" ] && RESULT="$part" || RESULT="$RESULT │ $part"
-done
+RESULT="${PARTS[*]}"
 
 # \e[22m cancels Claude Code's dim, then the explicit text color
 [ -n "$STATUSLINE_FG" ] && RESULT=$'\e[22;38;2;'"${STATUSLINE_FG}m${RESULT}"$'\e[0m'
