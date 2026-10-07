@@ -5,3 +5,4 @@ vim.opt.tabstop = 4 -- Number of visual spaces per TAB
 
 vim.opt.mouse = ""
 vim.opt.conceallevel = 0
+vim.g.autoformat = false -- no format on save, use <leader>cf
