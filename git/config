@@ -51,7 +51,7 @@
 
     cfg         = "!$EDITOR ~/.config/git/config"
     ups         = "!git push -u origin HEAD"
-    safe        = "!git config --global --add safe.directory $(pwd)"
+    safe        = "!git config --file ~/.config/git/.gitconfig --add safe.directory \"$(pwd)\""
     w           = worktree
 [user]
     name        = Andrii Vasyliev
