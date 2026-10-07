@@ -149,7 +149,8 @@ done)
 
 # --- hardcoded home -------------------------------------------------------
 section "hardcoded $HOME in tracked files"
-warn_lines "" < <(git grep --no-color -n -I -F -- "$HOME")
+# etc/systemd: unit files need absolute paths, systemd cannot expand ~
+warn_lines "" < <(git grep --no-color -n -I -F -- "$HOME" -- ':!etc/systemd/')
 
 # --- git hygiene ----------------------------------------------------------
 section "tracked files matching .gitignore"
