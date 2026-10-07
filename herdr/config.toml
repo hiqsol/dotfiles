@@ -1,0 +1,54 @@
+onboarding = false
+
+[ui.toast]
+delivery = "system"
+
+[ui]
+status_indicators = "symbols"
+# tmux-style: single divider lines between panes, no outer frame
+pane_gaps = false
+pane_outer_borders = false
+prompt_new_tab_name = false
+tab_bar_right = [
+  { type = "hostname" },
+  { type = "datetime", format = "%Y-%m-%d %H:%M:%S" },
+]
+
+[theme]
+name = "dracula"
+auto_switch = false
+
+# tmux-like keys, mirrors tmux/keys.conf
+[keys]
+prefix = "ctrl+q"
+focus_pane_up = ["prefix+k", "prefix+up", "ctrl+alt+k"]
+focus_pane_down = ["prefix+j", "prefix+down", "ctrl+alt+j"]
+focus_pane_left = ["prefix+h", "prefix+left", "ctrl+alt+h"]
+focus_pane_right = ["prefix+l", "prefix+right", "ctrl+alt+l"]
+resize_pane_up = "prefix+alt+k"
+resize_pane_down = "prefix+alt+j"
+resize_pane_left = "prefix+alt+h"
+resize_pane_right = "prefix+alt+l"
+# no last-tab action: last_pane jumps back across tabs too;
+# prefix twice (C-q C-q) is reserved for sending a literal C-q
+last_pane = ["prefix+q", "prefix+tab"]
+switch_tab = "alt+1..9"
+switch_workspace = "prefix+1..9"
+next_workspace = "prefix+n"
+previous_workspace = "prefix+p"
+cycle_pane_next = "prefix+o"
+open_notification_target = "prefix+shift+o"
+detach = "prefix+d"
+next_tab = "prefix+space"
+previous_tab = ["prefix+ctrl+h", "prefix+backspace"]
+new_tab = ["prefix+c", "prefix+ctrl+c"]
+split_vertical = ["prefix+v", "prefix+|"]
+split_horizontal = ["prefix+minus", "prefix+_"]
+
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+description = "lazygit"
+width = "90%"
+height = "90%"

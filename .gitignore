@@ -43,3 +43,7 @@ __pycache__/
 /syncthing/
 /Slack/
 /discord/
+
+# herdr runtime state; only config.toml is tracked
+/herdr/*
+!/herdr/config.toml
