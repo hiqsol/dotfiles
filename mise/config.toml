@@ -11,6 +11,8 @@ lazygit = "latest"
 gh = "latest"
 bottom = "latest"
 rust = "latest"
+# built from source: prebuilt binaries (mason, npm, aqua) need newer glibc than EL9
+"cargo:tree-sitter-cli" = "latest"
 nodejs = "lts"
 antigravity-cli = "latest"
 glab = "latest"
