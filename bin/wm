@@ -1,0 +1,7 @@
+#!/bin/sh
+# wm HOST - open HOST's remote wezterm mux (SSHMUX) as a tab in the running GUI
+[ -n "$1" ] || {
+    echo "usage: wm HOST" >&2
+    exit 1
+}
+exec wezterm start --domain "SSHMUX:$1"

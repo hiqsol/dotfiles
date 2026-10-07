@@ -53,6 +53,8 @@ return {
 		split = "#DD4814",
 	},
 
+	prefer_to_spawn_tabs = true,
+
 	-- Clipboard sync (works with OSC 52)
 	enable_wayland = false, -- or true if you're on Wayland and it works
 	set_environment_variables = {
@@ -75,6 +77,9 @@ return {
 		{ key = "l", mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Right") },
 		{ key = "k", mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Up") },
 		{ key = "j", mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Down") },
+
+		-- Detach the active pane's mux domain (e.g. SSHMUX:host); remote processes keep running
+		{ key = "d", mods = "CTRL|SHIFT", action = wezterm.action.DetachDomain("CurrentPaneDomain") },
 
 		{ key = "1", mods = "ALT", action = wezterm.action.ActivateTab(0) },
 		{ key = "2", mods = "ALT", action = wezterm.action.ActivateTab(1) },
