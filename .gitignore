@@ -30,7 +30,6 @@ __pycache__/
 /tiling-assistant/
 /ubuntu-insights/
 /uv/
-/claude/statusline.sh
 /fish/config.fish.bak.*
 
 # not installed now, but would hold credentials/state if reinstalled

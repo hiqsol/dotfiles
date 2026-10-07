@@ -2,7 +2,7 @@
   "model": "opus[1m]",
   "statusLine": {
     "type": "command",
-    "command": "~/.local/share/mise/shims/claude-limitline"
+    "command": "bash ~/.config/claude/statusline.sh"
   },
   "modelSettings": {
     "claude-opus-5": {
