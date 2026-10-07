@@ -111,14 +111,14 @@ JSON=$(cat)
 # every field. US is non-whitespace so read preserves empty fields (absent
 # rate_limits). rate_limits.* is native since Claude Code 2.1.x (Pro/Max) —
 # preferred over the API call when present.
-IFS=$'\x1f' read -r J_MODEL_DISPLAY J_MODEL_RAW J_CTX_PCT J_CTX_SIZE J_COST J_DURATION J_CWD \
+IFS=$'\x1f' read -r J_MODEL_DISPLAY J_MODEL_RAW J_CTX_PCT J_CTX_SIZE _ J_DURATION J_CWD \
     J_RL_5H_PCT J_RL_5H_RESET J_RL_7D_PCT J_RL_7D_RESET J_PROJECT_DIR \
     < <(echo "$JSON" | jq -r '[
         (if .model | type == "object" then .model.display_name // "" else "" end),
         (if .model | type == "string" then .model else "" end),
         (.context_window.used_percentage // 0 | tostring | split(".")[0]),
         (.context_window.context_window_size // 0),
-        (.cost.total_cost_usd // ""),
+        (.cost.total_cost_usd // ""),          # unused, read into _
         (.cost.total_duration_ms // ""),
         (.workspace.current_dir // ""),
         (.rate_limits.five_hour.used_percentage // ""),
@@ -159,17 +159,16 @@ fi
 
 # ── Context window ────────────────────────────────────────────────────────────
 CTX_PERCENT="$(num "${J_CTX_PCT:-0}")"
-CTX_LABEL="Ctx"
-[ "$J_CTX_SIZE" -ge 900000 ] 2>/dev/null && CTX_LABEL="1M"   # ≥900k → extended 1M context
+CTX_LABEL=""
+if [ "$J_CTX_SIZE" -ge 900000 ] 2>/dev/null; then CTX_LABEL="1M"   # ≥900k → extended 1M context
+elif [ "$J_CTX_SIZE" -gt 0 ] 2>/dev/null; then CTX_LABEL="$(( J_CTX_SIZE / 1000 ))k"
+fi
 
 make_bar "$CTX_PERCENT"
 CTX_COLOR="$BAR_COLOR" CTX_BAR="$BAR_STR"
 
-# ── Session cost + duration ───────────────────────────────────────────────────
-COST_STR="" DURATION_STR=""
-if [[ "$J_COST" =~ ^[0-9]+(\.[0-9]+)?([eE][+-]?[0-9]+)?$ ]] && [ "$J_COST" != "0" ]; then
-    COST_STR=$(printf '$%.2f' "$J_COST" 2>/dev/null)
-fi
+# ── Session duration ──────────────────────────────────────────────────────────
+DURATION_STR=""
 if [ -n "$J_DURATION" ] && [ "$J_DURATION" != "0" ] && [ "$J_DURATION" != "null" ]; then
     DURATION_STR=$(format_remaining $(( $(num "$J_DURATION") / 1000 )))
 fi
@@ -342,19 +341,15 @@ elif [ -n "$BRANCH" ]; then
     PARTS+=("🌿$BRANCH")
 fi
 if [ -n "$MODEL" ] && [ -n "$EFFORT_LABEL" ]; then
-    PARTS+=("$MODEL/$EFFORT_LABEL")
+    PARTS+=("${MODEL/ /}/$EFFORT_LABEL")
 elif [ -n "$MODEL" ]; then
-    PARTS+=("$MODEL")
+    PARTS+=("${MODEL/ /}")
 fi
-[ -n "$CTX_PERCENT" ]         && PARTS+=("$CTX_COLOR $CTX_LABEL $CTX_BAR ${CTX_PERCENT}%")
+[ -n "$CTX_PERCENT" ]         && PARTS+=("$CTX_LABEL$CTX_COLOR$CTX_BAR${CTX_PERCENT}%")
 [ -n "$BLOCK_DISPLAY" ]       && PARTS+=("$BLOCK_DISPLAY")
 [ -n "$WEEK_SONNET_DISPLAY" ] && PARTS+=("$WEEK_SONNET_DISPLAY")
-# Cost + duration (only if non-zero)
-if [ -n "$COST_STR" ] && [ -n "$DURATION_STR" ]; then
-    PARTS+=("$COST_STR ⏱ $DURATION_STR")
-elif [ -n "$COST_STR" ]; then
-    PARTS+=("$COST_STR")
-fi
+# Duration only — no cost, subscription isn't billed per token
+[ -n "$DURATION_STR" ] && PARTS+=("⏱ $DURATION_STR")
 
 RESULT=""
 for part in "${PARTS[@]}"; do
