@@ -30,12 +30,9 @@ end
 
 return {
 	-- Appearance
-	tab_bar_at_bottom = true,
-	use_fancy_tab_bar = true,
+	-- tabs live in herdr
+	enable_tab_bar = false,
 	font_size = BASE_FONT_SIZE,
-	window_frame = {
-		font_size = 10.0,
-	},
 
 	window_decorations = "NONE",
 	color_scheme = "Adventure",
@@ -80,16 +77,6 @@ return {
 
 		-- Detach the active pane's mux domain (e.g. SSHMUX:host); remote processes keep running
 		{ key = "d", mods = "CTRL|SHIFT", action = wezterm.action.DetachDomain("CurrentPaneDomain") },
-
-		{ key = "1", mods = "ALT", action = wezterm.action.ActivateTab(0) },
-		{ key = "2", mods = "ALT", action = wezterm.action.ActivateTab(1) },
-		{ key = "3", mods = "ALT", action = wezterm.action.ActivateTab(2) },
-		{ key = "4", mods = "ALT", action = wezterm.action.ActivateTab(3) },
-		{ key = "5", mods = "ALT", action = wezterm.action.ActivateTab(4) },
-		{ key = "6", mods = "ALT", action = wezterm.action.ActivateTab(5) },
-		{ key = "7", mods = "ALT", action = wezterm.action.ActivateTab(6) },
-		{ key = "8", mods = "ALT", action = wezterm.action.ActivateTab(7) },
-		{ key = "9", mods = "ALT", action = wezterm.action.ActivateTab(8) },
 	},
 
 	-- Mouse-friendly copy/paste
