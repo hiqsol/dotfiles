@@ -1,7 +1,7 @@
 #!/bin/sh
-# composer in a CI php image, as the current user, with the ssh agent forwarded
+# composer in a CI php image, as the owner of the current directory, with the ssh agent forwarded
 exec docker run --rm --entrypoint composer \
-    --user "$(id -u):$(id -g)" \
+    --user "$(stat -c %u:%g .)" \
     -e COMPOSER_HOME=/tmp/composer \
     -e SSH_AUTH_SOCK=/ssh-agent \
     -e "GIT_SSH_COMMAND=ssh -F /dev/null -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/tmp/known_hosts" \
@@ -10,5 +10,5 @@ exec docker run --rm --entrypoint composer \
     -v "$SSH_AUTH_SOCK:/ssh-agent" \
     -v "$PWD:/app" \
     -w /app \
-    ghcr.io/hiqdev/docker-ci-images/php-nginx:8.4 \
+    ghcr.io/hiqdev/docker-ci-images/php-nginx:8.5 \
     "$@"
