@@ -1,4 +1,4 @@
-set -x PATH $HOME/sbin $HOME/bin $HOME/.config/composer/vendor/bin $HOME/.local/bin $HOME/go/bin /usr/local/go/bin $PATH
+set -x PATH $HOME/.local/share/mise/shims $HOME/sbin $HOME/bin $HOME/.config/composer/vendor/bin $HOME/.local/bin $HOME/go/bin /usr/local/go/bin $PATH
 if set -q KREW_ROOT
     set -gx PATH $KREW_ROOT/bin $PATH
 else

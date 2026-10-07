@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export PATH=~/sbin:~/bin:~/.config/composer/vendor/bin:~/.local/bin:~/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=~/.local/share/mise/shims:~/sbin:~/bin:~/.config/composer/vendor/bin:~/.local/bin:~/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 ### Project-local bins go LAST so an untrusted repo cannot shadow system commands
 export PATH="$PATH:./vendor/bin:./node_modules/.bin"
