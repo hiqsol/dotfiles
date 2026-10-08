@@ -195,11 +195,12 @@ def gen_fish(data):
     lines.append("")
     # abbreviations, not aliases: the history shows the real command
     aliases = dict(entries(data, "aliases", "fish"))
-    lines.append("status is-interactive; or return")
-    lines.append("")
+    # a block, not `or return`: top-level return needs fish >= 3.4
+    lines.append("if status is-interactive")
     for name, value in aliases.items():
         value = fish_expand(value, aliases, (name,))
-        lines.append(f"abbr -a -- {name} {fish_single(value)}")
+        lines.append(f"    abbr -a -- {name} {fish_single(value)}")
+    lines.append("end")
     return "\n".join(lines) + "\n"
 
 
