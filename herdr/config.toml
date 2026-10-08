@@ -39,7 +39,7 @@ previous_workspace = "prefix+p"
 cycle_pane_next = "prefix+o"
 open_notification_target = "prefix+shift+o"
 detach = "prefix+d"
-next_tab = "prefix+space"
+# next_tab = "prefix+space"
 previous_tab = ["prefix+ctrl+h", "prefix+backspace"]
 new_tab = ["prefix+c", "prefix+ctrl+c"]
 split_vertical = ["prefix+v", "prefix+|"]
@@ -52,3 +52,9 @@ command = "lazygit"
 description = "lazygit"
 width = "90%"
 height = "90%"
+
+[[keys.command]]
+key = "prefix+space"
+type = "plugin_action"
+command = "switchboard.menu"
+description = "Switchboard menu"
