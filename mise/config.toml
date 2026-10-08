@@ -35,6 +35,7 @@ rumdl = "latest"
 actionlint = "latest"
 herdr = "latest"
 ghq = "latest"
+rclone = "latest"
 
 [settings]
 # skip the default 24h minimum_release_age delay for these tools
