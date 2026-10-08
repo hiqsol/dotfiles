@@ -14,6 +14,7 @@ export VISUAL=nvim
 export BROWSER=x-www-browser:local-open
 export NVIM_LOG_FILE="$HOME/.cache/nvim/log"
 export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep/.ripgreprc"
+export SUDO_ASKPASS="$HOME/.config/bin/askpass"
 export LESS='-i -x4 -M -R -F -X'
 export LESS_TERMCAP_mb=$'\E[1;31m'
 export LESS_TERMCAP_md=$'\E[1;36m'

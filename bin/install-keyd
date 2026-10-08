@@ -1,0 +1,18 @@
+#!/bin/sh
+# install-keyd - install keyd and the etc/keyd config (Copilot+arrows = Home/End/PgUp/PgDn)
+set -e
+
+conf="$(dirname "$(readlink -f "$0")")/../etc/keyd/default.conf"
+
+# no tty (e.g. Claude Code): authenticate once via $SUDO_ASKPASS GUI prompt
+[ -t 0 ] || sudo -A -v
+
+# Debian/Ubuntu ship the binary as keyd.rvaiya
+keyd=$(command -v keyd || command -v keyd.rvaiya || true)
+if [ -z "$keyd" ]; then
+    sudo apt install -y keyd
+    keyd=$(command -v keyd || command -v keyd.rvaiya)
+fi
+sudo install -Dm644 "$conf" /etc/keyd/default.conf
+sudo systemctl enable --now keyd
+sudo "$keyd" reload

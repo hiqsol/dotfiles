@@ -1,0 +1,3 @@
+#!/bin/sh
+# askpass [PROMPT] - GUI password prompt for `sudo -A` (SUDO_ASKPASS), works without a tty
+exec zenity --password --title="${1:-sudo password}"

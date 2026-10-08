@@ -12,6 +12,7 @@ set -gx VISUAL nvim
 set -gx BROWSER x-www-browser:local-open
 set -gx NVIM_LOG_FILE "$HOME/.cache/nvim/log"
 set -gx RIPGREP_CONFIG_PATH "$HOME/.config/ripgrep/.ripgreprc"
+set -gx SUDO_ASKPASS "$HOME/.config/bin/askpass"
 set -gx LESS '-i -x4 -M -R -F -X'
 set -gx LESS_TERMCAP_mb \e'[1;31m'
 set -gx LESS_TERMCAP_md \e'[1;36m'

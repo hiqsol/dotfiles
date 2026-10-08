@@ -37,6 +37,7 @@ VISUAL = "nvim"
 BROWSER = "x-www-browser:local-open"
 NVIM_LOG_FILE = "$HOME/.cache/nvim/log"
 RIPGREP_CONFIG_PATH = "~/.config/ripgrep/.ripgreprc"
+SUDO_ASKPASS = "~/.config/bin/askpass"     # GUI password prompt for `sudo -A` (no tty, e.g. Claude Code)
 
 # less config
 LESS = "-i -x4 -M -R -F -X"
