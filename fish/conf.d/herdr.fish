@@ -16,14 +16,19 @@ if status is-interactive; and set -q HERDR_PANE_ID; and command -q herdr
         math "$f[15] * 1000 / $tick"
     end
 
-    # format milliseconds the way fish's `time` does
+    # compact duration from milliseconds: 340ms, 12.1s, 1m23s, 1h02m
     function __herdr_fmt_ms
-        if test $argv[1] -lt 1000
-            printf '%8.2f millis' $argv[1]
-        else if test $argv[1] -lt 60000
-            printf '%8.2f secs  ' (math $argv[1] / 1000)
+        set -l ms (math --scale=0 $argv[1])
+        if test $ms -lt 1000
+            echo {$ms}ms
+        else if test $ms -lt 60000
+            echo (math --scale=1 $ms / 1000)s
+        else if test $ms -lt 3600000
+            set -l s (math --scale=0 $ms / 1000)
+            printf '%dm%02ds\n' (math --scale=0 $s / 60) (math $s % 60)
         else
-            printf '%8.2f mins  ' (math $argv[1] / 60000)
+            set -l m (math --scale=0 $ms / 60000)
+            printf '%dh%02dm\n' (math --scale=0 $m / 60) (math $m % 60)
         end
     end
 
@@ -57,18 +62,19 @@ if status is-interactive; and set -q HERDR_PANE_ID; and command -q herdr
         end
         test $CMD_DURATION -ge (math "$HERDR_NOTIFY_MIN_SECONDS * 1000"); or return
 
-        # timing report like fish's `time` (CPU time of external processes only)
+        # one-line timing report (CPU time of external processes only)
         set -l usage (__herdr_rusage)
         set -q __herdr_rusage_start[2]; or set -g __herdr_rusage_start $usage
-        echo >&2
-        echo ________________________________________________________ >&2
-        echo "Executed in"(__herdr_fmt_ms $CMD_DURATION) >&2
-        echo "   usr time"(__herdr_fmt_ms (math $usage[1] - $__herdr_rusage_start[1])) >&2
-        echo "   sys time"(__herdr_fmt_ms (math $usage[2] - $__herdr_rusage_start[2])) >&2
-        echo >&2
+        set -l took (__herdr_fmt_ms $CMD_DURATION)
+        set -l mark (set_color green)✔
+        test $exit_status -ne 0; and set mark (set_color red)✘
+        set -l rule ────────────
+        printf '%s%s %s %s%s · %s · usr %s · sys %s %s%s\n' (set_color brblack) $rule \
+            $mark $exit_status (set_color brblack) $took \
+            (__herdr_fmt_ms (math $usage[1] - $__herdr_rusage_start[1])) \
+            (__herdr_fmt_ms (math $usage[2] - $__herdr_rusage_start[2])) \
+            $rule (set_color normal) >&2
 
-        set -l secs (math --scale=0 "$CMD_DURATION / 1000")
-        set -l took (math --scale=0 "$secs / 60")m(math "$secs % 60")s
         set -l title "✔ Command finished"
         set -l sound done
         if test $exit_status -ne 0
