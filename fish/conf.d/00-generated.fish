@@ -78,5 +78,6 @@ abbr -a -- x509 'openssl x509 -text -noout -in'
 abbr -a -- ymp3 "yt-dlp --add-metadata --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
 abbr -a -- ypl3 "yt-dlp --add-metadata --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s' -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
 abbr -a -- ls-tmux "tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}	#{pane_tty}	#{pane_pid}	#{pane_current_command}'"
+abbr -a -- hr 'herdr machine add'
 abbr -a -- upgrade 'sudo apt update && sudo apt upgrade'
 abbr -a -- upall '~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && sudo apt update && sudo apt upgrade'

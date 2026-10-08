@@ -127,8 +127,9 @@ x509 = "openssl x509 -text -noout -in"
 ymp3 = "yt-dlp --add-metadata --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
 ypl3 = "ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors"
 
-# tmux
+# tmux, herdr
 ls-tmux = "tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}\t#{pane_tty}\t#{pane_pid}\t#{pane_current_command}'"
+hr = "herdr machine add"
 
 # system
 upgrade = "sudo apt update && sudo apt upgrade"

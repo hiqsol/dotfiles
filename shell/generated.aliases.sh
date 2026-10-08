@@ -58,5 +58,6 @@ alias x509='openssl x509 -text -noout -in'
 alias ymp3="yt-dlp --add-metadata --extract-audio --audio-format mp3 -o '%(title)s.%(ext)s'"
 alias ypl3='ymp3 -w --no-post-overwrites --download-archive .archive.txt --ignore-errors'
 alias ls-tmux="tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}	#{pane_tty}	#{pane_pid}	#{pane_current_command}'"
+alias hr='herdr machine add'
 alias upgrade='sudo apt update && sudo apt upgrade'
 alias upall='~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
