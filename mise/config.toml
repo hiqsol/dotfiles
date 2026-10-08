@@ -34,3 +34,7 @@ gitleaks = "latest"
 rumdl = "latest"
 actionlint = "latest"
 herdr = "latest"
+
+[settings]
+# skip the default 24h minimum_release_age delay for these tools
+minimum_release_age_excludes = ["claude"]
