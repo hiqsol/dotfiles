@@ -44,6 +44,9 @@ __pycache__/
 /Slack/
 /discord/
 
-# herdr runtime state; only config.toml is tracked
+# herdr runtime state; only config.toml and own plugins are tracked
 /herdr/*
 !/herdr/config.toml
+!/herdr/plugins/
+/herdr/plugins/*
+!/herdr/plugins/askpass/

@@ -1,0 +1,14 @@
+id = "askpass"
+name = "Askpass"
+version = "0.1.0"
+min_herdr_version = "0.9.0"
+description = "sudo password popup for tty-less shells, used by bin/askpass"
+platforms = ["linux", "macos"]
+
+[[panes]]
+id = "prompt"
+title = "sudo"
+placement = "popup"
+width = 60
+height = 5
+command = ["sh", "prompt.sh"]

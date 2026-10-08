@@ -1,3 +1,29 @@
 #!/bin/sh
-# askpass [PROMPT] - GUI password prompt for `sudo -A` (SUDO_ASKPASS), works without a tty
-exec zenity --password --title="${1:-sudo password}"
+# askpass [PROMPT] - sudo password prompt for tty-less shells (SUDO_ASKPASS, `sudo -A`):
+# a herdr popup, or a tmux popup on hosts still on tmux; same locally and over ssh
+set -e
+
+plugin="$(dirname "$(readlink -f "$0")")/../herdr/plugins/askpass"
+dir=$(mktemp -d)
+trap 'rm -rf "$dir"' EXIT
+fifo="$dir/pw"
+mkfifo -m 600 "$fifo"
+export ASKPASS_FIFO="$fifo" ASKPASS_PROMPT="${1:-[sudo] password: }"
+
+if [ -n "$HERDR_SOCKET_PATH" ]; then
+    herdr=${HERDR_BIN_PATH:-herdr}
+    "$herdr" plugin list | grep -qw askpass || "$herdr" plugin link "$plugin" >/dev/null
+    "$herdr" plugin pane open --plugin askpass --entrypoint prompt \
+        --env "ASKPASS_FIFO=$fifo" --env "ASKPASS_PROMPT=$ASKPASS_PROMPT" >/dev/null
+elif [ -n "$TMUX" ]; then
+    tmux display-popup -E -w 60 -h 5 -T sudo \
+        -e "ASKPASS_FIFO=$fifo" -e "ASKPASS_PROMPT=$ASKPASS_PROMPT" \
+        "sh '$plugin/prompt.sh'" &
+else
+    echo "askpass: needs a herdr or tmux session" >&2
+    exit 1
+fi
+
+pw=$(timeout 300 cat "$fifo")
+[ -n "$pw" ] || exit 1
+printf '%s\n' "$pw"
