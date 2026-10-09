@@ -4,13 +4,17 @@
 # Run as systemd user service: systemctl --user enable --now memwatch
 
 INTERVAL=${MEMWATCH_INTERVAL:-15} # seconds between checks
-REPEAT=${MEMWATCH_REPEAT:-300}    # re-notify while still bad, seconds
-WARN_AVAIL=15                     # % of RAM available
-CRIT_AVAIL=7
-WARN_SWAP=50 # % of swap used
-CRIT_SWAP=80
-WARN_PSI=10 # "some" avg10 from /proc/pressure/memory
-CRIT_PSI=30
+REPEAT=${MEMWATCH_REPEAT:-1800}   # re-notify while still at warn level, seconds
+CRIT_REPEAT=${MEMWATCH_CRIT_REPEAT:-300}
+SUSTAIN=${MEMWATCH_SUSTAIN:-3} # consecutive bad checks before notifying
+WARN_AVAIL=10                  # % of RAM available
+CRIT_AVAIL=5
+# Swap stays "used" long after a spike, so it only counts when RAM is tight too.
+SWAP_AVAIL=20 # swap is considered only below this % available
+WARN_SWAP=70  # % of swap used
+CRIT_SWAP=90
+WARN_PSI=20 # "some" avg60 from /proc/pressure/memory
+CRIT_PSI=50
 
 top_procs() {
     ps -eo rss=,comm= --sort=-rss | head -5 |
@@ -19,19 +23,28 @@ top_procs() {
 
 prev=0
 last=0
+bad=0
 while true; do
     read -r avail_pct swap_pct < <(awk '
         /^MemTotal:/     {t=$2} /^MemAvailable:/ {a=$2}
         /^SwapTotal:/    {st=$2} /^SwapFree:/     {sf=$2}
         END {printf "%d %d\n", a*100/t, st ? (st-sf)*100/st : 0}' /proc/meminfo)
-    psi=$(awk -F'[ =]' '/^some/ {printf "%d", $3}' /proc/pressure/memory)
+    psi=$(awk -F'[ =]' '/^some/ {printf "%d", $5}' /proc/pressure/memory)
+    swap_chk=$swap_pct
+    ((avail_pct < SWAP_AVAIL)) || swap_chk=0
 
     level=0
-    ((avail_pct < WARN_AVAIL || swap_pct > WARN_SWAP || psi > WARN_PSI)) && level=1
-    ((avail_pct < CRIT_AVAIL || swap_pct > CRIT_SWAP || psi > CRIT_PSI)) && level=2
+    ((avail_pct < WARN_AVAIL || swap_chk > WARN_SWAP || psi > WARN_PSI)) && level=1
+    ((avail_pct < CRIT_AVAIL || swap_chk > CRIT_SWAP || psi > CRIT_PSI)) && level=2
+
+    # ignore short spikes
+    if ((level > 0)); then ((bad++)); else bad=0; fi
+    ((bad < SUSTAIN && level > 0)) && level=$prev
 
     now=$(date +%s)
-    if ((level > 0 && (level > prev || now - last >= REPEAT))); then
+    repeat=$REPEAT
+    ((level == 2)) && repeat=$CRIT_REPEAT
+    if ((level > 0 && (level > prev || now - last >= repeat))); then
         if ((level == 2)); then
             urgency=critical title="Memory CRITICAL"
         else urgency=normal title="Memory getting low"; fi
@@ -39,7 +52,7 @@ while true; do
             "Available ${avail_pct}%, swap ${swap_pct}%, pressure ${psi}%
 $(top_procs)"
         last=$now
-    elif ((level == 0 && prev > 0)); then
+    elif ((level == 0 && prev == 2)); then
         notify-send -u low -a memwatch "Memory OK" "Available ${avail_pct}%"
     fi
     prev=$level
