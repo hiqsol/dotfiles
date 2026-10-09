@@ -37,6 +37,9 @@ herdr = "latest"
 ghq = "latest"
 rclone = "latest"
 rtk = "latest"
+# musl build: gnu binaries need newer glibc than Ubuntu 22.04
+"github:agavra/tuicr" = { version = "latest", platforms = { linux-x64 = { asset_pattern = "tuicr-*-x86_64-unknown-linux-musl.tar.gz" }, linux-arm64 = { asset_pattern = "tuicr-*-aarch64-unknown-linux-musl.tar.gz" } } }
+"github:umputun/revdiff" = "latest"
 
 [settings]
 # skip the default 24h minimum_release_age delay for these tools
