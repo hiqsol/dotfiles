@@ -1,0 +1,35 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Mirrors claude/statusline.sh: sol🌐host 📂dir 🍁branch [status]
+# Explicit format: only these modules ever show (no language/cloud noise).
+format = """
+$username$hostname $directory ${custom.git_mark}$git_branch$git_state$git_status$character"""
+
+[username]
+show_always = true
+format = '[$user]($style)'
+
+[hostname]
+ssh_only = false
+format = '🌐[$hostname]($style)'
+
+[directory]
+truncation_length = 1
+truncate_to_repo = false
+format = '📂[$path]($style)[$read_only]($read_only_style)'
+style = 'bold'
+
+# 🍁 dirty / 🌿 clean, like the statusline (git_branch can't switch symbols)
+[custom.git_mark]
+require_repo = true
+when = true
+shell = ['sh']
+command = 'test -z "$(git status --porcelain 2>/dev/null | head -1)" && printf 🌿 || printf 🍁'
+format = '$output'
+
+[git_branch]
+format = '[$branch]($style) '
+truncation_length = 30
+
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
