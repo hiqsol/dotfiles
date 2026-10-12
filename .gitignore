@@ -16,6 +16,7 @@ __pycache__/
 /monitors.xml
 /pulse/
 /QtProject.conf
+/rclone/
 /revdiff/
 /systemd
 /user-dirs.dirs
