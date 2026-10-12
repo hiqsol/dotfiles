@@ -1,16 +1,17 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 # Mirrors claude/statusline.sh: sol🌐host 📂dir 🍁branch [status]
-# Explicit format: only these modules ever show (no language/cloud noise).
+# Restyles the leading modules only; $all keeps every other default module
+# (languages, cmd_duration, jobs, status, ...) in its default place.
 format = """
-$username$hostname $directory ${custom.git_mark}$git_branch$git_state$git_status$character"""
+$username$hostname $directory ${custom.git_mark}$git_branch$git_state$git_status$all"""
 
 [username]
 show_always = true
 format = '[$user]($style)'
 
 [hostname]
-ssh_only = false
+ssh_only = true
 format = '🌐[$hostname]($style)'
 
 [directory]
@@ -34,3 +35,6 @@ truncation_length = 30
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
+
+[line_break]
+disabled = true
