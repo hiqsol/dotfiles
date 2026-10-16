@@ -77,7 +77,7 @@ cdd = "cd ~/.config"
 
 # listing
 ls = "eza"
-ll = "eza -lAh"
+ll = "eza -lA"
 cat = "bat"   # pages only when needed, plain output when piped; bat from mise
 lt = 'eza -laT -I ".git|.venv|__pycache__"'
 gtree = 'eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'

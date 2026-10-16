@@ -43,7 +43,7 @@ if status is-interactive
     abbr -a -- ,,,,, 'cd ../../../../..'
     abbr -a -- ,,,,,, 'cd ../../../../../..'
     abbr -a -- ls 'eza'
-    abbr -a -- ll 'eza -lAh'
+    abbr -a -- ll 'eza -lA'
     abbr -a -- cat 'bat'
     abbr -a -- lt 'eza -laT -I ".git|.venv|__pycache__"'
     abbr -a -- gtree 'eza -laT --git-ignore --git -I ".git|node_modules|vendor" ~/prj'
