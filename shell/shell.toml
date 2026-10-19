@@ -54,7 +54,6 @@ LESS_TERMCAP_zz = "\u001b[0m"                     # the last for better output o
 # one-letter
 c = "composerX 2"
 d = "docker"
-f = "~/prj/instockcom/ferroctl/ferroctl"
 g = "git"
 k = "kubectl"
 l = "eza -la"

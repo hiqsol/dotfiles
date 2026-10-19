@@ -21,7 +21,8 @@ Personal dotfiles installed as `~/.config`. Cloned directly into `~/.config` fro
 - Neovim uses LazyVim — plugins go in `lua/plugins/`, config in `lua/config/`.
 - WezTerm (with its built-in mux) is used locally, tmux on remote hosts. Tmux
   prefix is `Ctrl+Q`, not default `Ctrl+B`.
-- Git config is at `git/config`, not `~/.gitconfig`.
+- Git config is at `git/config`, not `~/.gitconfig`. Identity (name, email)
+  is in `~/.gitconfig.local` in the private home repo — never add it here.
 - In the process of moving to mise for tools installation.
 - Checks: `mise run check` (or `scripts/check`) before committing; `mise run doctor`
   for the live environment. Pre-commit hook: `git config core.hooksPath .githooks`

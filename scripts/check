@@ -6,6 +6,11 @@
 #   scripts/check --staged  fast pre-commit check of staged contents: syntax,
 #                           lint (shellcheck, shfmt, taplo), gitleaks, gen-shell
 #
+# The personal data check looks for your git user.name/user.email and the
+# fixed strings listed in $PERSONAL_DATA_FILE (default ~/.personal-data, kept
+# in the private home repo, one per line, # comments). It is skipped when
+# there is nothing to look for (e.g. in CI).
+#
 # Works without mise as long as the tools are on $PATH. Missing tools are
 # skipped with a warning locally and fail in CI (when $CI is set).
 set -uo pipefail
@@ -231,6 +236,45 @@ markdown_files() {
     rumdl check --no-cache "${list[@]}" # reads .markdownlint.yaml
 }
 
+# Fixed strings that must not be committed (case-insensitive).
+personal_patterns() {
+    git config user.name
+    git config user.email
+    [ -f "${PERSONAL_DATA_FILE:-$HOME/.personal-data}" ] &&
+        sed 's/[[:space:]]*#.*//' "${PERSONAL_DATA_FILE:-$HOME/.personal-data}"
+}
+
+personal_data() {
+    local patterns=$1 hits
+    if [ "$mode" = staged ]; then
+        # added lines as FILE:LINE:TEXT
+        hits=$(git diff --cached -U0 --no-color --no-ext-diff --diff-filter=ACMR |
+            awk '/^\+\+\+ b\// { f = substr($0, 7); next }
+                 /^@@/ { split($3, a, ","); n = substr(a[1], 2); next }
+                 /^\+/ { print f ":" n ":" substr($0, 2); n++ }' |
+            grep -iF -f "$patterns")
+    else
+        hits=$(git grep --no-color -nIiF --untracked -f "$patterns")
+    fi
+    [ -z "$hits" ] && return 0
+    # locations only: do not echo the data itself
+    printf '%s\n' "$hits" | cut -d: -f1,2 | sed 's/$/: personal data/'
+    return 1
+}
+
+personal_data_check() {
+    local patterns
+    patterns=$(mktemp) || return 1
+    personal_patterns 2>/dev/null | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' |
+        grep -v '^$' | sort -u >"$patterns"
+    if [ -s "$patterns" ]; then
+        run_step "personal data" personal_data "$patterns"
+    else
+        record SKIP "personal data" "no git identity or ~/.personal-data"
+    fi
+    rm -f "$patterns"
+}
+
 gen_shell_check() {
     if [ -x scripts/gen-shell ]; then
         run_step "gen-shell up to date" scripts/gen-shell --check
@@ -271,6 +315,7 @@ else
         run_step "gitleaks (history)" gitleaks git --no-banner --redact -v --log-level warn
 fi
 
+personal_data_check
 gen_shell_check
 
 echo

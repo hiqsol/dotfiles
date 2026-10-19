@@ -54,8 +54,8 @@
     safe        = "!git config --file ~/.config/git/.gitconfig --add safe.directory \"$(pwd)\""
     w           = worktree
 [user]
-    name        = Andrii Vasyliev
-    email       = sol@hiqdev.com
+    # name/email live in ~/.gitconfig.local (private home repo), see [include]
+    useConfigOnly = true
 [color]
     diff        = auto
     status      = auto
@@ -83,10 +83,9 @@
     cmd         = local-open
 [init]
 	defaultBranch = master
-[url "git@github.com:instockcom"]
-	insteadOf = https://github.com/instockcom
 [include]
     path = .gitconfig
+    path = ~/.gitconfig.local
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f

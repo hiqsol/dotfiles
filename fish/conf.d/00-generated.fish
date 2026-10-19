@@ -26,7 +26,6 @@ set -gx LESS_TERMCAP_zz \e'[0m'
 if status is-interactive
     abbr -a -- c 'composerX 2'
     abbr -a -- d 'docker'
-    abbr -a -- f '~/prj/instockcom/ferroctl/ferroctl'
     abbr -a -- g 'git'
     abbr -a -- k 'kubectl'
     abbr -a -- l 'eza -la'

@@ -3,7 +3,6 @@
 
 alias c='composerX 2'
 alias d='docker'
-alias f='~/prj/instockcom/ferroctl/ferroctl'
 alias g='git'
 alias k='kubectl'
 alias l='eza -la'

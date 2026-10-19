@@ -25,7 +25,6 @@ $LESS_TERMCAP_zz = '\x1b[0m'
 
 aliases['c'] = ['composerX', '2']
 aliases['d'] = ['docker']
-aliases['f'] = [$HOME + '/prj/instockcom/ferroctl/ferroctl']
 aliases['g'] = ['git']
 aliases['k'] = ['kubectl']
 aliases['l'] = ['eza', '-la']
