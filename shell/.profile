@@ -16,18 +16,6 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-# set PATH so it includes user's private sbin if it exists
-if [ -d "$HOME/sbin" ] ; then
-    PATH="$HOME/sbin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
+# PATH lives in ~/.config/shell/shell.toml
+[ -f ~/.config/shell/generated.path.sh ] && . ~/.config/shell/generated.path.sh
 

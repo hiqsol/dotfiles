@@ -6,11 +6,8 @@
 ### allow group write
 umask 002
 
-### PATH
-export PATH=~/.local/share/mise/shims:~/sbin:~/bin:~/.config/composer/vendor/bin:~/.local/bin:~/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
-### Project-local bins go LAST so an untrusted repo cannot shadow system commands
-export PATH="$PATH:./vendor/bin:./node_modules/.bin"
+### PATH lives in ~/.config/shell/shell.toml (idempotent, safe to re-source)
+[ -f ~/.config/shell/generated.path.sh ] && . ~/.config/shell/generated.path.sh
 
 ### Simple env vars live in ~/.config/shell/shell.toml, run scripts/gen-shell after editing.
 ### Sourced before the logic below, which may override (e.g. LANG on Linux).

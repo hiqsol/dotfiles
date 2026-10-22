@@ -1,20 +1,10 @@
-set -x PATH $HOME/.local/share/mise/shims $HOME/sbin $HOME/bin $HOME/.config/composer/vendor/bin $HOME/.local/bin $HOME/go/bin /usr/local/go/bin $PATH
-if set -q KREW_ROOT
-    set -gx PATH $KREW_ROOT/bin $PATH
-else
-    set -gx PATH $HOME/.krew/bin $PATH
-end
-
-# Simple env vars live in shell/shell.toml (generated into conf.d/00-generated.fish)
+# Simple env vars and PATH live in shell/shell.toml (generated into conf.d/00-generated.fish)
 # fd is `fdfind` when installed from Debian/Ubuntu apt, `fd` otherwise (e.g. mise)
 if command -q fdfind
     set -gx FZF_DEFAULT_COMMAND 'fdfind --type f --strip-cwd-prefix -H -L -E .git'
 else
     set -gx FZF_DEFAULT_COMMAND 'fd --type f --strip-cwd-prefix -H -L -E .git'
 end
-
-# pixi before mise activate, so mise-managed tools take precedence over pixi ones
-set -gx PATH "$HOME/.pixi/bin" $PATH
 
 # Activate mise first so other tools are in the path
 if test -x $HOME/.local/bin/mise
@@ -50,13 +40,3 @@ end
 if test -f ~/.local/.shenv.fish
     source ~/.local/.shenv.fish
 end
-
-# Project-local bins go LAST so an untrusted repo cannot shadow system commands.
-# Drop any copies inherited from a parent shell first, then append.
-for __p in ./vendor/bin ./node_modules/.bin
-    while set -l i (contains -i -- $__p $PATH)
-        set -e PATH[$i]
-    end
-    set -gx PATH $PATH $__p
-end
-set -e __p

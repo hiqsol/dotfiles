@@ -5,7 +5,7 @@ Personal dotfiles installed as `~/.config`. Cloned directly into `~/.config` fro
 ## Rules
 
 - Both fish and zsh are active — shell changes must update both.
-- Simple aliases and env vars go in `shell/shell.toml`, then run
+- Simple aliases, env vars and PATH dirs go in `shell/shell.toml`, then run
   `scripts/gen-shell` and commit the generated files (`*generated*`, never
   edit them by hand). `scripts/gen-shell --check` fails if they are stale.
   Fish gets them as abbreviations (`abbr`), not aliases.

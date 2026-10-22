@@ -2,6 +2,7 @@
 # After editing run `scripts/gen-shell` and commit the generated files:
 #   shell/generated.env.sh       sourced by shell/.shrc     (zsh, bash)
 #   shell/generated.aliases.sh   sourced by shell/.aliases  (zsh, bash)
+#   shell/generated.path.sh      sourced by shell/.shenv    (sh, zsh, bash)
 #   fish/conf.d/00-generated.fish                           (fish)
 #   xonsh/generated.xsh          sourced by xonsh/rc.xsh    (xonsh)
 #
@@ -19,6 +20,10 @@
 #          command position are inlined, as abbreviations don't nest
 #   xonsh  simple commands become argument lists (quotes removed, `~`/`$HOME`
 #          expanded); command lists (&&, ;, |) stay strings
+#
+# [path] dirs are added to the inherited PATH, dropping existing copies, so
+# re-sourcing in nested shells does not pile up duplicates. `prepend` keeps
+# the listed order at the front, `append` goes at the end.
 #
 # Keep logic out of here: functions, conditionals, PATH and runtime-computed
 # values (e.g. FZF_DEFAULT_COMMAND) stay in the per-shell files.
@@ -49,6 +54,20 @@ LESS_TERMCAP_se = "\u001b[0m"                     # reset reverse video
 LESS_TERMCAP_us = "\u001b[1;32m"                  # begin underline
 LESS_TERMCAP_ue = "\u001b[0m"                     # reset underline
 LESS_TERMCAP_zz = "\u001b[0m"                     # the last for better output of `env`
+
+[path]
+prepend = [
+    "~/.local/share/mise/shims",    # mise tools found before `mise activate`
+    "~/.krew/bin",
+    "~/sbin",
+    "~/bin",
+    "~/.config/composer/vendor/bin",
+    "~/.local/bin",
+    "~/go/bin",
+    "/usr/local/go/bin",
+]
+# project-local bins go LAST so an untrusted repo cannot shadow system commands
+append = ["./vendor/bin", "./node_modules/.bin"]
 
 [aliases]
 # one-letter

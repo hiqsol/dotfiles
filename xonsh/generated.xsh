@@ -23,6 +23,39 @@ $LESS_TERMCAP_us = '\x1b[1;32m'
 $LESS_TERMCAP_ue = '\x1b[0m'
 $LESS_TERMCAP_zz = '\x1b[0m'
 
+# PATH: drop inherited copies, then add in order
+_p = '/usr/local/go/bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = $HOME + '/go/bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = $HOME + '/.local/bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = $HOME + '/.config/composer/vendor/bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = $HOME + '/bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = $HOME + '/sbin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = $HOME + '/.krew/bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = $HOME + '/.local/share/mise/shims'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.insert(0, _p)
+_p = './vendor/bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.append(_p)
+_p = './node_modules/.bin'
+while _p in $PATH: $PATH.remove(_p)
+$PATH.append(_p)
+del _p
+
 aliases['c'] = ['composerX', '2']
 aliases['d'] = ['docker']
 aliases['g'] = ['git']

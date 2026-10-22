@@ -127,6 +127,35 @@ def gen_sh_env(data):
     return "\n".join(lines) + "\n"
 
 
+def path_lists(data):
+    path = data.get("path", {})
+    return path.get("prepend", []), path.get("append", [])
+
+
+def gen_sh_path(data):
+    prepend, append = path_lists(data)
+    lines = [f"# {HEADER}", "# shellcheck shell=sh", "",
+             "# drop existing copies of $2, then add it at the start (pre) or end (app)",
+             "_path_add() {",
+             "    PATH=\":$PATH:\"",
+             "    while case $PATH in *\":$2:\"*) true ;; *) false ;; esac; do",
+             "        PATH=\"${PATH%%\":$2:\"*}:${PATH#*\":$2:\"}\"",
+             "    done",
+             "    PATH=${PATH#:}",
+             "    PATH=${PATH%:}",
+             "    case $1 in",
+             "        pre) PATH=\"$2${PATH:+:$PATH}\" ;;",
+             "        app) PATH=\"${PATH:+$PATH:}$2\" ;;",
+             "    esac",
+             "}"]
+    for d in reversed(prepend):
+        lines.append(f"_path_add pre {sh_env_value(d)}")
+    for d in append:
+        lines.append(f"_path_add app {sh_env_value(d)}")
+    lines += ["unset -f _path_add", "export PATH"]
+    return "\n".join(lines) + "\n"
+
+
 def gen_sh_aliases(data):
     lines = [f"# {HEADER}", "# shellcheck shell=bash", ""]
     for name, value in entries(data, "aliases", "sh"):
@@ -192,6 +221,19 @@ def gen_fish(data):
     lines = [f"# {HEADER}", ""]
     for name, value in entries(data, "env", "fish"):
         lines.append(f"set -gx {name} {fish_env_value(value)}")
+    prepend, append = path_lists(data)
+    lines.append("")
+    lines.append("# PATH: drop inherited copies, then add in order")
+    for dirs, add in ((list(reversed(prepend)), "$__p $PATH"), (append, "$PATH $__p")):
+        if not dirs:
+            continue
+        lines.append(f"for __p in {' '.join(fish_env_value(d) for d in dirs)}")
+        lines.append("    while set -l i (contains -i -- $__p $PATH)")
+        lines.append("        set -e PATH[$i]")
+        lines.append("    end")
+        lines.append(f"    set -gx PATH {add}")
+        lines.append("end")
+    lines.append("set -e __p")
     lines.append("")
     # abbreviations, not aliases: the history shows the real command
     aliases = dict(entries(data, "aliases", "fish"))
@@ -233,6 +275,18 @@ def gen_xonsh(data):
     lines = [f"# {HEADER}", ""]
     for name, value in entries(data, "env", "xonsh"):
         lines.append(f"${name} = {xonsh_env_value(value)}")
+    prepend, append = path_lists(data)
+    lines.append("")
+    lines.append("# PATH: drop inherited copies, then add in order")
+    for d in reversed(prepend):
+        lines.append(f"_p = {xonsh_env_value(d)}")
+        lines.append("while _p in $PATH: $PATH.remove(_p)")
+        lines.append("$PATH.insert(0, _p)")
+    for d in append:
+        lines.append(f"_p = {xonsh_env_value(d)}")
+        lines.append("while _p in $PATH: $PATH.remove(_p)")
+        lines.append("$PATH.append(_p)")
+    lines.append("del _p")
     lines.append("")
     for name, value in entries(data, "aliases", "xonsh"):
         lines.append(f"aliases[{name!r}] = {xonsh_alias(value)}")
@@ -244,15 +298,21 @@ def gen_xonsh(data):
 TARGETS = {
     "shell/generated.env.sh": gen_sh_env,
     "shell/generated.aliases.sh": gen_sh_aliases,
+    "shell/generated.path.sh": gen_sh_path,
     "fish/conf.d/00-generated.fish": gen_fish,
     "xonsh/generated.xsh": gen_xonsh,
 }
 
 
 def validate(data):
-    unknown = set(data) - {"env", "aliases"}
+    unknown = set(data) - {"env", "aliases", "path"}
     if unknown:
-        raise Error(f"unknown top-level tables {sorted(unknown)}, allowed: env, aliases")
+        raise Error(f"unknown top-level tables {sorted(unknown)}, allowed: env, aliases, path")
+    for key, dirs in data.get("path", {}).items():
+        if key not in ("prepend", "append"):
+            raise Error(f"[path] {key!r}: allowed keys are prepend, append")
+        if not isinstance(dirs, list) or not all(isinstance(d, str) and d and ":" not in d for d in dirs):
+            raise Error(f"[path] {key}: must be a list of directories")
     for name in data.get("env", {}):
         if not ENV_NAME.match(name):
             raise Error(f"[env] {name!r}: invalid variable name")

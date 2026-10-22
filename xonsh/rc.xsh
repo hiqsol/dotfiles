@@ -4,28 +4,7 @@ import glob
 import pwd
 from xonsh.built_ins import XSH
 
-# PATH - initialize with shims for mise tools to be found immediately
-for _p in reversed([
-    $HOME + '/.local/share/mise/shims',
-    $HOME + '/sbin',
-    $HOME + '/bin',
-    $HOME + '/.config/composer/vendor/bin',
-    $HOME + '/.local/bin',
-    $HOME + '/go/bin',
-    '/usr/local/go/bin',
-]):
-    $PATH.insert(0, _p)
-del _p
-
-# Project-local bins go LAST so an untrusted repo cannot shadow system commands.
-# Drop any copies inherited from a parent shell first, then append.
-for _p in ['./vendor/bin', './node_modules/.bin']:
-    while _p in $PATH:
-        $PATH.remove(_p)
-    $PATH.append(_p)
-del _p
-
-# Simple env vars and aliases live in ~/.config/shell/shell.toml,
+# Simple env vars, PATH and aliases live in ~/.config/shell/shell.toml,
 # run scripts/gen-shell after editing.
 source ~/.config/xonsh/generated.xsh
 

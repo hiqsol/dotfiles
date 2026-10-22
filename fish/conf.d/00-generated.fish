@@ -23,6 +23,21 @@ set -gx LESS_TERMCAP_us \e'[1;32m'
 set -gx LESS_TERMCAP_ue \e'[0m'
 set -gx LESS_TERMCAP_zz \e'[0m'
 
+# PATH: drop inherited copies, then add in order
+for __p in /usr/local/go/bin "$HOME/go/bin" "$HOME/.local/bin" "$HOME/.config/composer/vendor/bin" "$HOME/bin" "$HOME/sbin" "$HOME/.krew/bin" "$HOME/.local/share/mise/shims"
+    while set -l i (contains -i -- $__p $PATH)
+        set -e PATH[$i]
+    end
+    set -gx PATH $__p $PATH
+end
+for __p in ./vendor/bin ./node_modules/.bin
+    while set -l i (contains -i -- $__p $PATH)
+        set -e PATH[$i]
+    end
+    set -gx PATH $PATH $__p
+end
+set -e __p
+
 if status is-interactive
     abbr -a -- c 'composerX 2'
     abbr -a -- d 'docker'
