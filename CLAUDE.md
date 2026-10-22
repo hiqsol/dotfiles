@@ -22,8 +22,9 @@ Personal dotfiles installed as `~/.config`. Cloned directly into `~/.config` fro
 - Herdr (`herdr/`) is the main multiplexer; WezTerm is the terminal, tmux is
   kept for remote hosts. Prefix is `Ctrl+Q` in both herdr and tmux, not
   default `Ctrl+B`.
-- Git config is at `git/config`, not `~/.gitconfig`. Identity (name, email)
-  is in `~/.gitconfig.local` in the private home repo — never add it here.
+- Shared git config is at `git/config`. Identity (name, email) and credential
+  helpers are in `~/.gitconfig` in the private home repo (git reads it after
+  `git/config`, and `git config --global` writes there) — never add them here.
 - In the process of moving to mise for tools installation.
 - Checks: `mise run check` (or `scripts/check`) before committing; `mise run doctor`
   for the live environment. Pre-commit hook: `git config core.hooksPath .githooks`
