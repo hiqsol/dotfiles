@@ -1,7 +1,4 @@
 import os
-import subprocess
-import glob
-import pwd
 from xonsh.built_ins import XSH
 
 # Simple env vars, PATH and aliases live in ~/.config/shell/shell.toml,
@@ -26,31 +23,11 @@ aliases['la'] = 'ls -laFh ' + $ls_options
 aliases['lh'] = 'ls -lFh ' + $ls_options
 
 # Functions that change shell state; the rest are scripts in ~/.config/bin
-def _reset_ssh_agent():
-    user = os.environ.get('USER')
-    sock_link = f"/home/{user}/.ssh/ssh-agent.sock"
-    for sock in glob.glob('/tmp/agent.*'):
-        try:
-            stat = os.stat(sock)
-            if pwd.getpwuid(stat.st_uid).pw_name == user:
-                os.environ['SSH_AUTH_SOCK'] = sock
-                if subprocess.run(['ssh-add', '-l'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0:
-                    print(f"Agent link changed to {sock}")
-                    if os.path.islink(sock_link):
-                        os.unlink(sock_link)
-                    os.symlink(sock, sock_link)
-                    os.environ['SSH_AUTH_SOCK'] = sock_link
-                    return True
-        except Exception:
-            pass
-    return False
-
 def _md(args):
     if not args: return
     os.makedirs(args[0], exist_ok=True)
     os.chdir(args[0])
 
-aliases['reset_ssh_agent'] = _reset_ssh_agent
 aliases['md'] = _md
 
 # Xonsh specific settings

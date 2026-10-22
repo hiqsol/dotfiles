@@ -9,6 +9,6 @@ if status is-interactive
     end
     set -gx SSH_AUTH_SOCK $SOCK
     if not test -S "$SSH_AUTH_SOCK"
-        reset_ssh_agent
+        ~/.config/bin/reset_ssh_agent
     end
 end

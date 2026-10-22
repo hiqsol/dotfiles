@@ -1,0 +1,18 @@
+#!/bin/sh
+# reset_ssh_agent - point ~/.ssh/ssh-agent.sock (the shells' fixed SSH_AUTH_SOCK)
+# at the first live agent: desktop ones (gnome-keyring, systemd), then /tmp/agent.*
+
+### XXX NOT $HOME because of `sudo -s`
+link="/home/$USER/.ssh/ssh-agent.sock"
+run="/run/user/$(id -u)"
+# shellcheck disable=SC2044 # agent socket paths have no spaces
+for sock in "$run/gcr/ssh" "$run/keyring/ssh" $(find /tmp -name "agent.*" -user "$USER" 2>/dev/null) "$run/openssh_agent"; do
+    [ -S "$sock" ] || continue
+    # exit 1 = agent alive without identities, only 2 = no agent
+    SSH_AUTH_SOCK="$sock" ssh-add -l >/dev/null 2>&1
+    if [ $? -ne 2 ]; then
+        echo "Agent link changed to $sock"
+        exec ln -sfn "$sock" "$link"
+    fi
+done
+exit 1

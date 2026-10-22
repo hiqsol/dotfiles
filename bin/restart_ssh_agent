@@ -1,0 +1,6 @@
+#!/bin/sh
+# restart_ssh_agent - start a new ssh-agent and link ~/.ssh/ssh-agent.sock to it
+eval "$(ssh-agent -s)" >/dev/null
+echo "Agent link changed to $SSH_AUTH_SOCK"
+### XXX NOT $HOME because of `sudo -s`
+exec ln -sfn "$SSH_AUTH_SOCK" "/home/$USER/.ssh/ssh-agent.sock"
