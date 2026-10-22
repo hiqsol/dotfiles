@@ -39,7 +39,7 @@ private home repo, together with private configs (`~/.ssh/config`, etc.).
   turns it into the `*generated*` files (never edit those by hand).
 - `mise/config.toml` holds globally installed tools; `.mise.toml` holds this
   repo's tasks.
-- Git config is `git/config`, not `~/.gitconfig`.
+- Git config is `git/config`; `~/.gitconfig` is private (identity, credentials).
 - `etc/` holds system files to copy into `/etc` by hand.
 
 ## Tracking new stuff in `~/.config`

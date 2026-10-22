@@ -54,7 +54,7 @@
     safe        = "!git config --file ~/.config/git/.gitconfig --add safe.directory \"$(pwd)\""
     w           = worktree
 [user]
-    # name/email live in ~/.gitconfig.local (private home repo), see [include]
+    # name/email live in ~/.gitconfig (private home repo), read by git after this file
     useConfigOnly = true
 [color]
     diff        = auto
@@ -85,7 +85,6 @@
 	defaultBranch = master
 [include]
     path = .gitconfig
-    path = ~/.gitconfig.local
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
