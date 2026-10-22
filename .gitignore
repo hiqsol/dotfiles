@@ -36,7 +36,6 @@ __pycache__/
 # not installed now, but would hold credentials/state if reinstalled
 /gcloud/
 /gh/
-/git/.gitconfig
 /github-copilot/
 /ngrok/ngrok.yml
 /nvim/.netrwhist

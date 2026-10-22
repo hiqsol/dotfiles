@@ -51,7 +51,7 @@
 
     cfg         = "!$EDITOR ~/.config/git/config"
     ups         = "!git push -u origin HEAD"
-    safe        = "!git config --file ~/.config/git/.gitconfig --add safe.directory \"$(pwd)\""
+    safe        = "!git config --file ~/.config/git/config.local --add safe.directory \"$(pwd)\""
     w           = worktree
 [user]
     # name/email live in ~/.gitconfig (private home repo), read by git after this file
@@ -84,7 +84,7 @@
 [init]
 	defaultBranch = master
 [include]
-    path = .gitconfig
+    path = config.local
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
