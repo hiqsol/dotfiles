@@ -22,8 +22,9 @@ private home repo, together with private configs (`~/.ssh/config`, etc.).
 - **Package Manager:** [mise](https://mise.jdx.dev/) (runtimes & tools, the
   only lazy installer)
 - **Editor:** Neovim (LazyVim)
-- **Terminal:** WezTerm, with its built-in multiplexer locally
-- **Multiplexer:** Tmux on remote hosts (Prefix: `Ctrl+Q`)
+- **Terminal:** WezTerm
+- **Multiplexer:** [herdr](https://github.com/herdrdev/herdr), tmux on remote
+  hosts (Prefix: `Ctrl+Q` in both)
 - **Navigation:** [zoxide](https://github.com/ajeetdsouza/zoxide) (`z`)
 - **Git UI:** [lazygit](https://github.com/jesseduffield/lazygit) (`lg`)
 - **File Manager:** [yazi](https://yazi-rs.github.io/) (`y`)

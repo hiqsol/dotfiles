@@ -19,8 +19,9 @@ Personal dotfiles installed as `~/.config`. Cloned directly into `~/.config` fro
 - No lazy installers except `mise` (it installs everything else): add tools to
   `mise/config.toml` instead.
 - Neovim uses LazyVim — plugins go in `lua/plugins/`, config in `lua/config/`.
-- WezTerm (with its built-in mux) is used locally, tmux on remote hosts. Tmux
-  prefix is `Ctrl+Q`, not default `Ctrl+B`.
+- Herdr (`herdr/`) is the main multiplexer; WezTerm is the terminal, tmux is
+  kept for remote hosts. Prefix is `Ctrl+Q` in both herdr and tmux, not
+  default `Ctrl+B`.
 - Git config is at `git/config`, not `~/.gitconfig`. Identity (name, email)
   is in `~/.gitconfig.local` in the private home repo — never add it here.
 - In the process of moving to mise for tools installation.
