@@ -51,3 +51,16 @@ __pycache__/
 !/herdr/plugins/
 /herdr/plugins/*
 !/herdr/plugins/askpass/
+
+# shell, tool history and caches
+/fish/fish_history
+/fish/fish_variables
+/zsh/.zcompdump
+/zsh/.history
+/zsh/local.sh
+/zsh/.zcalc_history
+/zsh/cache/
+/litecli/log
+/litecli/history
+/pgsql/.psql_history-*
+/git/config.local

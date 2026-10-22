@@ -74,9 +74,6 @@ return {
 		{ key = "l", mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Right") },
 		{ key = "k", mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Up") },
 		{ key = "j", mods = "CTRL|SHIFT", action = wezterm.action.ActivatePaneDirection("Down") },
-
-		-- Detach the active pane's mux domain (e.g. SSHMUX:host); remote processes keep running
-		{ key = "d", mods = "CTRL|SHIFT", action = wezterm.action.DetachDomain("CurrentPaneDomain") },
 	},
 
 	-- Mouse-friendly copy/paste

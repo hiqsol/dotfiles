@@ -6,15 +6,6 @@ md() {
     mkdir -p "$@" && cd "$@" || return
 }
 
-
-cdls() {
-    cd "$1" || return
-    if [ "$PWD" != "$HOME" ]; then
-        # shellcheck disable=SC2154 # set in .shrc
-        ls -F ${ls_options:+"$ls_options"}
-    fi
-}
-
 # cd to /home/user/prj/organization/project
 cdp() {
     cd "$(printf '%s\n' "$PWD" | cut -d/ -f1-6)" || return

@@ -62,17 +62,7 @@ source ~/.config/zsh/git_status.sh
 source ~/.config/zsh/promptline.sh
 
 ### PLUGINS
-plugins=(
-    ~/.fzf.zsh
-    ~/.vim/plugged/zsh-autosuggestions/zsh-autosuggestions.zsh
-    ~/.config/zsh/local.sh
-)
-
-for file in $plugins; do
-    if [ -f $file ]; then
-        source $file
-    fi
-done
+[[ -f ~/.config/zsh/local.sh ]] && source ~/.config/zsh/local.sh
 
 if [[ -x ~/.local/bin/mise ]]; then
     eval "$(~/.local/bin/mise activate zsh)"

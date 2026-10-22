@@ -13,13 +13,10 @@ umask 002
 ### Sourced before the logic below, which may override (e.g. LANG on Linux).
 [ -f ~/.config/shell/generated.env.sh ] && . ~/.config/shell/generated.env.sh
 
-### Activate english UTF8 locale and OS specific ls_options
-ls_options=''
-# shellcheck disable=SC2034 # used by cdls in functions.sh
+### Activate english UTF8 locale
 if [ "$(uname)" = "Linux" ]; then
     export LANG=en_US.utf8
     export LC_ALL=en_US.utf8
-    ls_options='--color'
 fi
 
 ### SSH agent: stable symlink so multiplexer (herdr, tmux) reattach keeps working
