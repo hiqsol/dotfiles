@@ -1,0 +1,5 @@
+#!/bin/sh
+# memcap [SIZE] COMMAND... - run COMMAND in its own cgroup capped at SIZE (default 4G)
+# At the cap it is swapped (up to 1G), then OOM-killed alone, instead of the whole terminal.
+case $1 in [0-9]*[KMGT]) max=$1 && shift ;; *) max=4G ;; esac
+exec systemd-run --user --scope --quiet -p "MemoryMax=$max" -p MemorySwapMax=1G -- "$@"
