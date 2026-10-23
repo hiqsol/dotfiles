@@ -10,7 +10,7 @@ SUSTAIN=${MEMWATCH_SUSTAIN:-3} # consecutive bad checks before notifying
 WARN_AVAIL=10                  # % of RAM available
 CRIT_AVAIL=5
 # Swap stays "used" long after a spike, so it only counts when RAM is tight too.
-SWAP_AVAIL=20 # swap is considered only below this % available
+SWAP_AVAIL=10 # swap is considered only below this % available
 WARN_SWAP=70  # % of swap used
 CRIT_SWAP=90
 WARN_PSI=20 # "some" avg60 from /proc/pressure/memory
