@@ -43,6 +43,7 @@ BROWSER = "x-www-browser:local-open"
 NVIM_LOG_FILE = "$HOME/.cache/nvim/log"
 RIPGREP_CONFIG_PATH = "~/.config/ripgrep/.ripgreprc"
 SUDO_ASKPASS = "~/.config/bin/askpass"     # herdr/tmux popup for `sudo -A` (no tty, e.g. Claude Code)
+TMPDIR = "~/.cache/tmp"                    # on disk: /tmp is tmpfs and big temp files eat RAM+swap (user-tmpfiles.d)
 
 # less config
 LESS = "-i -x4 -M -R -F -X"
