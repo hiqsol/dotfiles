@@ -8,16 +8,20 @@ dir=$(mktemp -d)
 trap 'rm -rf "$dir"' EXIT
 fifo="$dir/pw"
 mkfifo -m 600 "$fifo"
-export ASKPASS_FIFO="$fifo" ASKPASS_PROMPT="${1:-[sudo] password: }"
+# the caller is sudo itself: show what it is about to run
+cmd=$(ps -o args= -p "$PPID" | sed 's|^[^ ]*/||; s| -A | |')
+export ASKPASS_FIFO="$fifo" ASKPASS_PROMPT="${1:-[sudo] password: }" ASKPASS_CMD="$cmd"
 
 if [ -n "$HERDR_SOCKET_PATH" ]; then
     herdr=${HERDR_BIN_PATH:-herdr}
     "$herdr" plugin list | grep -qw askpass || "$herdr" plugin link "$plugin" >/dev/null
     "$herdr" plugin pane open --plugin askpass --entrypoint prompt \
-        --env "ASKPASS_FIFO=$fifo" --env "ASKPASS_PROMPT=$ASKPASS_PROMPT" >/dev/null
+        --env "ASKPASS_FIFO=$fifo" --env "ASKPASS_PROMPT=$ASKPASS_PROMPT" \
+        --env "ASKPASS_CMD=$cmd" >/dev/null
 elif [ -n "$TMUX" ]; then
-    tmux display-popup -E -w 60 -h 5 -T sudo \
+    tmux display-popup -E -w 80 -h 7 -T sudo \
         -e "ASKPASS_FIFO=$fifo" -e "ASKPASS_PROMPT=$ASKPASS_PROMPT" \
+        -e "ASKPASS_CMD=$cmd" \
         "sh '$plugin/prompt.sh'" &
 else
     echo "askpass: needs a herdr or tmux session" >&2

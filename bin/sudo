@@ -1,0 +1,7 @@
+#!/bin/sh
+# sudo - plain sudo, but with no terminal to prompt on (agents, scripts)
+# it asks through the askpass popup (sudo -A, $SUDO_ASKPASS)
+if [ -n "$SUDO_ASKPASS" ] && ! (: </dev/tty) 2>/dev/null; then
+    exec /usr/bin/sudo -A "$@"
+fi
+exec /usr/bin/sudo "$@"
