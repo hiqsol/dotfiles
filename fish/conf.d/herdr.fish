@@ -5,8 +5,9 @@ if status is-interactive; and set -q HERDR_PANE_ID; and command -q herdr
     set -q HERDR_NOTIFY_MIN_SECONDS; or set -g HERDR_NOTIFY_MIN_SECONDS 10
     # interactive programs whose exit is not worth a notification
     set -q HERDR_NOTIFY_IGNORE; or set -g HERDR_NOTIFY_IGNORE \
-        vi vim nvim nano less more man top htop btop btm ssh mosh tmux \
-        lazygit yazi fzf claude codex agy opencode pi grok hermes herdr
+        vi vim nvim nano less more bat man journalctl top htop btop btm watch \
+        ssh mosh tmux su fish zsh bash xonsh psql nmtui \
+        lazygit yazi fzf tuicr revdiff claude codex agy opencode pi grok hermes herdr
 
     # children's user and system CPU time (ms) from /proc, as fish's `time` reads it
     function __herdr_rusage
