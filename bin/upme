@@ -1,0 +1,17 @@
+#!/bin/sh
+# upme - update my stuff: home and ~/.config repos, mise and its tools, herdr
+#
+# herdr prefers ~/.local/bin/herdr (where it installs itself when a machine is
+# added) over the mise one, so that path is linked to mise's herdr.
+
+PATH="$HOME/.local/bin:$PATH"
+
+git -C "$HOME" pull --ff-only
+git -C "$HOME/.config" pull --ff-only
+
+mise self-update --yes
+mise install --yes
+mise upgrade --yes
+
+ln -sfn "$(dirname "$(mise where herdr)")/latest/herdr" "$HOME/.local/bin/herdr"
+herdr --version
