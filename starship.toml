@@ -4,7 +4,7 @@
 # Restyles the leading modules only; $all keeps every other default module
 # (languages, cmd_duration, jobs, status, ...) in its default place.
 format = """
-$username$hostname $directory ${custom.git_mark}$git_branch$git_state$git_status$all"""
+$username$hostname ${custom.dir} ${custom.git_mark}$git_branch$git_state$git_status$all"""
 
 # Hide the "via <lang> <version>" modules (languages, toolchains, envs)
 bun.disabled = true
@@ -75,11 +75,28 @@ format = '[$user]($style)'
 ssh_only = true
 format = '🌐[$hostname]($style)'
 
+# Emoji by location (the directory module can't switch symbols per path):
+# 🚀 ~/prj/hiqdev, 👤 ~/prj/hiqsol (me), 📦 ~/prj and other vendors, 🏠 ~,
+# 📂 elsewhere, 🔒 instead of any of them when read-only.
+# All but the last component are cut to 1 char, fish-style: 🚀hipanel/s/models
 [directory]
-truncation_length = 1
-truncate_to_repo = false
-fish_style_pwd_dir_length = 1
-format = '📂[$path]($style)[$read_only]($read_only_style)'
+disabled = true
+
+[custom.dir]
+when = true
+shell = ['sh']
+command = '''
+case $PWD in
+  "$HOME"/prj/hiqdev|"$HOME"/prj/hiqdev/*) e=🚀 p=${PWD#"$HOME"/prj/hiqdev} p=${p#/} ;;
+  "$HOME"/prj/hiqsol|"$HOME"/prj/hiqsol/*) e=👤 p=${PWD#"$HOME"/prj/hiqsol} p=${p#/} ;;
+  "$HOME"/prj|"$HOME"/prj/*) e=📦 p=${PWD#"$HOME"/prj} p=${p#/} ;;
+  "$HOME"|"$HOME"/*) e=🏠 p=${PWD#"$HOME"} p=${p#/} ;;
+  *) e=📂 p=$PWD ;;
+esac
+[ -w . ] || e=🔒
+printf %s%s "$e" "$(printf %s "$p" | sed -E 's#(\.?[^/])[^/]*/#\1/#g')"
+'''
+format = '[$output]($style)'
 style = 'bold'
 
 # 🍁 dirty / 🌿 clean, like the statusline (git_branch can't switch symbols)
