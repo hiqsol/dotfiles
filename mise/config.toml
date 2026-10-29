@@ -44,4 +44,4 @@ lychee = "latest"
 
 [settings]
 # skip the default 24h minimum_release_age delay for these tools
-minimum_release_age_excludes = ["claude"]
+minimum_release_age_excludes = ["claude", "codex"]
