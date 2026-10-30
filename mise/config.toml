@@ -42,9 +42,8 @@ rtk = "latest"
 "github:umputun/revdiff" = "latest"
 lychee = "latest"
 uv = "latest"
-# version is the git tag: mise lists pipx GitHub versions from releases, uwiki has only tags
-"pipx:hiqsol/uwiki" = "v0.2.0"
+"pipx:hiqsol/uwiki" = "latest"
 
 [settings]
 # skip the default 24h minimum_release_age delay for these tools
-minimum_release_age_excludes = ["claude", "codex"]
+minimum_release_age_excludes = ["claude", "codex", "pipx:hiqsol/uwiki"]
