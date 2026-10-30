@@ -76,7 +76,7 @@ ssh_only = true
 format = '🌐[$hostname]($style)'
 
 # Emoji by location (the directory module can't switch symbols per path):
-# 🚀 ~/prj/hiqdev, 👤 ~/prj/hiqsol (me), 📦 ~/prj and other vendors, 🏠 ~,
+# 🚀 ~/prj/hiqdev, 👤 ~/prj/hiqsol (me), 🧰 ~/prj and other vendors, 🏠 ~,
 # 📂 elsewhere, 🔒 instead of any of them when read-only.
 # All but the last component are cut to 1 char, fish-style: 🚀hipanel/s/models
 [directory]
@@ -89,7 +89,7 @@ command = '''
 case $PWD in
   "$HOME"/prj/hiqdev|"$HOME"/prj/hiqdev/*) e=🚀 p=${PWD#"$HOME"/prj/hiqdev} p=${p#/} ;;
   "$HOME"/prj/hiqsol|"$HOME"/prj/hiqsol/*) e=👤 p=${PWD#"$HOME"/prj/hiqsol} p=${p#/} ;;
-  "$HOME"/prj|"$HOME"/prj/*) e=📦 p=${PWD#"$HOME"/prj} p=${p#/} ;;
+  "$HOME"/prj|"$HOME"/prj/*) e=🧰 p=${PWD#"$HOME"/prj} p=${p#/} ;;
   "$HOME"|"$HOME"/*) e=🏠 p=${PWD#"$HOME"} p=${p#/} ;;
   *) e=📂 p=$PWD ;;
 esac
