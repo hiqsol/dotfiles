@@ -43,6 +43,7 @@ rtk = "latest"
 lychee = "latest"
 uv = "latest"
 "pipx:hiqsol/uwiki" = "latest"
+typos = "latest"
 
 [settings]
 # skip the default 24h minimum_release_age delay for these tools
