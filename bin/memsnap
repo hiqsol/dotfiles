@@ -1,0 +1,32 @@
+#!/bin/bash
+# memsnap - save a memory snapshot to $XDG_STATE_HOME/memsnap/<timestamp>/, print its dir
+# Compare snapshots with memsnap-cmp.
+# shellcheck disable=SC2094  # output files are named after their commands
+dir=${XDG_STATE_HOME:-$HOME/.local/state}/memsnap/$(date +%Y%m%d-%H%M%S)
+mkdir -p "$dir" && cd "$dir" || exit 1
+uptime >uptime
+free -m >free
+cat /proc/meminfo >meminfo
+cat /proc/pressure/memory >psi
+df -m -t tmpfs >tmpfs 2>/dev/null
+swapon --show >swap
+# per-process RSS
+ps -eo pid=,rss=,comm=,args= --sort=-rss |
+    awk '{printf "%7d %8.1fM %s\n", $1, $2/1024, substr($0, index($0, $3))}' >procs
+# RSS summed per command name (multi-process apps)
+ps -eo rss=,comm= |
+    awk '{s[$2]+=$1; n[$2]++} END {for (c in s) printf "%8.1fM %3d %s\n", s[c]/1024, n[c], c}' |
+    sort -rn >by-comm
+# PSS (shared pages split fairly) per command name, for processes we can read
+for f in /proc/[0-9]*/smaps_rollup; do
+    pss=$(awk '/^Pss:/ {print $2}' "$f" 2>/dev/null) && [ -n "$pss" ] &&
+        echo "$pss $(cat "${f%/*}/comm" 2>/dev/null)"
+done | awk '{s[$2]+=$1} END {for (c in s) printf "%8.1fM %s\n", s[c]/1024, c}' | sort -rn >pss-by-comm
+# cgroups (systemd units, app scopes): anon, file, shmem, kernel
+find /sys/fs/cgroup -name memory.stat | while read -r f; do
+    d=${f%/memory.stat}
+    awk -v cg="${d#/sys/fs/cgroup}" '/^anon /{a=$2} /^file /{fi=$2} /^kernel /{k=$2} /^shmem /{sh=$2}
+        END {printf "%8.1fM anon %8.1fM file %7.1fM shmem %7.1fM kernel  %s\n",
+            a/1048576, fi/1048576, sh/1048576, k/1048576, cg}' "$f"
+done | sort -rn >cgroups
+echo "$dir"
