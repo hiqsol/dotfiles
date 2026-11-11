@@ -16,7 +16,15 @@ alias git='nocorrect git'
 alias mkdir='nocorrect mkdir -p'
 
 source ~/.config/zsh/keys.zsh
-[[ -s /etc/grc.zsh ]] && source /etc/grc.zsh  # grc colouring (fish mirrors this list)
+# grc colouring, minus TUIs, pagers and editors that break on grc's pipe
+# (fish mirrors this list)
+if [[ -s /etc/grc.zsh ]]; then
+  source /etc/grc.zsh
+  for c in mtr fdisk journalctl systemctl docker docker-compose kubectl env php; do
+    (( $+functions[$c] )) && unfunction $c
+  done
+  unset c
+fi
 
 ### AUTOLOADS
 fpath=(~/.config/zsh/completion $fpath)
