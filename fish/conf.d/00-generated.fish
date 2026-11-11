@@ -45,6 +45,7 @@ if status is-interactive
     abbr -a -- g 'git'
     abbr -a -- k 'kubectl'
     abbr -a -- l 'eza -la'
+    abbr -a -- m 'make'
     abbr -a -- p 'psql_default'
     abbr -a -- s 'ssh'
     abbr -a -- v 'nvim'
