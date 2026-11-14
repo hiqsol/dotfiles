@@ -1,0 +1,23 @@
+#!/bin/bash
+# memsnap-cmp [A] [B] - compare memsnap snapshots: biggest growth per command and cgroup
+# A defaults to the first snapshot, B to a fresh one.
+cd "${XDG_STATE_HOME:-$HOME/.local/state}/memsnap" || exit 1
+snaps=(2*/)
+a=${1:-${snaps[0]}} b=${2:-$(memsnap)}
+a=${a%/} b=${b%/} b=${b##*/}
+echo "== $a -> $b"
+paste <(head -2 "$a/free") <(head -2 "$b/free" | cut -c15-)
+for k in MemAvailable AnonPages Shmem SUnreclaim PageTables SwapFree; do
+    read -r va vb < <(awk -v k="$k:" '$1 == k {printf "%d ", $2/1024}' "$a/meminfo" "$b/meminfo")
+    printf "%-13s %8dM -> %8dM\n" "$k" "$va" "$vb"
+done
+# name and value per line; the root cgroup line has no path
+col() { awk '{n=$NF; if (n !~ /^\// && FILENAME ~ /cgroups/) n="/"; print n, $1+0}' "$1" | sort; }
+growth() {
+    join -a1 -a2 -e0 -o0,1.2,2.2 <(col "$a/$1") <(col "$b/$1") |
+        awk '{printf "%+8.1fM %8.1fM  %s\n", $3-$2, $3, $1}' | sort -rn | head -"${2:-15}"
+}
+echo "== PSS growth by command"
+growth pss-by-comm
+echo "== anon growth by cgroup"
+growth cgroups 20

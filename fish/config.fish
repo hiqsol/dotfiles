@@ -21,10 +21,12 @@ if status is-interactive
     starship init fish | source
 
     # grc colouring for the same commands as /etc/grc.zsh in zsh
-    # (not /etc/grc.fish: it wraps ls/cat/tail and breaks quoting with eval)
+    # (not /etc/grc.fish: it wraps ls/cat/tail and breaks quoting with eval),
+    # minus TUIs, pagers and editors that break on grc's pipe (zsh mirrors it)
     if type -q grc; and test -f /etc/grc.zsh
+        set -l skip mtr fdisk journalctl systemctl docker docker-compose kubectl env php
         for cmd in (sed -n '/^cmds=(/,/^)/{/[()]/!p}' /etc/grc.zsh | string trim)
-            if type -q $cmd; and not functions -q $cmd
+            if not contains -- $cmd $skip; and type -q $cmd; and not functions -q $cmd
                 function $cmd --inherit-variable cmd --wraps=$cmd
                     if isatty stdout
                         grc --colour=auto $cmd $argv
