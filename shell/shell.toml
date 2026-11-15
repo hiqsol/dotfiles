@@ -152,5 +152,6 @@ ls-tmux = "tmux list-panes -aF '#{session_name}:#{window_index}:#{pane_index}\t#
 hr = "herdr machine add"
 
 # system
+mr = "mise run"
 upgrade = "sudo apt update && sudo apt upgrade"
 upall = "~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade"
