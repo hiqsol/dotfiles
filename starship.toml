@@ -6,6 +6,9 @@
 format = """
 $username$hostname ${custom.dir} ${custom.git_mark}$git_branch$git_state$git_status$all"""
 
+# Default 30ms is too tight on a cold disk cache (first cd into a dir on the VM)
+scan_timeout = 100
+
 # Hide the "via <lang> <version>" modules (languages, toolchains, envs)
 bun.disabled = true
 c.disabled = true
