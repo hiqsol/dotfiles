@@ -74,6 +74,7 @@ source ~/.config/zsh/promptline.sh
 
 if [[ -x ~/.local/bin/mise ]]; then
     eval "$(~/.local/bin/mise activate zsh)"
+    eval "$(~/.local/bin/mise completion zsh)"
 else
     # lazy installer: the only one, mise brings everything else
     mise() { ~/.config/bin/install-mise && ~/.local/bin/mise "$@" }
