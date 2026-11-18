@@ -111,6 +111,7 @@ aliases['ymp3'] = ['yt-dlp', '--add-metadata', '--extract-audio', '--audio-forma
 aliases['ypl3'] = ['ymp3', '-w', '--no-post-overwrites', '--download-archive', '.archive.txt', '--ignore-errors']
 aliases['ls-tmux'] = ['tmux', 'list-panes', '-aF', '#{session_name}:#{window_index}:#{pane_index}\t#{pane_tty}\t#{pane_pid}\t#{pane_current_command}']
 aliases['hr'] = ['herdr', 'machine', 'add']
+aliases['dk'] = ['devkit']
 aliases['mr'] = ['mise', 'run']
 aliases['upgrade'] = 'sudo apt update && sudo apt upgrade'
 aliases['upall'] = '~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
