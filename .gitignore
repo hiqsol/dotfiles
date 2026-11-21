@@ -51,6 +51,8 @@ __pycache__/
 !/herdr/plugins/
 /herdr/plugins/*
 !/herdr/plugins/askpass/
+# herdr desktop app: state, sockets, telemetry, downloaded mods and themes
+/herdr-app/
 
 # shell, tool history and caches
 /fish/fish_history
