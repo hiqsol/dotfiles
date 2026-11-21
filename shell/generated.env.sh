@@ -4,7 +4,6 @@
 export BLOCKSIZE=K
 export CLICOLOR=1
 export LSCOLORS=Gxfxcxdxbxegedabagacad
-export TERM=screen-256color
 export LANGUAGE=en_US:en
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8

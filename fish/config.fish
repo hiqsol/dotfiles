@@ -1,3 +1,6 @@
+# allow group write (same as shell/.shrc for zsh/bash)
+umask 002
+
 # Simple env vars and PATH live in shell/shell.toml (generated into conf.d/00-generated.fish)
 # fd is `fdfind` when installed from Debian/Ubuntu apt, `fd` otherwise (e.g. mise)
 if command -q fdfind

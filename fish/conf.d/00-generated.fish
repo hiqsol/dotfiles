@@ -97,5 +97,5 @@ if status is-interactive
     abbr -a -- dk 'devkit'
     abbr -a -- mr 'mise run'
     abbr -a -- upgrade 'sudo apt update && sudo apt upgrade'
-    abbr -a -- upall '~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && sudo apt update && sudo apt upgrade'
+    abbr -a -- upall 'upme && sudo apt update && sudo apt upgrade'
 end

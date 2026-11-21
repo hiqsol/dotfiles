@@ -32,7 +32,6 @@
 BLOCKSIZE = "K"                         # show disk information in K-blocks
 CLICOLOR = "1"                          # colorize ls output (FreeBSD only)
 LSCOLORS = "Gxfxcxdxbxegedabagacad"     # see https://github.com/trapd00r/LS_COLORS
-TERM = { sh = "screen-256color" }       # proper 256-colors TERM
 LANGUAGE = "en_US:en"
 LANG = "en_US.UTF-8"                    # .shrc overrides to en_US.utf8 on Linux
 LC_ALL = "en_US.UTF-8"
@@ -155,4 +154,4 @@ hr = "herdr machine add"
 dk = "devkit"
 mr = "mise run"
 upgrade = "sudo apt update && sudo apt upgrade"
-upall = "~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade"
+upall = "upme && upgrade"                 # upme: repos, mise and tools, herdr; upgrade: apt

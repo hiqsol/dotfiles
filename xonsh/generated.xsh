@@ -114,4 +114,4 @@ aliases['hr'] = ['herdr', 'machine', 'add']
 aliases['dk'] = ['devkit']
 aliases['mr'] = ['mise', 'run']
 aliases['upgrade'] = 'sudo apt update && sudo apt upgrade'
-aliases['upall'] = '~/.local/bin/mise self-update && ~/.local/bin/mise upgrade && upgrade'
+aliases['upall'] = 'upme && upgrade'
