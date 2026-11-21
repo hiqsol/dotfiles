@@ -1,0 +1,5 @@
+theme = Adventure
+background = #000000
+background-opacity = 1
+window-decoration = none
+gtk-titlebar = false
