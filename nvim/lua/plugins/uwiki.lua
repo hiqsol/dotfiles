@@ -10,9 +10,9 @@ return {
       servers = {
         uwiki = {
           mason = false,
-          cmd = { "uwiki", "lsp" },
-          -- dev uwiki source instead of the installed release
-          cmd_env = { PYTHONPATH = vim.fn.expand("~/prj/hiqsol/uwiki/src") },
+          -- dev uwiki: its venv has the source editable and its dependencies; the installed
+          -- release with PYTHONPATH on the source breaks once the source needs a new dependency
+          cmd = { vim.fn.expand("~/prj/hiqsol/uwiki/.venv/bin/uwiki"), "lsp" },
           filetypes = { "markdown" },
           -- only inside a wiki: without a root nvim would start it in any folder
           root_dir = function(bufnr, on_dir)
